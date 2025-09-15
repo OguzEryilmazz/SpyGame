@@ -9,11 +9,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Work
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Sports
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,12 +19,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.spy.datamanagment.CategoryDataManager
+import com.example.spy.ux.components.CategoryCard
+import com.example.spy.ux.components.assignRoles
+import kotlinx.coroutines.launch
 
 // Kategori data class'ı
 data class Category(
@@ -37,7 +39,7 @@ data class Category(
     val color: Color,
     val items: List<String>,
     val hints: List<String>,
-    val isLocked : Boolean
+    val isLocked: Boolean
 )
 
 // Oyuncu ve rol data class'ları
@@ -49,80 +51,127 @@ data class GamePlayer(
     val hint: String? = null // sadece spy için
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     navController: NavController,
     players: List<Player> = emptyList()
 ) {
-    // Kategoriler - Bunlar normalde local storage'dan gelecek
-    val categories = remember {
-        listOf(
-            Category(
-                id = "professions",
-                name = "Meslekler",
-                icon = Icons.Default.Work,
-                color = Color(0xFF2196F3),
-                items = listOf(
-                    "Doktor", "Öğretmen", "Mühendis", "Avukat", "Hemşire",
-                    "Polis", "İtfaiyeci", "Pilot", "Şoför", "Aşçı",
-                    "Berber", "Terzi", "Elektrikçi", "Teknisyen", "Satış Danışmanı"
-                ),
-                hints = listOf(
-                    "İnsanlara yardım eder", "Eğitim verir", "Teknik işler yapar",
-                    "Hukuki konularda yardım eder", "Sağlık hizmeti verir"
-                ),
-                isLocked = false
-            ),
-            Category(
-                id = "places",
-                name = "Yerler",
-                icon = Icons.Default.Home,
-                color = Color(0xFF4CAF50),
-                items = listOf(
-                    "Hastane", "Okul", "Market", "Restoran", "Sinema",
-                    "Park", "Kütüphane", "Müze", "Plaj", "Dağ",
-                    "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı"
-                ),
-                hints = listOf(
-                    "İnsanlar buraya belirli ihtiyaçları için gelir",
-                    "Sosyal aktivite yapılan yer", "Hizmet verilen mekan"
-                ),
-                isLocked = true
-            ),
-            Category(
-                id = "animals",
-                name = "Hayvanlar",
-                icon = Icons.Default.Sports,
-                color = Color(0xFFFF9800),
-                items = listOf(
-                    "Kedi", "Köpek", "Kuş", "Balık", "At",
-                    "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
-                    "Fil", "Maymun", "Ayı", "Kurt", "Tavşan"
-                ),
-                hints = listOf(
-                    "Canlı bir varlık", "Doğada yaşar", "Hareket edebilir"
-                ),
-                isLocked = true
-            ),
-            Category(
-                id = "foods",
-                name = "Yiyecekler",
-                icon = Icons.Default.Restaurant,
-                color = Color(0xFFE91E63),
-                items = listOf(
-                    "Pizza", "Hamburger", "Makarna", "Pilav", "Çorba",
-                    "Salata", "Kebap", "Döner", "Lahmacun", "Börek",
-                    "Tost", "Sandviç", "Omlet", "Pancake", "Waffle"
-                ),
-                hints = listOf(
-                    "Beslenme için tüketilir", "Lezzetli", "Hazırlanması gerekir"
-                ),
-                isLocked = false
-            )
-        )
+    val context = LocalContext.current
+    val categoryManager = remember { CategoryDataManager(context) }
+    val coroutineScope = rememberCoroutineScope()
+
+    var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var isRefreshing by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Kategorileri yükle
+    fun loadCategories() {
+        coroutineScope.launch {
+            try {
+                isRefreshing = true
+                categories = categoryManager.getCategories()
+                errorMessage = null
+            } catch (e: Exception) {
+                errorMessage = "Kategoriler yüklenirken hata oluştu: ${e.message}"
+            } finally {
+                isLoading = false
+                isRefreshing = false
+            }
+        }
     }
 
-    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    // İlk yükleme
+    LaunchedEffect(Unit) {
+        loadCategories()
+    }
+
+    // Loading State
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFE91E63),
+                            Color(0xFF9C27B0),
+                            Color(0xFFF44336)
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(48.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Kategoriler yükleniyor...",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+            }
+        }
+        return
+    }
+
+    // Error State
+    errorMessage?.let { error ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFE91E63),
+                            Color(0xFF9C27B0),
+                            Color(0xFFF44336)
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Card(
+                modifier = Modifier.padding(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Hata",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Red
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = error,
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = { loadCategories() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFE91E63)
+                        )
+                    ) {
+                        Text("Tekrar Dene")
+                    }
+                }
+            }
+        }
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -164,7 +213,9 @@ fun CategoryScreen(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Column {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text(
                         text = "Kategori Seç",
                         fontSize = 24.sp,
@@ -177,30 +228,75 @@ fun CategoryScreen(
                         color = Color.White.copy(alpha = 0.8f)
                     )
                 }
+
+                // Refresh Button
+                IconButton(
+                    onClick = { loadCategories() },
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.2f))
+                ) {
+                    if (isRefreshing) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Yenile",
+                            tint = Color.White
+                        )
+                    }
+                }
             }
 
             // Categories List
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(categories) { category ->
-                    CategoryCard(
-                        category = category,
-                        isSelected = selectedCategory?.id == category.id,
-                        onClick = {
-                            if (!category.isLocked) {
-                                selectedCategory = if (selectedCategory?.id == category.id) null else category
-                            }
-                        }
+            if (categories.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Henüz kategori bulunmuyor",
+                        color = Color.White.copy(alpha = 0.7f),
+                        fontSize = 16.sp
                     )
                 }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(categories) { category ->
+                        CategoryCard(
+                            category = category,
+                            isSelected = selectedCategory?.id == category.id,
+                            onClick = {
+                                if (!category.isLocked) {
+                                    selectedCategory = if (selectedCategory?.id == category.id) null else category
+                                } else {
+                                    // Kategori kilitli - ileride unlock logic'i burada olacak
 
-                // Extra spacing for last item
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                                }
+                            },
+                            onUnlockClick = {
+                                // Unlock functionality - ileride implement edilecek
+                                coroutineScope.launch {
+                                    categoryManager.unlockCategory(category.id)
+                                    loadCategories() // Kategorileri yeniden yükle
+                                }
+                            }
+                        )
+                    }
+
+                    // Extra spacing for last item
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }
@@ -235,7 +331,7 @@ fun CategoryScreen(
                         }
 
                         // Game screen'e geç (henüz yok)
-                        // navController.navigate("gameScreen")
+                        // navController.navigate("gameScreen/${category.id}")
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -257,161 +353,6 @@ fun CategoryScreen(
     }
 }
 
-@Composable
-fun CategoryCard(
-    category: Category,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = !category.isLocked) { onClick() },
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = when {
-                category.isLocked -> Color.White.copy(alpha = 0.1f)
-                isSelected -> Color.White.copy(alpha = 0.3f)
-                else -> Color.White.copy(alpha = 0.15f)
-            }
-        )
-    ) {
-        Box {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Icon
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (category.isLocked)
-                                Color.Gray.copy(alpha = 0.5f)
-                            else
-                                category.color
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = category.icon,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // Content
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = category.name,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (category.isLocked)
-                                Color.White.copy(alpha = 0.5f)
-                            else
-                                Color.White
-                        )
-
-                        if (category.isLocked) {
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "Kilitli",
-                                tint = Color.White.copy(alpha = 0.7f),
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                    }
-
-                    Text(
-                        text = if (category.isLocked) "Kilitli" else "${category.items.size} öğe",
-                        fontSize = 14.sp,
-                        color = if (category.isLocked)
-                            Color.White.copy(alpha = 0.4f)
-                        else
-                            Color.White.copy(alpha = 0.7f)
-                    )
-
-                    // İlk birkaç öğeyi göster (sadece kilitli değilse)
-                    if (!category.isLocked) {
-                        Text(
-                            text = category.items.take(3).joinToString(", ") +
-                                    if (category.items.size > 3) "..." else "",
-                            fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.6f),
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                    }
-                }
-
-                // Selection indicator
-                if (isSelected && !category.isLocked) {
-                    Box(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clip(CircleShape)
-                            .background(Color.White),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(12.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFFE91E63))
-                        )
-                    }
-                }
-            }
-
-            // Locked overlay
-            if (category.isLocked) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.2f))
-                )
-            }
-        }
-    }
-}
-
-// Rolleri ata function'ı
-fun assignRoles(players: List<Player>, category: Category): List<GamePlayer> {
-    val shuffledPlayers = players.shuffled()
-    val spyIndex = (0 until players.size).random()
-    val selectedRole = category.items.random()
-    val spyHint = category.hints.random()
-
-    return shuffledPlayers.mapIndexed { index, player ->
-        if (index == spyIndex) {
-            GamePlayer(
-                id = player.id,
-                name = player.name,
-                color = player.selectedColor,
-                role = "SPY",
-                hint = spyHint
-            )
-        } else {
-            GamePlayer(
-                id = player.id,
-                name = player.name,
-                color = player.selectedColor,
-                role = selectedRole
-            )
-        }
-    }
-}
 
 @Preview
 @Composable

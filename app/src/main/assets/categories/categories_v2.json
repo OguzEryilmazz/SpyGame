@@ -1,0 +1,80 @@
+{
+  "categories": [
+    {
+      "id": "fruits",
+      "name": "Meyveler",
+      "iconName": "apple",
+      "colorHex": "#FF5722",
+      "items": [
+        "Elma", "Armut", "Muz", "Çilek", "Karpuz",
+        "Üzüm", "Portakal", "Mandalina", "Kiraz", "Ananas",
+        "Kivi", "Mango", "Nar", "İncir", "Hurma"
+      ],
+      "hints": [
+        "Doğada yetişir",
+        "Yenilebilir",
+        "Sağlıklıdır",
+        "Tatlıdır",
+        "Vitamin içerir"
+      ],
+      "isLocked": false
+    },
+    {
+      "id": "vehicles",
+      "name": "Taşıtlar",
+      "iconName": "directions_car",
+      "colorHex": "#3F51B5",
+      "items": [
+        "Araba", "Otobüs", "Kamyon", "Motorsiklet", "Bisiklet",
+        "Tren", "Uçak", "Gemi", "Traktör", "Metrobüs",
+        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi"
+      ],
+      "hints": [
+        "Ulaşım aracı",
+        "Taşımak için kullanılır",
+        "Tekerlekli veya raylı olabilir",
+        "Motor gücüyle çalışır",
+        "İnsanları veya yükleri taşır"
+      ],
+      "isLocked": true
+    },
+    {
+      "id": "colors",
+      "name": "Renkler",
+      "iconName": "palette",
+      "colorHex": "#9C27B0",
+      "items": [
+        "Kırmızı", "Mavi", "Yeşil", "Sarı", "Turuncu",
+        "Mor", "Pembe", "Beyaz", "Siyah", "Gri",
+        "Kahverengi", "Lacivert", "Turkuaz", "Altın", "Gümüş"
+      ],
+      "hints": [
+        "Gözle görülür",
+        "Her yerde bulunur",
+        "Işıkla ilgilidir",
+        "Sanatta önemlidir",
+        "Doğada çeşitlidir"
+      ],
+      "isLocked": false
+    },
+    {
+      "id": "games",
+      "name": "Oyunlar",
+      "iconName": "sports_esports",
+      "colorHex": "#009688",
+      "items": [
+        "Satranç", "Dama", "Monopoly", "Scrabble", "Uno",
+        "FIFA", "Minecraft", "PUBG", "League of Legends", "Valorant",
+        "Counter-Strike", "Fortnite", "Zula", "Call of Duty", "Among Us"
+      ],
+      "hints": [
+        "Eğlencelidir",
+        "Kuralları vardır",
+        "Tek başına veya birlikte oynanır",
+        "Zaman geçirmenizi sağlar",
+        "Masa oyunu veya dijital olabilir"
+      ],
+      "isLocked": true
+    }
+  ]
+}

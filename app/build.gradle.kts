@@ -76,8 +76,11 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended:1.7.5")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.compose.material3:material3:1.2.1")
 
     implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

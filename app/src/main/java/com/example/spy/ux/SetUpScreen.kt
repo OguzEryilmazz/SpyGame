@@ -140,7 +140,10 @@ fun SetupScreen(
                         icon = Icons.Default.Visibility,
                         title = "Imposter İpucu",
                         subtitle = "Imposter'a ipucu gösterilsin mi?",
-                        iconColor = Color(0xFF4CAF50) // Green
+                        iconColor =   if(showHints) Color(0xFF4CAF50) else
+                            Color(0xFFF44336) // Green
+
+
                     ) {
                         ToggleRow(
                             isEnabled = showHints,
