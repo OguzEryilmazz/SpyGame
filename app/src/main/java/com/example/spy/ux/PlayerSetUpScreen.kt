@@ -122,7 +122,7 @@ fun PlayerSetupScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 80.dp) // Button için alan bırak
+                .padding(bottom = 80.dp , top = 20.dp) // Button için alan bırak
         ) {
             // Top Bar
             Row(

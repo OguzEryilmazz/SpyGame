@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -15,6 +16,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,7 +40,7 @@ fun CategoryCard(
     category: Category,
     isSelected: Boolean,
     onClick: () -> Unit,
-    onUnlockClick: (() -> Unit)? = null
+    onUnlockClick: (() -> Unit)? = null,
 ) {
     Card(
         modifier = Modifier
@@ -81,7 +85,6 @@ fun CategoryCard(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // Content
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -117,23 +120,32 @@ fun CategoryCard(
                         else
                             Color.White.copy(alpha = 0.7f)
                     )
-
-                    // İlk birkaç öğeyi göster (sadece kilitli değilse)
-                    if (!category.isLocked) {
-                        Text(
-                            text = category.items.take(3).joinToString(", ") +
-                                    if (category.items.size > 3) "..." else "",
-                            fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.6f),
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                    }
                 }
 
-                // Selection indicator or Unlock button
-                if (category.isLocked && onUnlockClick != null) {
-                    // Burada unlock button veya coin gerektiren bir UI olabilir
-                    // Şimdilik sadece kilit ikonu
+                // Selection indicator or Purchase button
+                if (category.isLocked && onUnlockClick != null && category.price > 0) {
+                    Button(
+                        onClick = { onUnlockClick() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White.copy(alpha = 0.9f)
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = null,
+                            tint = Color(0xFFE91E63),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${category.price} Coin",
+                            color = Color(0xFFE91E63),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+                    }
                 } else if (isSelected && !category.isLocked) {
                     Box(
                         modifier = Modifier

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.spy.ux.components.CounterRow
 import com.example.spy.ux.components.SettingItem
-import com.example.spy.ux.components.ToggleRow
 
 @Composable
 fun SetupScreen(
@@ -135,28 +135,20 @@ fun SetupScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // İpucu Ayarı
+                    // İpucu Ayarı - Güncellenmiş
                     SettingItem(
-                        icon = Icons.Default.Visibility,
+                        icon = if (showHints) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         title = "Imposter İpucu",
                         subtitle = "Imposter'a ipucu gösterilsin mi?",
-                        iconColor =   if(showHints) Color(0xFF4CAF50) else
-                            Color(0xFFF44336) // Green
-
-
-                    ) {
-                        ToggleRow(
-                            isEnabled = showHints,
-                            onToggle = { showHints = it }
-                        )
-                    }
+                        iconColor = if(showHints) Color(0xFF4CAF50) else Color(0xFFF44336), // Green/Red
+                        onIconClick = { showHints = !showHints }
+                    ){}
                 }
             }
 
             Spacer(modifier = Modifier.height(40.dp))
         }
 
-        // Start Button - Fixed at bottom - Temizlenmiş hali
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

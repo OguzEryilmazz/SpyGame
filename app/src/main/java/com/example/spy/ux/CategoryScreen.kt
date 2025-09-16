@@ -3,8 +3,9 @@ package com.example.spy.ux
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,7 +40,8 @@ data class Category(
     val color: Color,
     val items: List<String>,
     val hints: List<String>,
-    val isLocked: Boolean
+    val isLocked: Boolean,
+    val price : Int =0
 )
 
 // Oyuncu ve rol data class'ları
@@ -55,7 +57,8 @@ data class GamePlayer(
 @Composable
 fun CategoryScreen(
     navController: NavController,
-    players: List<Player> = emptyList()
+    players: List<Player> = emptyList(),
+    onCategorySelected: (Category, List<GamePlayer>) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
     val categoryManager = remember { CategoryDataManager(context) }
@@ -189,7 +192,7 @@ fun CategoryScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 80.dp)
+                .padding(bottom = 80.dp , top = 20.dp)
         ) {
             // Top Bar
             Row(
@@ -252,7 +255,7 @@ fun CategoryScreen(
                 }
             }
 
-            // Categories List
+            // Categories Grid - 2x2 Layout
             if (categories.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -265,11 +268,14 @@ fun CategoryScreen(
                     )
                 }
             } else {
-                LazyColumn(
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1), // 2 kolon - yan yana
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
                     items(categories) { category ->
                         CategoryCard(
@@ -280,22 +286,16 @@ fun CategoryScreen(
                                     selectedCategory = if (selectedCategory?.id == category.id) null else category
                                 } else {
                                     // Kategori kilitli - ileride unlock logic'i burada olacak
-
                                 }
                             },
                             onUnlockClick = {
                                 // Unlock functionality - ileride implement edilecek
                                 coroutineScope.launch {
-                                    categoryManager.unlockCategory(category.id)
+                                    categoryManager.purchaseCategory(category.id)
                                     loadCategories() // Kategorileri yeniden yükle
                                 }
                             }
                         )
-                    }
-
-                    // Extra spacing for last item
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -319,7 +319,7 @@ fun CategoryScreen(
             ) {
                 Button(
                     onClick = {
-                        // Oyun başlat - Rolleri ata
+                        // Rolleri ata ve game screen'e callback ile veri gönder
                         val gamePlayers = assignRoles(players, category)
 
                         // Debug için konsola yazdır
@@ -330,8 +330,8 @@ fun CategoryScreen(
                                     if (player.hint != null) " (İpucu: ${player.hint})" else "")
                         }
 
-                        // Game screen'e geç (henüz yok)
-                        // navController.navigate("gameScreen/${category.id}")
+                        // Callback ile veriyi üst bileşene gönder
+                        onCategorySelected(category, gamePlayers)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -351,11 +351,4 @@ fun CategoryScreen(
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun CategoryScreenPreview() {
-    CategoryScreen(navController = rememberNavController())
 }

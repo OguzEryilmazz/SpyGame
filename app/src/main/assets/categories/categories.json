@@ -1,4 +1,5 @@
 {
+  "version": 9,
   "categories": [
     {
       "id": "professions",
@@ -18,7 +19,8 @@
         "Hukuki konularda yardım eder",
         "Sağlık hizmeti verir"
       ],
-      "isLocked": false
+      "isLocked": true,
+      "price": 80
     },
     {
       "id": "foods",
@@ -37,121 +39,8 @@
         "Mutfakta yapılır",
         "Doyurucu"
       ],
-      "isLocked": false
-    },
-    {
-      "id": "places",
-      "name": "Yerler",
-      "iconName": "place",
-      "colorHex": "#4CAF50",
-      "items": [
-        "Hastane", "Okul", "Market", "Restoran", "Sinema",
-        "Park", "Kütüphane", "Müze", "Plaj", "Dağ",
-        "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı"
-      ],
-      "hints": [
-        "İnsanlar buraya belirli ihtiyaçları için gelir",
-        "Sosyal aktivite yapılan yer",
-        "Hizmet verilen mekan",
-        "Toplanma alanı",
-        "Ziyaret edilen yer"
-      ],
-      "isLocked": true
-    },
-    {
-      "id": "animals",
-      "name": "Hayvanlar",
-      "iconName": "pets",
-      "colorHex": "#FF9800",
-      "items": [
-        "Kedi", "Köpek", "Kuş", "Balık", "At",
-        "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
-        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan"
-      ],
-      "hints": [
-        "Canlı bir varlık",
-        "Doğada yaşar",
-        "Hareket edebilir",
-        "Beslenme ihtiyacı var",
-        "Nefes alır"
-      ],
-      "isLocked": true
-    },
-    {
-      "id": "movies",
-      "name": "Filmler",
-      "iconName": "movie",
-      "colorHex": "#9C27B0",
-      "items": [
-        "Titanic", "Avatar", "Inception", "Matrix", "Star Wars",
-        "Lord of the Rings", "Harry Potter", "Marvel Filmleri", "Batman", "Superman",
-        "Jurassic Park", "Fast and Furious", "Mission Impossible", "James Bond", "Transformers"
-      ],
-      "hints": [
-        "Sinema eseri",
-        "Hikaye anlatır",
-        "İzlenir",
-        "Görsel eğlence",
-        "Oyuncular var"
-      ],
-      "isLocked": true
-    },
-    {
-      "id": "sports",
-      "name": "Sporlar",
-      "iconName": "sports",
-      "colorHex": "#FF5722",
-      "items": [
-        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
-        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
-        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş"
-      ],
-      "hints": [
-        "Fiziksel aktivite",
-        "Rekabet içerir",
-        "Sağlıklı yaşam",
-        "Takım veya bireysel olabilir",
-        "Antrenman gerektirir"
-      ],
-      "isLocked": true
-    },
-    {
-      "id": "objects",
-      "name": "Eşyalar",
-      "iconName": "home",
-      "colorHex": "#795548",
-      "items": [
-        "Telefon", "Bilgisayar", "Araba", "Kitap", "Kalem",
-        "Çanta", "Saat", "Gözlük", "Ayna", "Lamba",
-        "Televizyon", "Buzdolabı", "Masa", "Sandalye", "Yatak"
-      ],
-      "hints": [
-        "Kullanılan araç",
-        "İhtiyaç duyulan",
-        "Ev veya ofiste bulunur",
-        "İnsan yapımı",
-        "Pratik fayda sağlar"
-      ],
-      "isLocked": true
-    },
-    {
-      "id": "music",
-      "name": "Müzik",
-      "iconName": "music",
-      "colorHex": "#E91E63",
-      "items": [
-        "Pop", "Rock", "Jazz", "Klasik", "Hip Hop",
-        "Elektronik", "Folk", "Blues", "Reggae", "Country",
-        "R&B", "Funk", "Punk", "Metal", "Rap"
-      ],
-      "hints": [
-        "Dinlenir",
-        "Ritim var",
-        "Duygu aktarır",
-        "Enstrüman ile çalınır",
-        "Melodi içerir"
-      ],
-      "isLocked": true
+      "isLocked": false,
+      "price": 0
     },
     {
       "id": "fruits",
@@ -170,26 +59,8 @@
         "Tatlıdır",
         "Vitamin içerir"
       ],
-      "isLocked": false
-    },
-    {
-      "id": "vehicles",
-      "name": "Taşıtlar",
-      "iconName": "directions_car",
-      "colorHex": "#3F51B5",
-      "items": [
-        "Araba", "Otobüs", "Kamyon", "Motorsiklet", "Bisiklet",
-        "Tren", "Uçak", "Gemi", "Traktör", "Metrobüs",
-        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi"
-      ],
-      "hints": [
-        "Ulaşım aracı",
-        "Taşımak için kullanılır",
-        "Tekerlekli veya raylı olabilir",
-        "Motor gücüyle çalışır",
-        "İnsanları veya yükleri taşır"
-      ],
-      "isLocked": true
+      "isLocked": false,
+      "price": 0
     },
     {
       "id": "colors",
@@ -208,7 +79,128 @@
         "Sanatta önemlidir",
         "Doğada çeşitlidir"
       ],
-      "isLocked": false
+      "isLocked": false,
+      "price": 0
+    },
+    {
+      "id": "places",
+      "name": "Yerler",
+      "iconName": "place",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Hastane", "Okul", "Market", "Restoran", "Sinema",
+        "Park", "Kütüphane", "Müze", "Plaj", "Dağ",
+        "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı"
+      ],
+      "hints": [
+        "İnsanlar buraya belirli ihtiyaçları için gelir",
+        "Sosyal aktivite yapılan yer",
+        "Hizmet verilen mekan",
+        "Toplanma alanı",
+        "Ziyaret edilen yer"
+      ],
+      "isLocked": true,
+      "price": 50
+    },
+    {
+      "id": "animals",
+      "name": "Hayvanlar",
+      "iconName": "pets",
+      "colorHex": "#FF9800",
+      "items": [
+        "Kedi", "Köpek", "Kuş", "Balık", "At",
+        "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
+        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan"
+      ],
+      "hints": [
+        "Canlı bir varlık",
+        "Doğada yaşar",
+        "Hareket edebilir",
+        "Beslenme ihtiyacı var",
+        "Nefes alır"
+      ],
+      "isLocked": true,
+      "price": 50
+    },
+    {
+      "id": "movies",
+      "name": "Filmler",
+      "iconName": "movie",
+      "colorHex": "#9C27B0",
+      "items": [
+        "Titanic", "Avatar", "Inception", "Matrix", "Star Wars",
+        "Lord of the Rings", "Harry Potter", "Marvel Filmleri", "Batman", "Superman",
+        "Jurassic Park", "Fast and Furious", "Mission Impossible", "James Bond", "Transformers"
+      ],
+      "hints": [
+        "Sinema eseri",
+        "Hikaye anlatır",
+        "İzlenir",
+        "Görsel eğlence",
+        "Oyuncular var"
+      ],
+      "isLocked": true,
+      "price": 75
+    },
+    {
+      "id": "sports",
+      "name": "Sporlar",
+      "iconName": "sports",
+      "colorHex": "#FF5722",
+      "items": [
+        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
+        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
+        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş"
+      ],
+      "hints": [
+        "Fiziksel aktivite",
+        "Rekabet içerir",
+        "Sağlıklı yaşam",
+        "Takım veya bireysel olabilir",
+        "Antrenman gerektirir"
+      ],
+      "isLocked": true,
+      "price": 75
+    },
+    {
+      "id": "music",
+      "name": "Müzik",
+      "iconName": "music",
+      "colorHex": "#E91E63",
+      "items": [
+        "Pop", "Rock", "Jazz", "Klasik", "Hip Hop",
+        "Elektronik", "Folk", "Blues", "Reggae", "Country",
+        "R&B", "Funk", "Punk", "Metal", "Rap"
+      ],
+      "hints": [
+        "Dinlenir",
+        "Ritim var",
+        "Duygu aktarır",
+        "Enstrüman ile çalınır",
+        "Melodi içerir"
+      ],
+      "isLocked": true,
+      "price": 100
+    },
+    {
+      "id": "vehicles",
+      "name": "Taşıtlar",
+      "iconName": "directions_car",
+      "colorHex": "#3F51B5",
+      "items": [
+        "Araba", "Otobüs", "Kamyon", "Motorsiklet", "Bisiklet",
+        "Tren", "Uçak", "Gemi", "Traktör", "Metrobüs",
+        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi"
+      ],
+      "hints": [
+        "Ulaşım aracı",
+        "Taşımak için kullanılır",
+        "Tekerlekli veya raylı olabilir",
+        "Motor gücüyle çalışır",
+        "İnsanları veya yükleri taşır"
+      ],
+      "isLocked": true,
+      "price": 150
     },
     {
       "id": "games",
@@ -227,7 +219,8 @@
         "Zaman geçirmenizi sağlar",
         "Masa oyunu veya dijital olabilir"
       ],
-      "isLocked": true
+      "isLocked": true,
+      "price": 200
     }
   ]
 }

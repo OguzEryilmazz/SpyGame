@@ -1,6 +1,7 @@
 package com.example.spy.ux.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ fun SettingItem(
     title: String,
     subtitle: String,
     iconColor: Color,
+    onIconClick: (() -> Unit)? = null, // İkon tıklanabilir olması için
     content: @Composable () -> Unit
 ) {
     Column {
@@ -48,7 +50,14 @@ fun SettingItem(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(iconColor),
+                    .background(iconColor)
+                    .then(
+                        if (onIconClick != null) {
+                            Modifier.clickable { onIconClick() }
+                        } else {
+                            Modifier
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

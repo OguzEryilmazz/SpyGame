@@ -25,46 +25,63 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ca
 
 @Stable
 class CategoryDataManager(private val context: Context) {
-    private val currentVersion = 3
+    private val gson = Gson()
 
     companion object {
         private val VERSION_KEY = intPreferencesKey("category_version")
         private val CATEGORIES_KEY = stringPreferencesKey("categories_json")
+        private val USER_PREFERENCES_KEY = stringPreferencesKey("user_preferences")
     }
 
     suspend fun getCategories(): List<Category> {
         return withContext(Dispatchers.IO) {
-            val savedVersion = context.dataStore.data.map { preferences ->
-                preferences[VERSION_KEY] ?: 0
-            }.first()
+            val bundledData = loadBundledCategoryData()
+            val savedVersion = getSavedVersion()
+            val bundledVersion = bundledData.version
 
-            if (savedVersion < currentVersion) {
-                val bundledCategories = loadBundledCategories()
-                saveCategories(bundledCategories)
-                bundledCategories
+            // Version kontrolü
+            if (savedVersion < bundledVersion) {
+                // Yeni versiyon varsa bundle'dan yükle ve kaydet
+                val updatedCategories = mergeCategoriesWithUserPreferences(
+                    bundledCategories = bundledData.categories,
+                    userPreferences = getUserPreferences()
+                )
+                saveCategories(updatedCategories, bundledVersion)
+                updatedCategories
             } else {
                 // Mevcut versiyon güncel, DataStore'dan yükle
                 loadSavedCategories() ?: run {
                     // Eğer kayıtlı veri yoksa bundle'dan yükle
-                    val bundledCategories = loadBundledCategories()
-                    saveCategories(bundledCategories)
-                    bundledCategories
+                    val updatedCategories = mergeCategoriesWithUserPreferences(
+                        bundledCategories = bundledData.categories,
+                        userPreferences = getUserPreferences()
+                    )
+                    saveCategories(updatedCategories, bundledVersion)
+                    updatedCategories
                 }
             }
         }
     }
 
-    private fun loadBundledCategories(): List<Category> {
+    private suspend fun getSavedVersion(): Int {
+        return context.dataStore.data.map { preferences ->
+            preferences[VERSION_KEY] ?: 0
+        }.first()
+    }
+
+    private fun loadBundledCategoryData(): BundledCategoryData {
         return try {
-            val jsonString = context.assets.open("categories/categories_v$currentVersion.json")
+            val jsonString = context.assets.open("categories/categories.json")
                 .bufferedReader().use { it.readText() }
 
-            val gson = Gson()
-            val categoryData = gson.fromJson(jsonString, CategoryData::class.java)
-            categoryData.categories.map { it.toCategory() }
+            gson.fromJson(jsonString, BundledCategoryData::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
-            getDefaultCategories()
+            // Fallback data
+            BundledCategoryData(
+                version = 1,
+                categories = getDefaultCategories().map { CategoryDto.fromCategory(it) }
+            )
         }
     }
 
@@ -74,7 +91,6 @@ class CategoryDataManager(private val context: Context) {
                 preferences[CATEGORIES_KEY]
             }.first() ?: return null
 
-            val gson = Gson()
             val categoryData = gson.fromJson(jsonString, CategoryData::class.java)
             categoryData.categories.map { it.toCategory() }
         } catch (e: Exception) {
@@ -83,23 +99,88 @@ class CategoryDataManager(private val context: Context) {
         }
     }
 
-    private suspend fun saveCategories(categories: List<Category>) {
+    private suspend fun saveCategories(categories: List<Category>, version: Int) {
         val categoryData = CategoryData(categories.map { CategoryDto.fromCategory(it) })
-        val gson = Gson()
         val jsonString = gson.toJson(categoryData)
 
         context.dataStore.edit { preferences ->
             preferences[CATEGORIES_KEY] = jsonString
-            preferences[VERSION_KEY] = currentVersion
+            preferences[VERSION_KEY] = version
         }
     }
 
-    // Kullanıcının kilidi açtığı kategorileri kaydet
-    suspend fun unlockCategory(categoryId: String) {
-        withContext(Dispatchers.IO) {
-            val categories = getCategories()
+    // Kullanıcı tercihlerini yükle
+    suspend fun getUserPreferences(): UserPreferences {
+        return try {
+            val jsonString = context.dataStore.data.map { preferences ->
+                preferences[USER_PREFERENCES_KEY]
+            }.first()
 
-            // İlgili kategoriyi bul ve kilidini aç
+            if (jsonString != null) {
+                gson.fromJson(jsonString, UserPreferences::class.java)
+            } else {
+                // Bundle'dan default user preferences yükle
+                loadBundledUserPreferences()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            UserPreferences()
+        }
+    }
+
+    private fun loadBundledUserPreferences(): UserPreferences {
+        return try {
+            val jsonString = context.assets.open("preferences/user_preferences.json")
+                .bufferedReader().use { it.readText() }
+
+            gson.fromJson(jsonString, UserPreferences::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            UserPreferences()
+        }
+    }
+
+    // Kullanıcı tercihlerini kaydet
+    private suspend fun saveUserPreferences(userPreferences: UserPreferences) {
+        val jsonString = gson.toJson(userPreferences)
+        context.dataStore.edit { preferences ->
+            preferences[USER_PREFERENCES_KEY] = jsonString
+        }
+    }
+
+    // Bundle kategorileri ile kullanıcı tercihlerini birleştir
+    private suspend fun mergeCategoriesWithUserPreferences(
+        bundledCategories: List<CategoryDto>,
+        userPreferences: UserPreferences
+    ): List<Category> {
+        return bundledCategories.map { bundledCategory ->
+            val category = bundledCategory.toCategory()
+
+            // Kullanıcı tercihlerine göre isLocked durumunu güncelle
+            val isLocked = if (userPreferences.unlockedCategories.contains(bundledCategory.id)) {
+                false // Kullanıcı kilidi açmış
+            } else {
+                bundledCategory.isLocked // Bundle'daki orijinal durum
+            }
+
+            category.copy(isLocked = isLocked)
+        }
+    }
+
+    // Kategori satın al / kilidi aç
+    suspend fun purchaseCategory(categoryId: String) {
+        withContext(Dispatchers.IO) {
+            val userPreferences = getUserPreferences()
+
+            if (!userPreferences.unlockedCategories.contains(categoryId)) {
+                val updatedPreferences = userPreferences.copy(
+                    unlockedCategories = userPreferences.unlockedCategories + categoryId
+                )
+                saveUserPreferences(updatedPreferences)
+            }
+
+            // Kategorileri yeniden yükle ve kaydet
+            val categories = getCategories()
             val updatedCategories = categories.map { category ->
                 if (category.id == categoryId) {
                     category.copy(isLocked = false)
@@ -107,9 +188,72 @@ class CategoryDataManager(private val context: Context) {
                     category
                 }
             }
+            saveCategories(updatedCategories, getSavedVersion())
+        }
+    }
 
-            // Güncellenen kategorileri kaydet
-            saveCategories(updatedCategories)
+    // Favorilere ekle/çıkar
+    suspend fun toggleFavorite(categoryId: String) {
+        withContext(Dispatchers.IO) {
+            val userPreferences = getUserPreferences()
+            val updatedFavorites = if (userPreferences.favorites.contains(categoryId)) {
+                userPreferences.favorites - categoryId
+            } else {
+                userPreferences.favorites + categoryId
+            }
+
+            val updatedPreferences = userPreferences.copy(favorites = updatedFavorites)
+            saveUserPreferences(updatedPreferences)
+        }
+    }
+
+    // Son kullanılan kategoriyi güncelle
+    suspend fun updateLastUsed(categoryId: String) {
+        withContext(Dispatchers.IO) {
+            val userPreferences = getUserPreferences()
+            val updatedLastUsed = listOf(categoryId) +
+                    (userPreferences.lastUsed - categoryId).take(4) // Son 5 kategoriyi tut
+
+            val updatedPreferences = userPreferences.copy(lastUsed = updatedLastUsed)
+            saveUserPreferences(updatedPreferences)
+        }
+    }
+
+    // Filtrelenmiş kategorileri getir
+    suspend fun getCategoriesFiltered(
+        showOnlyFavorites: Boolean = false,
+        showOnlyUnlocked: Boolean = false
+    ): List<Category> {
+        val allCategories = getCategories()
+        val userPreferences = getUserPreferences()
+
+        return allCategories.filter { category ->
+            val passesLockedFilter = if (showOnlyUnlocked) !category.isLocked else true
+            val passesFavoriteFilter = if (showOnlyFavorites) {
+                userPreferences.favorites.contains(category.id)
+            } else true
+
+            passesLockedFilter && passesFavoriteFilter
+        }
+    }
+
+    // Son kullanılan kategorileri getir
+    suspend fun getRecentCategories(): List<Category> {
+        val userPreferences = getUserPreferences()
+        val allCategories = getCategories()
+
+        return userPreferences.lastUsed.mapNotNull { categoryId ->
+            allCategories.find { it.id == categoryId }
+        }
+    }
+
+    // Favori kategorileri getir
+    suspend fun getFavoriteCategories(): List<Category> {
+        val userPreferences = getUserPreferences()
+        val allCategories = getCategories()
+
+        return userPreferences.favorites.mapNotNull { categoryId ->
+            allCategories.find { it.id == categoryId }
         }
     }
 
@@ -120,7 +264,7 @@ class CategoryDataManager(private val context: Context) {
             val updatedCategories = categories.map { category ->
                 if (category.id == updatedCategory.id) updatedCategory else category
             }
-            saveCategories(updatedCategories)
+            saveCategories(updatedCategories, getSavedVersion())
         }
     }
 
@@ -131,14 +275,44 @@ class CategoryDataManager(private val context: Context) {
                 preferences.remove(CATEGORIES_KEY)
                 preferences.remove(VERSION_KEY)
             }
-            // Yeniden yükleme getCategories() çağrıldığında otomatik olacak
+        }
+    }
+
+    // Kullanıcı tercihlerini sıfırla
+    suspend fun resetUserPreferences() {
+        withContext(Dispatchers.IO) {
+            context.dataStore.edit { preferences ->
+                preferences.remove(USER_PREFERENCES_KEY)
+            }
+        }
+    }
+
+    // Her şeyi sıfırla
+    suspend fun resetAll() {
+        withContext(Dispatchers.IO) {
+            context.dataStore.edit { preferences ->
+                preferences.remove(CATEGORIES_KEY)
+                preferences.remove(VERSION_KEY)
+                preferences.remove(USER_PREFERENCES_KEY)
+            }
         }
     }
 }
 
 // JSON için Data Transfer Objects
+data class BundledCategoryData(
+    val version: Int,
+    val categories: List<CategoryDto>
+)
+
 data class CategoryData(
     val categories: List<CategoryDto>
+)
+
+data class UserPreferences(
+    val favorites: List<String> = emptyList(),
+    val lastUsed: List<String> = emptyList(),
+    val unlockedCategories: List<String> = emptyList()
 )
 
 data class CategoryDto(
@@ -148,7 +322,8 @@ data class CategoryDto(
     val colorHex: String,
     val items: List<String>,
     val hints: List<String>,
-    val isLocked: Boolean
+    val isLocked: Boolean,
+    val price: Int = 0 // Kategori fiyatı (0 = ücretsiz)
 ) {
     fun toCategory(): Category {
         return Category(
@@ -158,7 +333,8 @@ data class CategoryDto(
             color = Color(android.graphics.Color.parseColor(colorHex)),
             items = items,
             hints = hints,
-            isLocked = isLocked
+            isLocked = isLocked,
+            price = price
         )
     }
 
@@ -171,7 +347,8 @@ data class CategoryDto(
                 colorHex = "#${Integer.toHexString(category.color.toArgb()).substring(2).uppercase()}",
                 items = category.items,
                 hints = category.hints,
-                isLocked = category.isLocked
+                isLocked = category.isLocked,
+                price = category.price
             )
         }
     }
@@ -186,17 +363,18 @@ private fun getIconByName(iconName: String): ImageVector {
         "sports" -> Icons.Default.Sports
         "movie" -> Icons.Default.Movie
         "school" -> Icons.Default.School
-        "car" -> Icons.Default.DirectionsCar
+        "directions_car" -> Icons.Default.DirectionsCar
         "music" -> Icons.Default.MusicNote
-        "game" -> Icons.Default.SportsEsports
-        "travel" -> Icons.Default.Flight
+        "sports_esports" -> Icons.Default.SportsEsports
+        "flight" -> Icons.Default.Flight
         "book" -> Icons.Default.MenuBook
-        "art" -> Icons.Default.Brush
-        "tech" -> Icons.Default.Computer
+        "brush" -> Icons.Default.Brush
+        "computer" -> Icons.Default.Computer
         "nature" -> Icons.Default.Nature
-        "shopping" -> Icons.Default.ShoppingCart
+        "shopping_cart" -> Icons.Default.ShoppingCart
         "pets" -> Icons.Default.Pets
         "place" -> Icons.Default.Place
+        "palette" -> Icons.Default.Palette
         else -> Icons.Default.Category
     }
 }
@@ -209,17 +387,18 @@ private fun getIconName(icon: ImageVector): String {
         Icons.Default.Sports -> "sports"
         Icons.Default.Movie -> "movie"
         Icons.Default.School -> "school"
-        Icons.Default.DirectionsCar -> "car"
+        Icons.Default.DirectionsCar -> "directions_car"
         Icons.Default.MusicNote -> "music"
-        Icons.Default.SportsEsports -> "game"
-        Icons.Default.Flight -> "travel"
+        Icons.Default.SportsEsports -> "sports_esports"
+        Icons.Default.Flight -> "flight"
         Icons.Default.MenuBook -> "book"
-        Icons.Default.Brush -> "art"
-        Icons.Default.Computer -> "tech"
+        Icons.Default.Brush -> "brush"
+        Icons.Default.Computer -> "computer"
         Icons.Default.Nature -> "nature"
-        Icons.Default.ShoppingCart -> "shopping"
+        Icons.Default.ShoppingCart -> "shopping_cart"
         Icons.Default.Pets -> "pets"
         Icons.Default.Place -> "place"
+        Icons.Default.Palette -> "palette"
         else -> "category"
     }
 }
@@ -234,14 +413,11 @@ private fun getDefaultCategories(): List<Category> {
             color = Color(0xFF2196F3),
             items = listOf(
                 "Doktor", "Öğretmen", "Mühendis", "Avukat", "Hemşire",
-                "Polis", "İtfaiyeci", "Pilot", "Şoför", "Aşçı",
-                "Berber", "Terzi", "Elektrikçi", "Teknisyen", "Satış Danışmanı"
+                "Polis", "İtfaiyeci", "Pilot", "Şoför", "Aşçı"
             ),
-            hints = listOf(
-                "İnsanlara yardım eder", "Eğitim verir", "Teknik işler yapar",
-                "Hukuki konularda yardım eder", "Sağlık hizmeti verir"
-            ),
-            isLocked = false
+            hints = listOf("İnsanlara yardım eder", "Eğitim verir"),
+            isLocked = false,
+            price = 0
         ),
         Category(
             id = "foods",
@@ -249,14 +425,11 @@ private fun getDefaultCategories(): List<Category> {
             icon = Icons.Default.Restaurant,
             color = Color(0xFFE91E63),
             items = listOf(
-                "Pizza", "Hamburger", "Makarna", "Pilav", "Çorba",
-                "Salata", "Kebap", "Döner", "Lahmacun", "Börek",
-                "Tost", "Sandviç", "Omlet", "Pancake", "Waffle"
+                "Pizza", "Hamburger", "Makarna", "Pilav", "Çorba"
             ),
-            hints = listOf(
-                "Beslenme için tüketilir", "Lezzetli", "Hazırlanması gerekir"
-            ),
-            isLocked = false
+            hints = listOf("Beslenme için tüketilir", "Lezzetli"),
+            isLocked = false,
+            price = 0
         )
     )
 }
