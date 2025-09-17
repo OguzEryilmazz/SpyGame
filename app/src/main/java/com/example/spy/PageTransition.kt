@@ -93,5 +93,9 @@ fun PageTransition() {
                 showHints = showHints
             )
         }
+
+        composable("timerScreen") {
+            TimerScreen(navController ,gameDuration)
+        }
     }
 }

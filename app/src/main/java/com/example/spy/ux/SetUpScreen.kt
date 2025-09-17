@@ -107,7 +107,7 @@ fun SetupScreen(
                                 if (playerCount > 3) playerCount--
                             },
                             onIncrease = {
-                                if (playerCount < 10) playerCount++
+                                if (playerCount < 9) playerCount++
                             }
                         )
                     }

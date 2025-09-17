@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "categories": [
     {
       "id": "professions",
@@ -10,17 +10,22 @@
         "Doktor", "Öğretmen", "Mühendis", "Avukat", "Hemşire",
         "Polis", "İtfaiyeci", "Pilot", "Şoför", "Aşçı",
         "Berber", "Terzi", "Elektrikçi", "Teknisyen", "Satış Danışmanı",
-        "Veteriner", "Eczacı", "Diyetisyen", "Psikolog", "Fizyoterapist"
+        "Veteriner", "Eczacı", "Diyetisyen", "Psikolog", "Fizyoterapist",
+        "Muhasebeci", "Mimar", "Gazeteci", "Fotoğrafçı", "Ressam",
+        "Müzisyen", "Oyuncu", "Dansçı", "Çiftçi", "Tamirci",
+        "Kuaför", "Güvenlik Görevlisi", "Temizlik Görevlisi", "Garson", "Barista"
       ],
       "hints": [
-        "İnsanlara yardım eder",
-        "Eğitim verir",
-        "Teknik işler yapar",
-        "Hukuki konularda yardım eder",
-        "Sağlık hizmeti verir"
+        "Çalışma hayatı",
+        "Maaş alır",
+        "İş yeri",
+        "CV yazılır",
+        "Kariyer",
+        "Mesai saati",
+        "İşe alım"
       ],
-      "isLocked": true,
-      "price": 80
+      "isLocked": false,
+      "price": 0
     },
     {
       "id": "foods",
@@ -30,14 +35,19 @@
       "items": [
         "Pizza", "Hamburger", "Makarna", "Pilav", "Çorba",
         "Salata", "Kebap", "Döner", "Lahmacun", "Börek",
-        "Tost", "Sandviç", "Omlet", "Pancake", "Waffle"
+        "Tost", "Sandviç", "Omlet", "Pancake", "Waffle",
+        "Sushi", "Ramen", "Biryani", "Falafel", "Tacos",
+        "Burrito", "Köfte", "Dolma", "Mantı", "Gözleme",
+        "Pide", "İskender", "Adana Kebap", "Şiş Kebap", "Tavuk Döner"
       ],
       "hints": [
-        "Beslenme için tüketilir",
-        "Lezzetli",
-        "Hazırlanması gerekir",
-        "Mutfakta yapılır",
-        "Doyurucu"
+        "Açlık giderir",
+        "Restoran menüsü",
+        "Tarifi var",
+        "Mutfakta hazırlanır",
+        "Tabakta servis",
+        "Kalori içerir",
+        "Lezzet var"
       ],
       "isLocked": false,
       "price": 0
@@ -50,14 +60,18 @@
       "items": [
         "Elma", "Armut", "Muz", "Çilek", "Karpuz",
         "Üzüm", "Portakal", "Mandalina", "Kiraz", "Ananas",
-        "Kivi", "Mango", "Nar", "İncir", "Hurma"
+        "Kivi", "Mango", "Nar", "İncir", "Hurma",
+        "Kavun", "Şeftali", "Erik", "Kayısı", "Avokado",
+        "Limon", "Greyfurt", "Böğürtlen", "Ahududa", "Dut"
       ],
       "hints": [
-        "Doğada yetişir",
-        "Yenilebilir",
-        "Sağlıklıdır",
-        "Tatlıdır",
-        "Vitamin içerir"
+        "Ağaçta yetişir",
+        "Çiğ yenir",
+        "Vitamin deposu",
+        "Genellikle tatlı",
+        "Bahçede bulunur",
+        "Meyve suyu",
+        "Organik olabilir"
       ],
       "isLocked": false,
       "price": 0
@@ -70,17 +84,71 @@
       "items": [
         "Kırmızı", "Mavi", "Yeşil", "Sarı", "Turuncu",
         "Mor", "Pembe", "Beyaz", "Siyah", "Gri",
-        "Kahverengi", "Lacivert", "Turkuaz", "Altın", "Gümüş"
+        "Kahverengi", "Lacivert", "Turkuaz", "Altın", "Gümüş",
+        "Bordo", "Krem", "Bej", "Koyu Mavi", "Açık Yeşil"
       ],
       "hints": [
+        "Gökkuşağında var",
         "Gözle görülür",
-        "Her yerde bulunur",
-        "Işıkla ilgilidir",
-        "Sanatta önemlidir",
-        "Doğada çeşitlidir"
+        "Boyalar arasında",
+        "Sanat eserinde",
+        "Işık spektrumu",
+        "Duvarları süsler",
+        "Tasarımda önemli"
       ],
       "isLocked": false,
       "price": 0
+    },
+    {
+      "id": "athletes",
+      "name": "Sporcular",
+      "iconName": "sports",
+      "colorHex": "#FF5722",
+      "items": [
+        "Messi", "Ronaldo", "Haaland", "Mbappé", "Neymar",
+        "Benzema", "Lewandowski", "Modric", "De Bruyne", "Salah",
+        "Serena Williams", "Rafael Nadal", "Novak Djokovic", "Roger Federer",
+        "LeBron James", "Stephen Curry", "Michael Jordan", "Kobe Bryant",
+        "Usain Bolt", "Michael Phelps", "Lewis Hamilton", "Max Verstappen",
+        "Burak Yılmaz", "Hakan Çalhanoğlu", "Merih Demiral", "Cengiz Ünder",
+        "Naim Süleymanoğlu", "Hidayet Türkoğlu", "Semih Erden", "İlhan Mansız"
+      ],
+      "hints": [
+        "Müsabaka yapar",
+        "Madalya kazanır",
+        "Stadyumda görülür",
+        "Forma giyer",
+        "Olimpiyatlarda var",
+        "Antrenörü var",
+        "Canlı yayınlanır"
+      ],
+      "isLocked": true,
+      "price": 75
+    },
+    {
+      "id": "singers",
+      "name": "Şarkıcılar",
+      "iconName": "music",
+      "colorHex": "#E91E63",
+      "items": [
+        "Tarkan", "Sezen Aksu", "Ajda Pekkan", "Barış Manço", "Cem Karaca",
+        "Sertab Erener", "Kenan Doğulu", "Mustafa Sandal", "Hadise", "Demet Akalın",
+        "Gülben Ergen", "Sibel Can", "İbrahim Tatlıses", "Müslüm Gürses", "Orhan Gencebay",
+        "Taylor Swift", "Ed Sheeran", "Adele", "Beyoncé", "Rihanna",
+        "Justin Bieber", "The Weeknd", "Dua Lipa", "Ariana Grande", "Bruno Mars",
+        "Eminem", "Drake", "Kanye West", "Jay-Z", "Kendrick Lamar"
+      ],
+      "hints": [
+        "Mikrofon kullanır",
+        "Sahne alır",
+        "Konser verir",
+        "Albümü var",
+        "Klip çeker",
+        "Müzik ödülü",
+        "Radyoda çalar"
+      ],
+      "isLocked": true,
+      "price": 75
     },
     {
       "id": "places",
@@ -90,14 +158,18 @@
       "items": [
         "Hastane", "Okul", "Market", "Restoran", "Sinema",
         "Park", "Kütüphane", "Müze", "Plaj", "Dağ",
-        "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı"
+        "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı",
+        "Banka", "Postane", "Eczane", "Benzin İstasyonu", "Otobüs Durağı",
+        "Alışveriş Merkezi", "Tiyatro", "Konser Salonu", "Stadyum", "Camii"
       ],
       "hints": [
-        "İnsanlar buraya belirli ihtiyaçları için gelir",
-        "Sosyal aktivite yapılan yer",
-        "Hizmet verilen mekan",
-        "Toplanma alanı",
-        "Ziyaret edilen yer"
+        "Harita üzerinde",
+        "Adres sahibi",
+        "Ziyaret edilir",
+        "Şehir planında",
+        "GPS görür",
+        "Çalışma saati",
+        "Konum belirtir"
       ],
       "isLocked": true,
       "price": 50
@@ -110,77 +182,21 @@
       "items": [
         "Kedi", "Köpek", "Kuş", "Balık", "At",
         "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
-        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan"
+        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan",
+        "Kartal", "Papağan", "Köpekbalığı", "Yunus", "Penguen",
+        "Zürafa", "Hipopotam", "Kaplumbağa", "Kurbağa", "Yılan"
       ],
       "hints": [
-        "Canlı bir varlık",
-        "Doğada yaşar",
-        "Hareket edebilir",
-        "Beslenme ihtiyacı var",
+        "Canlı varlık",
+        "Doğal yaşam",
+        "Hareket eder",
+        "Beslenme ihtiyacı",
+        "Evcil veya vahşi",
+        "Çeşitli türler",
         "Nefes alır"
       ],
       "isLocked": true,
       "price": 50
-    },
-    {
-      "id": "movies",
-      "name": "Filmler",
-      "iconName": "movie",
-      "colorHex": "#9C27B0",
-      "items": [
-        "Titanic", "Avatar", "Inception", "Matrix", "Star Wars",
-        "Lord of the Rings", "Harry Potter", "Marvel Filmleri", "Batman", "Superman",
-        "Jurassic Park", "Fast and Furious", "Mission Impossible", "James Bond", "Transformers"
-      ],
-      "hints": [
-        "Sinema eseri",
-        "Hikaye anlatır",
-        "İzlenir",
-        "Görsel eğlence",
-        "Oyuncular var"
-      ],
-      "isLocked": true,
-      "price": 75
-    },
-    {
-      "id": "sports",
-      "name": "Sporlar",
-      "iconName": "sports",
-      "colorHex": "#FF5722",
-      "items": [
-        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
-        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
-        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş"
-      ],
-      "hints": [
-        "Fiziksel aktivite",
-        "Rekabet içerir",
-        "Sağlıklı yaşam",
-        "Takım veya bireysel olabilir",
-        "Antrenman gerektirir"
-      ],
-      "isLocked": true,
-      "price": 75
-    },
-    {
-      "id": "music",
-      "name": "Müzik",
-      "iconName": "music",
-      "colorHex": "#E91E63",
-      "items": [
-        "Pop", "Rock", "Jazz", "Klasik", "Hip Hop",
-        "Elektronik", "Folk", "Blues", "Reggae", "Country",
-        "R&B", "Funk", "Punk", "Metal", "Rap"
-      ],
-      "hints": [
-        "Dinlenir",
-        "Ritim var",
-        "Duygu aktarır",
-        "Enstrüman ile çalınır",
-        "Melodi içerir"
-      ],
-      "isLocked": true,
-      "price": 100
     },
     {
       "id": "vehicles",
@@ -190,14 +206,109 @@
       "items": [
         "Araba", "Otobüs", "Kamyon", "Motorsiklet", "Bisiklet",
         "Tren", "Uçak", "Gemi", "Traktör", "Metrobüs",
-        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi"
+        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi",
+        "Ambulans", "İtfaiye Aracı", "Polis Arabası", "Dolmuş", "Minibüs"
       ],
       "hints": [
         "Ulaşım aracı",
-        "Taşımak için kullanılır",
-        "Tekerlekli veya raylı olabilir",
-        "Motor gücüyle çalışır",
-        "İnsanları veya yükleri taşır"
+        "Taşıma yapar",
+        "Motor gücü",
+        "Kara, hava, deniz",
+        "Trafik kuralları",
+        "Yakıt gerekir",
+        "Hız yapar"
+      ],
+      "isLocked": true,
+      "price": 100
+    },
+    {
+      "id": "sports",
+      "name": "Sporlar",
+      "iconName": "sports_esports",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
+        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
+        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş",
+        "Atletizm", "Jimnastik", "Eskrim", "Okçuluk", "Halter"
+      ],
+      "hints": [
+        "Fiziksel aktivite",
+        "Rekabet var",
+        "Sağlık kondisyon",
+        "Takım bireysel",
+        "Antrenman gerekir",
+        "Turnuvalar var",
+        "Spor salonu"
+      ],
+      "isLocked": true,
+      "price": 100
+    },
+    {
+      "id": "electronics",
+      "name": "Elektronik Eşyalar",
+      "iconName": "computer",
+      "colorHex": "#607D8B",
+      "items": [
+        "Telefon", "Bilgisayar", "Televizyon", "Tablet", "Laptop",
+        "Kulaklık", "Hoparlör", "Kamera", "Oyun Konsolu", "Akıllı Saat",
+        "Drone", "Robot Süpürge", "Çamaşır Makinesi", "Buzdolabı", "Fırın",
+        "Mikrodalga", "Klima", "Şarj Cihazı", "Powerbank", "Router"
+      ],
+      "hints": [
+        "Elektrik gerekir",
+        "Teknoloji ürünü",
+        "Günlük kullanım",
+        "Dijital özellik",
+        "Modern yaşam",
+        "Sürekli gelişir",
+        "Garanti vardır"
+      ],
+      "isLocked": true,
+      "price": 125
+    },
+    {
+      "id": "clothing",
+      "name": "Giysiler",
+      "iconName": "checkroom",
+      "colorHex": "#E91E63",
+      "items": [
+        "Tişört", "Pantolon", "Elbise", "Ceket", "Gömlek",
+        "Kazak", "Şort", "Etek", "Çorap", "İç Çamaşırı",
+        "Ayakkabı", "Bot", "Terlik", "Sandalet", "Spor Ayakkabı",
+        "Şapka", "Bere", "Eldiven", "Atkı", "Kemer"
+      ],
+      "hints": [
+        "Vücut korur",
+        "Mevsimlik çeşit",
+        "Moda tarz",
+        "Kumaştan yapılır",
+        "Günlük ihtiyaç",
+        "Yıkanabilir",
+        "Giyilir"
+      ],
+      "isLocked": true,
+      "price": 125
+    },
+    {
+      "id": "school_subjects",
+      "name": "Okul Dersleri",
+      "iconName": "school",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Matematik", "Türkçe", "İngilizce", "Fen Bilgisi", "Sosyal Bilgiler",
+        "Tarih", "Coğrafya", "Fizik", "Kimya", "Biyoloji",
+        "Edebiyat", "Felsefe", "Psikoloji", "Sanat", "Müzik",
+        "Beden Eğitimi", "Bilgisayar", "Almanca", "Fransızca", "Geometri"
+      ],
+      "hints": [
+        "Eğitim müfredatı",
+        "Bilgi öğretir",
+        "Öğretmen verir",
+        "Sınav yapılır",
+        "Yaş uyarlama",
+        "Diploma gerekli",
+        "Ders saati"
       ],
       "isLocked": true,
       "price": 150
@@ -210,14 +321,133 @@
       "items": [
         "Satranç", "Dama", "Monopoly", "Scrabble", "Uno",
         "FIFA", "Minecraft", "PUBG", "League of Legends", "Valorant",
-        "Counter-Strike", "Fortnite", "Zula", "Call of Duty", "Among Us"
+        "Counter-Strike", "Fortnite", "Call of Duty", "Among Us", "Roblox",
+        "King", "Okey", "Tavla", "Saklambaç", "Körebe"
       ],
       "hints": [
-        "Eğlencelidir",
-        "Kuralları vardır",
-        "Tek başına veya birlikte oynanır",
-        "Zaman geçirmenizi sağlar",
-        "Masa oyunu veya dijital olabilir"
+        "Eğlence aracı",
+        "Kuralları var",
+        "Tek çok oyuncu",
+        "Strateji şans",
+        "Dijital fiziksel",
+        "Sosyal etkileşim",
+        "Zaman geçirir"
+      ],
+      "isLocked": true,
+      "price": 150
+    },
+    {
+      "id": "books",
+      "name": "Kitap Türleri",
+      "iconName": "book",
+      "colorHex": "#795548",
+      "items": [
+        "Roman", "Hikaye", "Şiir", "Biyografi", "Tarih",
+        "Bilim Kurgu", "Fantastik", "Polisiye", "Gizem", "Macera",
+        "Çocuk Kitabı", "Ders Kitabı", "Sözlük", "Ansiklopedi", "Rehber",
+        "Felsefe", "Psikoloji", "Din", "Sanat", "Yemek Kitabı"
+      ],
+      "hints": [
+        "Okuma materyali",
+        "Bilgi hikaye",
+        "Farklı konular",
+        "Kağıt dijital",
+        "Yazarı var",
+        "Kütüphanede bulunur",
+        "Sayfa sayısı"
+      ],
+      "isLocked": true,
+      "price": 175
+    },
+    {
+      "id": "weather",
+      "name": "Hava Durumu",
+      "iconName": "wb_sunny",
+      "colorHex": "#FFC107",
+      "items": [
+        "Güneşli", "Yağmurlu", "Karlı", "Bulutlu", "Rüzgarlı",
+        "Sıcak", "Soğuk", "Nemli", "Kurak", "Sisli",
+        "Dolu", "Fırtınalı", "Kapalı", "Açık", "Puslu",
+        "Çiseleme", "Sağanak", "Tipi", "Ayaz", "Buzlu"
+      ],
+      "hints": [
+        "Atmosfer koşulu",
+        "Günlük değişir",
+        "Mevsim ilişkisi",
+        "Tahmin yapılır",
+        "Aktivite etkiler",
+        "Sıcaklık nem",
+        "Meteoroloji"
+      ],
+      "isLocked": true,
+      "price": 175
+    },
+    {
+      "id": "emotions",
+      "name": "Duygular",
+      "iconName": "mood",
+      "colorHex": "#E91E63",
+      "items": [
+        "Mutluluk", "Üzüntü", "Kızgınlık", "Korku", "Şaşkınlık",
+        "Merak", "Heyecan", "Kaygı", "Hayal Kırıklığı", "Gurur",
+        "Utanç", "Suçluluk", "Sevgi", "Nefret", "Kıskançlık",
+        "Umut", "Umutsuzluk", "Rahatlık", "Stres", "Huzur"
+      ],
+      "hints": [
+        "İnsan psikolojisi",
+        "Olay tepkisi",
+        "Yüz ifadesi",
+        "Geçici kalıcı",
+        "Davranış etkiler",
+        "Herkes yaşar",
+        "Duygu durumu"
+      ],
+      "isLocked": true,
+      "price": 200
+    },
+    {
+      "id": "household_items",
+      "name": "Ev Eşyaları",
+      "iconName": "home",
+      "colorHex": "#FF9800",
+      "items": [
+        "Masa", "Sandalye", "Yatak", "Dolap", "Koltuk",
+        "Televizyon", "Buzdolabı", "Fırın", "Çamaşır Makinesi", "Bulaşık Makinesi",
+        "Lamba", "Halı", "Perde", "Ayna", "Saat",
+        "Tabak", "Bardak", "Çatal", "Kaşık", "Bıçak"
+      ],
+      "hints": [
+        "Evde kullanılır",
+        "Günlük kolaylaştırır",
+        "Farklı odalarda",
+        "Fonksiyonel dekoratif",
+        "Mobilya alet",
+        "Ev konforu",
+        "Ev içi"
+      ],
+      "isLocked": true,
+      "price": 200
+    },
+    {
+      "id": "countries",
+      "name": "Ülkeler",
+      "iconName": "public",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Türkiye", "Almanya", "Fransa", "İtalya", "İspanya",
+        "Amerika", "İngiltere", "Rusya", "Çin", "Japonya",
+        "Hindistan", "Brezilya", "Avustralya", "Kanada", "Meksika",
+        "Yunanistan", "Mısır", "İsrail", "Suudi Arabistan", "İran",
+        "Hollanda", "Belçika", "İsveç", "Norveç", "Danimarka"
+      ],
+      "hints": [
+        "Coğrafi sınır",
+        "Hükümeti var",
+        "Bayrak simge",
+        "Dil kültür",
+        "Başkent şehir",
+        "Uluslararası ilişki",
+        "Pasaport gerekir"
       ],
       "isLocked": true,
       "price": 200
