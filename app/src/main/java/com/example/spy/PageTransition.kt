@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.spy.ux.*
+import com.example.spy.models.CharacterAvatar // YENİ IMPORT
 
 @Composable
 fun PageTransition() {
@@ -18,6 +19,7 @@ fun PageTransition() {
     var showHints by remember { mutableStateOf(true) }
 
     // Oyuncu verileri - Bu veriler tüm navigation boyunca korunacak
+    // Player data class'ı artık selectedCharacter alanını da içeriyor
     var playersData by remember { mutableStateOf<List<Player>>(emptyList()) }
 
     // Seçilen kategori ve oyun verileri
@@ -55,7 +57,7 @@ fun PageTransition() {
                     navController.popBackStack()
                 },
                 onStartGame = { players ->
-                    // Oyuncu verilerini kaydet ve kategori seçim ekranına geç
+                    // Oyuncu verilerini kaydet (artık karakter seçimi de dahil)
                     playersData = players
                     navController.navigate("categoryScreen")
                 }
@@ -95,7 +97,7 @@ fun PageTransition() {
         }
 
         composable("timerScreen") {
-            TimerScreen(navController ,gameDuration)
+            TimerScreen(navController, gameDuration)
         }
     }
 }

@@ -1,11 +1,20 @@
+// =====================================
+// 3. PLAYERCARD DOSYASINI GÜNCELLEYİN
+// =====================================
+
+// 📁 app/src/main/java/com/example/spy/ux/components/PlayerCard.kt
+// MEVCUT DOSYANIZI TAMAMEN DEĞİŞTİRİN:
+
 package com.example.spy.ux.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,11 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.spy.ux.Player
-
+import com.example.spy.models.CharacterAvatar // YENİ IMPORT
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,8 +54,10 @@ fun PlayerCard(
     player: Player,
     availableColors: List<Color>,
     usedColors: List<Color>,
+    usedCharacters: List<CharacterAvatar> = emptyList(), // YENİ PARAMETRE
     onNameChange: (String) -> Unit,
-    onColorChange: (Color) -> Unit
+    onColorChange: (Color) -> Unit,
+    onCharacterChange: (CharacterAvatar) -> Unit = {} // YENİ PARAMETRE
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -56,7 +69,7 @@ fun PlayerCard(
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-            // Player Header
+            // Player Header - GÜNCELLENDİ
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -68,12 +81,22 @@ fun PlayerCard(
                         .background(player.selectedColor),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    // Karakter seçilmişse onu göster, yoksa ikon göster
+                    if (player.selectedCharacter != null) {
+                        Image(
+                            painter = painterResource(id = player.selectedCharacter!!.drawableRes),
+                            contentDescription = "Karakter ${player.selectedCharacter!!.ordinal + 1}",
+                            modifier = Modifier.size(40.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -88,7 +111,7 @@ fun PlayerCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Name Input
+            // Name Input (aynı kalacak)
             OutlinedTextField(
                 value = player.name,
                 onValueChange = onNameChange,
@@ -114,7 +137,7 @@ fun PlayerCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Color Selection
+            // Color Selection (aynı kalacak)
             Text(
                 text = "Renk Seç:",
                 fontSize = 16.sp,
@@ -159,6 +182,61 @@ fun PlayerCard(
                                     .size(20.dp)
                             )
                         }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // YENİ: Character Selection
+            Text(
+                text = "Karakter Seç:",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.White,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
+                items(CharacterAvatar.values()) { character ->
+                    val isSelected = player.selectedCharacter == character
+                    val isUsed = character in usedCharacters
+                    val isClickable = !isUsed || isSelected
+
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(
+                                when {
+                                    isSelected -> Color.White
+                                    isUsed && !isSelected -> Color.White.copy(alpha = 0.2f)
+                                    else -> Color.White.copy(alpha = 0.4f)
+                                }
+                            )
+                            .then(
+                                if (isSelected) {
+                                    Modifier.border(3.dp, player.selectedColor, CircleShape)
+                                } else {
+                                    Modifier
+                                }
+                            )
+                            .clickable(enabled = isClickable) {
+                                if (isClickable) {
+                                    onCharacterChange(character)
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = character.drawableRes),
+                            contentDescription = "Karakter ${character.ordinal + 1}",
+                            modifier = Modifier.size(40.dp),
+                            contentScale = ContentScale.Crop
+                        )
                     }
                 }
             }

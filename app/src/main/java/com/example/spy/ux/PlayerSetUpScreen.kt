@@ -2,16 +2,12 @@ package com.example.spy.ux
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-
 import androidx.compose.foundation.background
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
@@ -28,11 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.spy.ux.components.PlayerCard
+import com.example.spy.models.CharacterAvatar // YENİ IMPORT
 
+// Player data class'ını güncelleyin (selectedCharacter alanını ekleyin)
 data class Player(
     val id: Int,
     var name: String = "",
-    var selectedColor: Color = Color.Gray
+    var selectedColor: Color = Color.Gray,
+    var selectedCharacter: CharacterAvatar? = null // YENİ ALAN
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,65 +43,57 @@ fun PlayerSetupScreen(
     onBackClick: () -> Unit = { navController.popBackStack() },
     onStartGame: (List<Player>) -> Unit = { navController.navigate("categoryScreen") }
 ) {
-    // Mevcut renkler
+    // Mevcut renkler (aynı kalacak)
     val availableColors = listOf(
-        Color(0xFFE91E63), // Pink
-        Color(0xFF9C27B0), // Purple
-        Color(0xFF3F51B5), // Indigo
-        Color(0xFF2196F3), // Blue
-        Color(0xFF00BCD4), // Cyan
-        Color(0xFF4CAF50), // Green
-        Color(0xFF8BC34A), // Light Green
-        Color(0xFFFFEB3B), // Yellow
-        Color(0xFFFF9800), // Orange
-        Color(0xFFFF5722), // Deep Orange
-        Color(0xFF795548), // Brown
-        Color(0xFF607D8B)  // Blue Grey
+        Color(0xFFE91E63), Color(0xFF9C27B0), Color(0xFF3F51B5),
+        Color(0xFF2196F3), Color(0xFF00BCD4), Color(0xFF4CAF50),
+        Color(0xFF8BC34A), Color(0xFFFFEB3B), Color(0xFFFF9800),
+        Color(0xFFFF5722), Color(0xFF795548), Color(0xFF607D8B)
     )
 
-    // Oyuncular listesi
+    // Oyuncular listesi (karakter seçimi için güncellenmiş)
     var players by remember {
         mutableStateOf(
             if (existingPlayers.isNotEmpty() && existingPlayers.size >= playerCount) {
-                // Mevcut oyuncular varsa ve yeterli sayıda ise onları kullan
                 existingPlayers.take(playerCount).mapIndexed { index, existingPlayer ->
                     existingPlayer.copy(id = index + 1)
                 }
             } else {
-                // Mevcut oyuncuları kullan ve eksik olanları ekle
                 val existingPlayersToUse = existingPlayers.take(playerCount)
                 val missingPlayersCount = playerCount - existingPlayersToUse.size
-
                 val allPlayers = mutableListOf<Player>()
 
-                // Mevcut oyuncuları ekle
                 existingPlayersToUse.forEachIndexed { index, player ->
                     allPlayers.add(player.copy(id = index + 1))
                 }
 
-                // Eksik oyuncuları ekle
                 repeat(missingPlayersCount) { index ->
                     val playerId = existingPlayersToUse.size + index + 1
                     val usedColors = allPlayers.map { it.selectedColor }
+                    val usedCharacters = allPlayers.mapNotNull { it.selectedCharacter }
+
                     val availableColor = availableColors.firstOrNull {
                         !usedColors.contains(it)
                     } ?: availableColors[(playerId - 1) % availableColors.size]
+
+                    val availableCharacter = CharacterAvatar.values().firstOrNull {
+                        !usedCharacters.contains(it)
+                    }
 
                     allPlayers.add(
                         Player(
                             id = playerId,
                             name = "Oyuncu $playerId",
-                            selectedColor = availableColor
+                            selectedColor = availableColor,
+                            selectedCharacter = availableCharacter
                         )
                     )
                 }
-
                 allPlayers
             }
         )
     }
 
-    // Form valid mi kontrol et
     val isFormValid = players.all { it.name.isNotBlank() } &&
             players.map { it.selectedColor }.distinct().size == players.size
 
@@ -122,9 +113,9 @@ fun PlayerSetupScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 80.dp , top = 20.dp) // Button için alan bırak
+                .padding(bottom = 80.dp, top = 20.dp)
         ) {
-            // Top Bar
+            // Top Bar (aynı kalacak)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -154,14 +145,14 @@ fun PlayerSetupScreen(
                         color = Color.White
                     )
                     Text(
-                        text = "İsim ve renk seçin",
+                        text = "İsim, renk ve karakter seçin", // GÜNCELLENDİ
                         fontSize = 14.sp,
                         color = Color.White.copy(alpha = 0.8f)
                     )
                 }
             }
 
-            // Players List - Scrollable içerik
+            // Players List - GÜNCELLENDİ
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -173,6 +164,7 @@ fun PlayerSetupScreen(
                         player = player,
                         availableColors = availableColors,
                         usedColors = players.mapNotNull { if (it.id != player.id) it.selectedColor else null },
+                        usedCharacters = players.mapNotNull { if (it.id != player.id) it.selectedCharacter else null }, // YENİ
                         onNameChange = { newName ->
                             players = players.map {
                                 if (it.id == player.id) it.copy(name = newName) else it
@@ -182,18 +174,22 @@ fun PlayerSetupScreen(
                             players = players.map {
                                 if (it.id == player.id) it.copy(selectedColor = newColor) else it
                             }
+                        },
+                        onCharacterChange = { newCharacter -> // YENİ
+                            players = players.map {
+                                if (it.id == player.id) it.copy(selectedCharacter = newCharacter) else it
+                            }
                         }
                     )
                 }
 
-                // Extra spacing for last item
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
 
-
+        // Button (aynı kalacak)
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -210,12 +206,9 @@ fun PlayerSetupScreen(
         ) {
             Button(
                 onClick = {
-                    navController.navigate("categoryScreen")
-
                     players.forEach { player ->
-                        println("${player.name} - Renk: ${player.selectedColor}")
+                        println("${player.name} - Renk: ${player.selectedColor} - Karakter: ${player.selectedCharacter}")
                     }
-                    // CategoryScreen'e geç
                     onStartGame(players)
                 },
                 modifier = Modifier
@@ -244,10 +237,4 @@ fun PlayerSetupScreen(
             }
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun Prre(){
-    PlayerSetupScreen(navController = rememberNavController())
 }

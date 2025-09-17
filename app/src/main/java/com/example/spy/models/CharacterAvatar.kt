@@ -1,5 +1,4 @@
-package com.example.spy.ux
-
+package com.example.spy.models
 
 import com.example.spy.R
 

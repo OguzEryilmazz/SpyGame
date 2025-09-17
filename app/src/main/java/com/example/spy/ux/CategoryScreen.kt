@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.spy.datamanagment.CategoryDataManager
+import com.example.spy.models.CharacterAvatar
 import com.example.spy.ux.components.CategoryCard
 import com.example.spy.ux.components.assignRoles
 import kotlinx.coroutines.launch
@@ -49,6 +50,7 @@ data class GamePlayer(
     val id: Int,
     val name: String,
     val color: Color,
+    val selectedCharacter: CharacterAvatar? = null,
     val role: String,
     val hint: String? = null // sadece spy için
 )

@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -194,19 +195,29 @@ fun PlayerGameScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 // Avatar
-                Box(
-                    modifier = Modifier
-                        .size(160.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = player.name.first().toString().uppercase(),
-                        fontSize = 64.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
+                if (player.selectedCharacter != null) {
+                    Image(
+                        painter = painterResource(id = player.selectedCharacter.drawableRes),
+                        contentDescription = "${player.name} avatar",
+                        modifier = Modifier
+                            .size(200.dp)  ,
                     )
+                } else {
+                    // Fallback - karakter yoksa baş harfini yuvarlak arkaplanda göster
+                    Box(
+                        modifier = Modifier
+                            .size(160.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.3f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = player.name.first().toString().uppercase(),
+                            fontSize = 64.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.White
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -337,7 +348,7 @@ fun PlayerGameScreen(
                             painter = painterResource(id = R.drawable.my_imposter), // kendi görselin ismini yaz
                             contentDescription = null,
                             modifier = Modifier
-                                .size(100.dp) // boyutu unplayability
+                                .size(100.dp) // boyutu unplayabilityg
                         )
 
 
