@@ -17,11 +17,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,6 +44,7 @@ fun CategoryCard(
     isSelected: Boolean,
     onClick: () -> Unit,
     onUnlockClick: (() -> Unit)? = null,
+    onFavoriteClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = Modifier
@@ -56,110 +60,138 @@ fun CategoryCard(
         )
     ) {
         Box {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Icon
-                Box(
+            Column {
+                // Top row with favorite button
+                Row(
                     modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (category.isLocked)
-                                Color.Gray.copy(alpha = 0.5f)
-                            else
-                                category.color
-                        ),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 8.dp, top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = category.icon,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+                    Spacer(modifier = Modifier.weight(1f))
 
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = category.name,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (category.isLocked)
-                                Color.White.copy(alpha = 0.5f)
-                            else
-                                Color.White
-                        )
-
-                        if (category.isLocked) {
-                            Spacer(modifier = Modifier.width(8.dp))
+                    // Favorite Button
+                    onFavoriteClick?.let {
+                        IconButton(
+                            onClick = { it() },
+                            modifier = Modifier.size(32.dp)
+                        ) {
                             Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "Kilitli",
-                                tint = Color.White.copy(alpha = 0.7f),
-                                modifier = Modifier.size(16.dp)
+                                imageVector = if (category.isFavorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                                contentDescription = if (category.isFavorite) "Favorilerden çıkar" else "Favorilere ekle",
+                                tint = if (category.isFavorite) Color.Yellow else Color.White.copy(alpha = 0.7f),
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
-
-                    Text(
-                        text = if (category.isLocked) "Kilitli" else "${category.items.size} öğe",
-                        fontSize = 14.sp,
-                        color = if (category.isLocked)
-                            Color.White.copy(alpha = 0.4f)
-                        else
-                            Color.White.copy(alpha = 0.7f)
-                    )
                 }
 
-                // Selection indicator or Purchase button
-                if (category.isLocked && onUnlockClick != null && category.price > 0) {
-                    Button(
-                        onClick = { onUnlockClick() },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White.copy(alpha = 0.9f)
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = null,
-                            tint = Color(0xFFE91E63),
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "${category.price} Coin",
-                            color = Color(0xFFE91E63),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp
-                        )
-                    }
-                } else if (isSelected && !category.isLocked) {
+                // Main content row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Icon
                     Box(
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(56.dp)
                             .clip(CircleShape)
-                            .background(Color.White),
+                            .background(
+                                if (category.isLocked)
+                                    Color.Gray.copy(alpha = 0.5f)
+                                else
+                                    category.color
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
+                        Icon(
+                            imageVector = category.icon,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = category.name,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (category.isLocked)
+                                    Color.White.copy(alpha = 0.5f)
+                                else
+                                    Color.White
+                            )
+
+                            if (category.isLocked) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = "Kilitli",
+                                    tint = Color.White.copy(alpha = 0.7f),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = if (category.isLocked) "Kilitli" else "${category.items.size} öğe",
+                            fontSize = 14.sp,
+                            color = if (category.isLocked)
+                                Color.White.copy(alpha = 0.4f)
+                            else
+                                Color.White.copy(alpha = 0.7f)
+                        )
+                    }
+
+                    // Selection indicator or Purchase button
+                    if (category.isLocked && onUnlockClick != null && category.price > 0) {
+                        Button(
+                            onClick = { onUnlockClick() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White.copy(alpha = 0.9f)
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.height(36.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = null,
+                                tint = Color(0xFFE91E63),
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "${category.price} Coin",
+                                color = Color(0xFFE91E63),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        }
+                    } else if (isSelected && !category.isLocked) {
                         Box(
                             modifier = Modifier
-                                .size(12.dp)
+                                .size(24.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFFE91E63))
-                        )
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFE91E63))
+                            )
+                        }
                     }
                 }
             }

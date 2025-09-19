@@ -1,7 +1,6 @@
 package com.example.spy.ux
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -10,8 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,14 +23,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.spy.datamanagment.CategoryDataManager
 import com.example.spy.models.CharacterAvatar
 import com.example.spy.ux.components.CategoryCard
+import com.example.spy.ux.components.EmptyFavoritesComponent
 import com.example.spy.ux.components.assignRoles
 import kotlinx.coroutines.launch
 
@@ -42,7 +43,8 @@ data class Category(
     val items: List<String>,
     val hints: List<String>,
     val isLocked: Boolean,
-    val price : Int =0
+    val price : Int = 0,
+    val isFavorite: Boolean = false
 )
 
 // Oyuncu ve rol data class'ları
@@ -54,6 +56,10 @@ data class GamePlayer(
     val role: String,
     val hint: String? = null // sadece spy için
 )
+
+enum class FilterType {
+    ALL, FAVORITES, UNLOCKED
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +78,11 @@ fun CategoryScreen(
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    // Search states
+    var searchText by remember { mutableStateOf(TextFieldValue()) }
+    var isSearchActive by remember { mutableStateOf(false) }
+    var currentFilter by remember { mutableStateOf(FilterType.ALL) }
+
     // Kategorileri yükle
     fun loadCategories() {
         coroutineScope.launch {
@@ -86,6 +97,45 @@ fun CategoryScreen(
                 isRefreshing = false
             }
         }
+    }
+
+    // Favori toggle function
+    fun toggleFavorite(categoryId: String) {
+        coroutineScope.launch {
+            try {
+                categoryManager.toggleFavorite(categoryId)
+                categories = categories.map { category ->
+                    if (category.id == categoryId) {
+                        category.copy(isFavorite = !category.isFavorite)
+                    } else {
+                        category
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+
+    // Filtreleme ve arama
+    val filteredCategories = remember(categories, searchText, currentFilter) {
+        var filtered = categories
+
+        // Arama filtresi
+        if (searchText.text.isNotBlank()) {
+            filtered = filtered.filter {
+                it.name.contains(searchText.text, ignoreCase = true)
+            }
+        }
+
+        // Tip filtresi
+        filtered = when (currentFilter) {
+            FilterType.ALL -> filtered
+            FilterType.FAVORITES -> filtered.filter { it.isFavorite }
+            FilterType.UNLOCKED -> filtered.filter { !it.isLocked }
+        }
+
+        filtered
     }
 
     // İlk yükleme
@@ -194,7 +244,7 @@ fun CategoryScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 80.dp , top = 20.dp)
+                .padding(bottom = 80.dp, top = 20.dp)
         ) {
             // Top Bar
             Row(
@@ -234,6 +284,25 @@ fun CategoryScreen(
                     )
                 }
 
+                // Search Button
+                IconButton(
+                    onClick = { isSearchActive = !isSearchActive },
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(
+                            if (isSearchActive) Color.White.copy(alpha = 0.3f)
+                            else Color.White.copy(alpha = 0.2f)
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Ara",
+                        tint = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 // Refresh Button
                 IconButton(
                     onClick = { loadCategories() },
@@ -257,21 +326,131 @@ fun CategoryScreen(
                 }
             }
 
-            // Categories Grid - 2x2 Layout
-            if (categories.isEmpty()) {
+            // Search Bar
+            if (isSearchActive) {
+                OutlinedTextField(
+                    value = searchText,
+                    onValueChange = { searchText = it },
+                    placeholder = {
+                        Text(
+                            "Kategori ara...",
+                            color = Color.White.copy(alpha = 0.7f)
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                            tint = Color.White.copy(alpha = 0.7f)
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchText.text.isNotEmpty()) {
+                            IconButton(
+                                onClick = { searchText = TextFieldValue() }
+                            ) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = "Temizle",
+                                    tint = Color.White.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = Color.White.copy(alpha = 0.7f),
+                        unfocusedBorderColor = Color.White.copy(alpha = 0.5f),
+                        cursorColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
+                )
+
+                // Filter Buttons
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = currentFilter == FilterType.ALL,
+                        onClick = { currentFilter = FilterType.ALL },
+                        label = { Text("Tümü") },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color.White.copy(alpha = 0.3f),
+                            selectedLabelColor = Color.White,
+                            containerColor = Color.White.copy(alpha = 0.1f),
+                            labelColor = Color.White.copy(alpha = 0.8f)
+                        )
+                    )
+
+                    val favoriteCount = categories.count { it.isFavorite }
+                    FilterChip(
+                        selected = currentFilter == FilterType.FAVORITES,
+                        onClick = { currentFilter = FilterType.FAVORITES },
+                        label = { Text("Favoriler ($favoriteCount)") },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Star,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color.White.copy(alpha = 0.3f),
+                            selectedLabelColor = Color.White,
+                            containerColor = Color.White.copy(alpha = 0.1f),
+                            labelColor = Color.White.copy(alpha = 0.8f)
+                        )
+                    )
+
+                    val unlockedCount = categories.count { !it.isLocked }
+                    FilterChip(
+                        selected = currentFilter == FilterType.UNLOCKED,
+                        onClick = { currentFilter = FilterType.UNLOCKED },
+                        label = { Text("Açık ($unlockedCount)") },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color.White.copy(alpha = 0.3f),
+                            selectedLabelColor = Color.White,
+                            containerColor = Color.White.copy(alpha = 0.1f),
+                            labelColor = Color.White.copy(alpha = 0.8f)
+                        )
+                    )
+                }
+            }
+
+            // Categories Grid or Empty State
+            if (filteredCategories.isEmpty() && currentFilter == FilterType.FAVORITES) {
+                EmptyFavoritesComponent(
+                    onAddFavoriteClick = {
+                        currentFilter = FilterType.ALL
+                        isSearchActive = true
+                    }
+                )
+            } else if (filteredCategories.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Henüz kategori bulunmuyor",
+                        text = if (searchText.text.isNotBlank())
+                            "Arama kriterlerinize uygun kategori bulunamadı"
+                        else "Henüz kategori bulunmuyor",
                         color = Color.White.copy(alpha = 0.7f),
                         fontSize = 16.sp
                     )
                 }
             } else {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(1), // 2 kolon - yan yana
+                    columns = GridCells.Fixed(1),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp),
@@ -279,7 +458,7 @@ fun CategoryScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
-                    items(categories) { category ->
+                    items(filteredCategories) { category ->
                         CategoryCard(
                             category = category,
                             isSelected = selectedCategory?.id == category.id,
@@ -296,6 +475,9 @@ fun CategoryScreen(
                                     categoryManager.purchaseCategory(category.id)
                                     loadCategories() // Kategorileri yeniden yükle
                                 }
+                            },
+                            onFavoriteClick = {
+                                toggleFavorite(category.id)
                             }
                         )
                     }
