@@ -97,7 +97,34 @@ fun PageTransition() {
         }
 
         composable("timerScreen") {
-            TimerScreen(navController, gameDuration)
+            // Eğer gerekli veriler yoksa geri dön
+            if (gamePlayersData.isEmpty()) {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack("setUpScreen", inclusive = false)
+                }
+                return@composable
+            }
+
+            TimerScreen(
+                navController = navController,
+                gameDuration = gameDuration,
+                gamePlayers = gamePlayersData
+            )
+        }
+
+        composable("votingScreen") {
+            // Eğer gerekli veriler yoksa geri dön
+            if (gamePlayersData.isEmpty()) {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack("setUpScreen", inclusive = false)
+                }
+                return@composable
+            }
+
+            VotingScreen(
+                navController = navController,
+                gamePlayers = gamePlayersData
+            )
         }
     }
 }

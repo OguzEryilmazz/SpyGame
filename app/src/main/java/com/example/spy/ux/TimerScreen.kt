@@ -1,5 +1,13 @@
 package com.example.spy.ux
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import androidx.annotation.RequiresPermission
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,11 +32,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
+@SuppressLint("MissingPermission")
 @Composable
-fun TimerScreen(navController: NavController, gameDuration: Int) {
+fun TimerScreen(
+    navController: NavController,
+    gameDuration: Int,
+    gamePlayers: List<GamePlayer>
+) {
     var timeLeft by remember { mutableStateOf(gameDuration * 60) }
     var isTimerRunning by remember { mutableStateOf(true) }
     var isGameFinished by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     LaunchedEffect(isTimerRunning, timeLeft) {
         if (isTimerRunning && timeLeft > 0) {
@@ -36,6 +51,8 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
         } else if (timeLeft <= 0 && !isGameFinished) {
             isTimerRunning = false
             isGameFinished = true
+            // Zaman bittiğinde titreşim
+            vibratePhone(context)
         }
     }
 
@@ -68,7 +85,6 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
         ) {
             // Üst kısım - Durum mesajı
             if (isGameFinished) {
-
                 Text(
                     text = "SÜRE BİTTİ!",
                     fontSize = 32.sp,
@@ -78,8 +94,6 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
                     letterSpacing = 4.sp
                 )
             } else {
-
-
                 Text(
                     text = "İMPOSTOR'U BUL!",
                     fontSize = 32.sp,
@@ -135,7 +149,7 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Oyun bitti! İmpostoru buldunuz mu?",
+                        text = "Oyun bitti! Şimdi oylama zamanı!",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White.copy(alpha = 0.8f),
@@ -144,6 +158,30 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
 
                     Spacer(modifier = Modifier.height(40.dp))
 
+                    // Oylama ekranına git
+                    Button(
+                        onClick = {
+                            navController.navigate("votingScreen")
+                        },
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(60.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2196F3),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(30.dp)
+                    ) {
+                        Text(
+                            text = "Oylama",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Ana menüye dön
                     Button(
                         onClick = {
                             navController.navigate("categoryScreen") {
@@ -170,7 +208,7 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Tekrar Oyna",
+                                text = "Ana Menü",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -203,6 +241,7 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
                             isTimerRunning = false
                             isGameFinished = true
                             timeLeft = 0
+                            vibratePhone(context)
                         },
                         containerColor = Color.Red,
                         contentColor = Color.White,
@@ -214,15 +253,6 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
                             modifier = Modifier.size(32.dp)
                         )
                     }
-                }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                // Buton açıklamaları
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(60.dp)
-                ) {
-
                 }
             }
         }
@@ -247,5 +277,27 @@ fun TimerScreen(navController: NavController, gameDuration: Int) {
                 )
             }
         }
+    }
+}
+
+@RequiresPermission(Manifest.permission.VIBRATE)
+private fun vibratePhone(context: Context) {
+    try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibrator = vibratorManager.defaultVibrator
+            vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 500, 200, 500, 200, 500), -1))
+        } else {
+            @Suppress("DEPRECATION")
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 500, 200, 500, 200, 500), -1))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(longArrayOf(0, 500, 200, 500, 200, 500), -1)
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

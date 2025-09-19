@@ -1,10 +1,12 @@
 package com.example.spy.ux
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import com.example.spy.ux.components.PlayerGameScreen
 import kotlinx.coroutines.delay
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun GameScreen(
     navController: NavController,
