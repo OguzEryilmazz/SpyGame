@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.spy"
+    namespace = "com.oguz.spy"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.spy"
+        applicationId = "com.oguz.spy"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -22,11 +22,14 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -39,6 +42,12 @@ android {
     buildFeatures {
         compose = true
     }
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
 }
 
 dependencies {
@@ -83,4 +92,7 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.android.billingclient:billing-ktx:6.1.0")
+
 }

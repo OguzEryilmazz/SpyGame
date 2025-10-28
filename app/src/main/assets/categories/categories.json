@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 12,
   "categories": [
     {
       "id": "professions",
@@ -25,7 +25,7 @@
         "İşe alım"
       ],
       "isLocked": false,
-      "price": 0
+      "priceTL": 0.0
     },
     {
       "id": "foods",
@@ -50,7 +50,7 @@
         "Lezzet var"
       ],
       "isLocked": false,
-      "price": 0
+      "priceTL": 0.0
     },
     {
       "id": "fruits",
@@ -74,7 +74,7 @@
         "Organik olabilir"
       ],
       "isLocked": false,
-      "price": 0
+      "priceTL": 0.0
     },
     {
       "id": "colors",
@@ -97,7 +97,7 @@
         "Tasarımda önemli"
       ],
       "isLocked": false,
-      "price": 0
+      "priceTL": 0.0
     },
     {
       "id": "athletes",
@@ -122,8 +122,8 @@
         "Antrenörü var",
         "Canlı yayınlanır"
       ],
-      "isLocked": true,
-      "price": 75
+      "isLocked": false,
+      "priceTL": 0.0
     },
     {
       "id": "singers",
@@ -148,7 +148,7 @@
         "Radyoda çalar"
       ],
       "isLocked": true,
-      "price": 75
+      "priceTL": 24.99
     },
     {
       "id": "places",
@@ -172,7 +172,7 @@
         "Konum belirtir"
       ],
       "isLocked": true,
-      "price": 50
+      "priceTL": 19.99
     },
     {
       "id": "animals",
@@ -196,7 +196,7 @@
         "Nefes alır"
       ],
       "isLocked": true,
-      "price": 50
+      "priceTL": 19.99
     },
     {
       "id": "vehicles",
@@ -219,7 +219,7 @@
         "Hız yapar"
       ],
       "isLocked": true,
-      "price": 100
+      "priceTL": 29.99
     },
     {
       "id": "sports",
@@ -242,7 +242,7 @@
         "Spor salonu"
       ],
       "isLocked": true,
-      "price": 100
+      "priceTL": 29.99
     },
     {
       "id": "electronics",
@@ -265,7 +265,7 @@
         "Garanti vardır"
       ],
       "isLocked": true,
-      "price": 125
+      "priceTL": 39.99
     },
     {
       "id": "clothing",
@@ -288,7 +288,7 @@
         "Giyilir"
       ],
       "isLocked": true,
-      "price": 125
+      "priceTL": 39.99
     },
     {
       "id": "school_subjects",
@@ -311,7 +311,7 @@
         "Ders saati"
       ],
       "isLocked": true,
-      "price": 150
+      "priceTL": 49.99
     },
     {
       "id": "games",
@@ -334,7 +334,7 @@
         "Zaman geçirir"
       ],
       "isLocked": true,
-      "price": 150
+      "priceTL": 49.99
     },
     {
       "id": "books",
@@ -357,7 +357,7 @@
         "Sayfa sayısı"
       ],
       "isLocked": true,
-      "price": 175
+      "priceTL": 59.99
     },
     {
       "id": "weather",
@@ -380,7 +380,7 @@
         "Meteoroloji"
       ],
       "isLocked": true,
-      "price": 175
+      "priceTL": 59.99
     },
     {
       "id": "emotions",
@@ -403,7 +403,7 @@
         "Duygu durumu"
       ],
       "isLocked": true,
-      "price": 200
+      "priceTL": 69.99
     },
     {
       "id": "household_items",
@@ -426,7 +426,7 @@
         "Ev içi"
       ],
       "isLocked": true,
-      "price": 200
+      "priceTL": 69.99
     },
     {
       "id": "countries",
@@ -450,7 +450,7 @@
         "Pasaport gerekir"
       ],
       "isLocked": true,
-      "price": 200
+      "priceTL": 69.99
     }
   ]
 }
