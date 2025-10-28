@@ -7,18 +7,29 @@ import androidx.compose.ui.graphics.Color
 import com.oguz.spy.ux.Category
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.oguz.spy.ux.Subcategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+data class SubcategoryJson(
+    @SerializedName("id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("unlockedByAd") val unlockedByAd: Boolean,
+    @SerializedName("isUnlocked") val isUnlocked: Boolean,
+    @SerializedName("items") val items: List<String>,
+    @SerializedName("hints") val hints: List<String>
+)
 data class CategoryJson(
     @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
     @SerializedName("iconName") val iconName: String,
     @SerializedName("colorHex") val colorHex: String,
-    @SerializedName("items") val items: List<String>,
-    @SerializedName("hints") val hints: List<String>,
+    @SerializedName("items") val items: List<String>? = null, // Ana kategorinin kendi itemları
+    @SerializedName("hints") val hints: List<String>? = null,
     @SerializedName("isLocked") val isLocked: Boolean,
-    @SerializedName("priceTL") val priceTL: Double
+    @SerializedName("priceTL") val priceTL: Double,
+    @SerializedName("hasSubcategories") val hasSubcategories: Boolean = false,
+    @SerializedName("subcategories") val subcategories: List<SubcategoryJson>? = null
 )
 
 data class CategoriesData(
@@ -31,6 +42,7 @@ class CategoryDataManager(private val context: Context) {
     private val prefs = context.getSharedPreferences("spy_prefs", Context.MODE_PRIVATE)
     private val FAVORITES_KEY = "favorite_categories"
     private val PURCHASED_KEY = "purchased_categories"
+    private val UNLOCKED_SUBCATEGORIES_KEY = "unlocked_subcategories"
 
     suspend fun getCategories(): List<Category> = withContext(Dispatchers.IO) {
         try {
@@ -43,18 +55,32 @@ class CategoryDataManager(private val context: Context) {
 
             val favorites = getFavoriteIds()
             val purchased = getPurchasedIds()
+            val unlockedSubs = getUnlockedSubcategoryIds()
 
             data.categories.map { json ->
+                val subcategories = json.subcategories?.map { subJson ->
+                    Subcategory(
+                        id = subJson.id,
+                        name = subJson.name,
+                        items = subJson.items,
+                        hints = subJson.hints,
+                        unlockedByAd = subJson.unlockedByAd,
+                        isUnlocked = unlockedSubs.contains(subJson.id)
+                    )
+                } ?: emptyList()
+
                 Category(
                     id = json.id,
                     name = json.name,
                     icon = getIconByName(json.iconName),
                     color = Color(android.graphics.Color.parseColor(json.colorHex)),
-                    items = json.items,
-                    hints = json.hints,
-                    isLocked = json.isLocked && !purchased.contains(json.id), // Satın alındıysa kilidi aç
+                    items = json.items ?: emptyList(),
+                    hints = json.hints ?: emptyList(),
+                    isLocked = json.isLocked && !purchased.contains(json.id),
                     priceTL = json.priceTL,
-                    isFavorite = favorites.contains(json.id)
+                    isFavorite = favorites.contains(json.id),
+                    hasSubcategories = json.hasSubcategories,
+                    subcategories = subcategories
                 )
             }
         } catch (e: Exception) {
@@ -62,6 +88,22 @@ class CategoryDataManager(private val context: Context) {
             emptyList()
         }
     }
+
+    private fun getUnlockedSubcategoryIds(): Set<String> {
+        return prefs.getStringSet(UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
+    }
+
+    fun unlockSubcategoryWithAd(subcategoryId: String) {
+        val unlocked = getUnlockedSubcategoryIds().toMutableSet()
+        unlocked.add(subcategoryId)
+        prefs.edit().putStringSet(UNLOCKED_SUBCATEGORIES_KEY, unlocked).apply()
+    }
+
+    fun isSubcategoryUnlocked(subcategoryId: String): Boolean {
+        return getUnlockedSubcategoryIds().contains(subcategoryId)
+    }
+
+
 
     private fun getFavoriteIds(): Set<String> {
         return prefs.getStringSet(FAVORITES_KEY, emptySet()) ?: emptySet()

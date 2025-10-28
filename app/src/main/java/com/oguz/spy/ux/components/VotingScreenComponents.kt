@@ -408,12 +408,12 @@ fun VotingResultsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp),
+                .padding(start = 32.dp , top = 10.dp , end = 32.dp , bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             // Ana başlık
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally

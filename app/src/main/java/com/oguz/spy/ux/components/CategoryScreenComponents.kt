@@ -148,7 +148,11 @@ fun CategoryCard(
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "${category.items.size} öğe",
+                                    text = if (category.hasSubcategories) {
+                                        "${category.subcategories.size} alt kategori"
+                                    } else {
+                                        "${category.items.size} öğe"
+                                    },
                                     fontSize = 14.sp,
                                     color = if (category.isLocked) Color.Gray.copy(alpha = 0.6f)
                                     else category.color.copy(alpha = 0.7f)

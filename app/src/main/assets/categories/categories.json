@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13 ,
   "categories": [
     {
       "id": "professions",
@@ -25,7 +25,8 @@
         "İşe alım"
       ],
       "isLocked": false,
-      "priceTL": 0.0
+      "priceTL": 0.0,
+      "hasSubcategories": false
     },
     {
       "id": "foods",
@@ -50,7 +51,8 @@
         "Lezzet var"
       ],
       "isLocked": false,
-      "priceTL": 0.0
+      "priceTL": 0.0,
+      "hasSubcategories": false
     },
     {
       "id": "fruits",
@@ -74,7 +76,8 @@
         "Organik olabilir"
       ],
       "isLocked": false,
-      "priceTL": 0.0
+      "priceTL": 0.0,
+      "hasSubcategories": false
     },
     {
       "id": "colors",
@@ -97,33 +100,251 @@
         "Tasarımda önemli"
       ],
       "isLocked": false,
-      "priceTL": 0.0
+      "priceTL": 0.0,
+      "hasSubcategories": false
     },
     {
       "id": "athletes",
       "name": "Sporcular",
       "iconName": "sports",
       "colorHex": "#FF5722",
-      "items": [
-        "Messi", "Ronaldo", "Haaland", "Mbappé", "Neymar",
-        "Benzema", "Lewandowski", "Modric", "De Bruyne", "Salah",
-        "Serena Williams", "Rafael Nadal", "Novak Djokovic", "Roger Federer",
-        "LeBron James", "Stephen Curry", "Michael Jordan", "Kobe Bryant",
-        "Usain Bolt", "Michael Phelps", "Lewis Hamilton", "Max Verstappen",
-        "Burak Yılmaz", "Hakan Çalhanoğlu", "Merih Demiral", "Cengiz Ünder",
-        "Naim Süleymanoğlu", "Hidayet Türkoğlu", "Semih Erden", "İlhan Mansız"
-      ],
-      "hints": [
-        "Müsabaka yapar",
-        "Madalya kazanır",
-        "Stadyumda görülür",
-        "Forma giyer",
-        "Olimpiyatlarda var",
-        "Antrenörü var",
-        "Canlı yayınlanır"
-      ],
       "isLocked": false,
-      "priceTL": 0.0
+      "priceTL": 0.0,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "athletes_active_football_domestic",
+          "name": "Yerli Futbolcular",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Yunus Akgün", "Oğuz Aydın", "Kerem Aktürkoğlu", "Barış Alper Yılmaz",
+            "Kenan Yıldız", "Can Uzun", "Arda Güler", "Orkun Kökçü",
+            "İsmail Yüksek", "Hakan Çalhanoğlu", "Mert Müldür", "Abdülkerim Bardakçı",
+            "Eren Elmalı", "Ferdi Kadıoğlu", "Merih Demiral", "Uğurcan Çakır",
+            "Yusuf Akçiçek", "Zeki Çelik", "Berke Özer", "Cenk Tosun", "Ozan Tufan"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_active_football_foreign",
+          "name": "Yabancı Futbolcular",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Cristiano Ronaldo", "Lionel Messi", "Kylian Mbappé", "Erling Haaland",
+            "Neymar Jr.", "Jude Bellingham", "Vinícius Júnior", "Ousmane Dembélé",
+            "Harry Kane", "Mohamed Salah", "Kevin De Bruyne", "Rodri",
+            "Robert Lewandowski", "Antoine Griezmann", "Lautaro Martínez", "Lamine Yamal",
+            "Cole Palmer", "Phil Foden", "Viktor Gyökeres", "Virgil van Dijk",
+            "Thibaut Courtois", "Gianluigi Donnarumma", "Luka Modrić", "Declan Rice",
+            "İlkay Gündoğan", "Karim Benzema", "Youssef En-Nesyri", "Ciro Immobile",
+            "Victor Osimhen", "Dries Mertens", "Fred", "Davinson Sánchez",
+            "Lucas Torreira", "Leroy Sané", "Mauro Icardi", "Ederson",
+            "Jhon Durán", "Talisca", "Sebastian Szymanski", "Rafa Silva",
+            "Tammy Abraham", "Milot Rashica", "Dušan Tadić", "Edin Džeko",
+            "Michy Batshuayi", "Enner Valencia"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_retired_football_domestic",
+          "name": "Yerli Efsaneler",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Rüştü Reçber", "Bülent Korkmaz", "Emre Belözoğlu", "Arda Turan",
+            "Hamit Altıntop", "Burak Yılmaz", "Nihat Kahveci", "Gökhan Gönül",
+            "Volkan Demirel", "Fatih Tekke", "Semih Şentürk", "Okan Buruk",
+            "Selçuk İnan", "Tümer Metin", "Rıdvan Dilmen", "Sergen Yalçın", "Serhat Akın"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_retired_football_foreign",
+          "name": "Yabancı Efsaneler",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Pelé", "Diego Maradona", "Johan Cruyff", "Ronaldo Nazário",
+            "Zinedine Zidane", "Michel Platini", "Ronaldinho", "Lev Yashin",
+            "Roberto Carlos", "Gianluigi Buffon", "Thierry Henry", "Xavi Hernández",
+            "Andrés Iniesta", "Kaká", "Steven Gerrard", "Didier Drogba",
+            "Zlatan Ibrahimović", "Arjen Robben", "Wayne Rooney", "Gareth Bale",
+            "Frank Lampard", "Mesut Özil", "Gerard Piqué", "Sergio Agüero",
+            "Iker Casillas", "Wesley Sneijder", "Robin van Persie", "Gheorghe Hagi",
+            "Samuel Eto'o", "Pepe", "Alex de Souza", "Ricardo Quaresma"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_basketball_nba",
+          "name": "NBA",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "LeBron James", "Stephen Curry", "Nikola Jokić", "Giannis Antetokounmpo",
+            "Luka Dončić", "Joel Embiid", "Jayson Tatum", "Kevin Durant",
+            "Anthony Davis", "Victor Wembanyama", "Tyrese Haliburton", "Ja Morant",
+            "Damian Lillard", "Devin Booker", "Kyrie Irving", "Kawhi Leonard",
+            "Jimmy Butler", "Paul George", "Donovan Mitchell", "Zion Williamson",
+            "Trae Young", "Alperen Şengün", "LaMelo Ball", "Draymond Green",
+            "Klay Thompson", "Karl-Anthony Towns", "James Harden", "Russell Westbrook",
+            "Chris Paul", "DeMar DeRozan", "Adem Bona"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_basketball_euroleague",
+          "name": "Euroleague",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Shane Larkin", "Ercan Osmani", "Şehmus Hazer", "Tarık Biberović",
+            "Talen-Horton Tucker", "Melih Mahmutoğlu", "Scottie Wilbekin", "Nicolò Melli",
+            "Cedi Osman", "Mario Hezonja", "Willy Hernangómez", "Jabari Parker",
+            "Nikola Mirotić", "Mike James"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_basketball_legends",
+          "name": "Basketbol Efsaneleri",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Michael Jordan", "Kobe Bryant", "Magic Johnson", "Kareem Abdul-Jabbar",
+            "Bill Russell", "Shaquille O'Neal", "Larry Bird", "Wilt Chamberlain",
+            "Hakeem Olajuwon", "Julius Erving", "Allen Iverson", "Charles Barkley",
+            "Vince Carter", "Dwyane Wade", "Dirk Nowitzki", "Tim Duncan",
+            "Kevin Garnett", "Scottie Pippen", "Karl Malone", "Isiah Thomas",
+            "Jerry West", "John Stockton", "Dennis Rodman"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_volleyball_female",
+          "name": "Voleybolcular",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Zehra Güneş", "Eda Erdem", "Hande Baladın", "Cansu Özbay",
+            "Naz Aydemir Akyol", "Dilay Özdemir", "Derya Cebecioğlu", "Meliha İsmailoğlu",
+            "İlkin Aydın", "Aslı Kalaç", "Simge Aköz", "Gizem Örge",
+            "Ayça Aykaç", "Aylin Sarıoğlu", "Meryem Boz", "Tuğba Şenoğlu",
+            "Melissa Vargas", "Alexia Carutasu", "Ebrar Karakurt", "Paola Egonu",
+            "Myriam Sylla", "Alessia Orro", "Anna Danesi", "Monika de Gennaro",
+            "Sarah Fahr", "Ekaterina Antropova", "Gabi Guimarães", "Isabelle Haak",
+            "Arina Federovtseva", "Ana Cristina de Souza", "Helena Cazaute", "Joanna Wołosz",
+            "Magdelena Stysiak", "Andrea Drews", "Kelsey Robinson", "Jordyn Paulter",
+            "Jordan Thompson", "Haleigh Washington", "Chiaka Ogbogu", "Justine Wong-Orantes",
+            "Zhu Ting"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_ufc",
+          "name": "UFC",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Conor McGregor", "Khabib Nurmagomedov", "Jon Jones", "Georges St-Pierre",
+            "Sean O'Malley", "Israel Adesanya", "Ilia Topuria", "Khamzat Chimaev",
+            "Islam Makhachev", "Paddy Pimblett", "Alex Pereira", "Nate Diaz",
+            "Jorge Masvidal", "Anderson Silva", "Daniel Cormier", "Dustin Poirier",
+            "Justin Gaethje", "Alexander Volkanovski", "Max Holloway", "José Aldo",
+            "Charles Oliveira", "Stipe Miocic", "Tom Aspinall", "Kevin Holland",
+            "Magomed Ankalaev", "Merab Dvalişvili", "Jiří Procházka", "Dricus Du Plessis",
+            "Michael Chandler", "Sean Strickland", "Umar Nurmagomedov"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_wwe",
+          "name": "WWE",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "The Rock", "John Cena", "The Undertaker", "Roman Reigns",
+            "Triple H", "Brock Lesnar", "Rey Mysterio", "Kane",
+            "Batista", "Randy Orton", "Edge", "CM Punk",
+            "Jeff Hardy", "Big Show"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_boxing",
+          "name": "Boks",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Muhammad Ali", "Mike Tyson", "Floyd Mayweather Jr.", "Manny Pacquiao",
+            "Canelo Álvarez", "Oleksandr Usyk", "Terence Crawford", "Tyson Fury",
+            "Gervonta Davis", "Ryan García", "Jake Paul"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "athletes_f1",
+          "name": "Formula 1",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Lando Norris", "Oscar Piastri", "Max Verstappen", "George Russell",
+            "Charles Leclerc", "Lewis Hamilton", "Fernando Alonso", "Sebastian Vettel",
+            "Michael Schumacer", "Andrea Antonelli", "Alexander Albon"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        }
+      ]
     },
     {
       "id": "singers",
@@ -148,7 +369,8 @@
         "Radyoda çalar"
       ],
       "isLocked": true,
-      "priceTL": 24.99
+      "priceTL": 24.99,
+      "hasSubcategories": false
     },
     {
       "id": "places",
@@ -172,7 +394,8 @@
         "Konum belirtir"
       ],
       "isLocked": true,
-      "priceTL": 19.99
+      "priceTL": 19.99,
+      "hasSubcategories": false
     },
     {
       "id": "animals",
@@ -196,7 +419,8 @@
         "Nefes alır"
       ],
       "isLocked": true,
-      "priceTL": 19.99
+      "priceTL": 19.99,
+      "hasSubcategories": false
     },
     {
       "id": "vehicles",
@@ -219,7 +443,8 @@
         "Hız yapar"
       ],
       "isLocked": true,
-      "priceTL": 29.99
+      "priceTL": 29.99,
+      "hasSubcategories": false
     },
     {
       "id": "sports",
@@ -242,7 +467,8 @@
         "Spor salonu"
       ],
       "isLocked": true,
-      "priceTL": 29.99
+      "priceTL": 29.99,
+      "hasSubcategories": false
     },
     {
       "id": "electronics",
@@ -265,7 +491,8 @@
         "Garanti vardır"
       ],
       "isLocked": true,
-      "priceTL": 39.99
+      "priceTL": 39.99,
+      "hasSubcategories": false
     },
     {
       "id": "clothing",
@@ -288,7 +515,8 @@
         "Giyilir"
       ],
       "isLocked": true,
-      "priceTL": 39.99
+      "priceTL": 39.99,
+      "hasSubcategories": false
     },
     {
       "id": "school_subjects",
@@ -311,7 +539,8 @@
         "Ders saati"
       ],
       "isLocked": true,
-      "priceTL": 49.99
+      "priceTL": 49.99,
+      "hasSubcategories": false
     },
     {
       "id": "games",
@@ -334,7 +563,8 @@
         "Zaman geçirir"
       ],
       "isLocked": true,
-      "priceTL": 49.99
+      "priceTL": 49.99,
+      "hasSubcategories": false
     },
     {
       "id": "books",
@@ -357,7 +587,8 @@
         "Sayfa sayısı"
       ],
       "isLocked": true,
-      "priceTL": 59.99
+      "priceTL": 59.99,
+      "hasSubcategories": false
     },
     {
       "id": "weather",
@@ -380,7 +611,8 @@
         "Meteoroloji"
       ],
       "isLocked": true,
-      "priceTL": 59.99
+      "priceTL": 59.99,
+      "hasSubcategories": false
     },
     {
       "id": "emotions",
@@ -403,7 +635,8 @@
         "Duygu durumu"
       ],
       "isLocked": true,
-      "priceTL": 69.99
+      "priceTL": 69.99,
+      "hasSubcategories": false
     },
     {
       "id": "household_items",
@@ -426,7 +659,8 @@
         "Ev içi"
       ],
       "isLocked": true,
-      "priceTL": 69.99
+      "priceTL": 69.99,
+      "hasSubcategories": false
     },
     {
       "id": "countries",
@@ -450,7 +684,8 @@
         "Pasaport gerekir"
       ],
       "isLocked": true,
-      "priceTL": 69.99
+      "priceTL": 69.99,
+      "hasSubcategories": false
     }
   ]
 }
