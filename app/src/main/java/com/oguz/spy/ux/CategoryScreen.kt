@@ -3,6 +3,7 @@ package com.oguz.spy.ux
 import android.R
 import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -58,6 +59,7 @@ data class Category(
     val isFavorite: Boolean,
     val hasSubcategories: Boolean = false,
     val subcategories: List<Subcategory> = emptyList(),
+    val isRandomCategory: Boolean = false,
 )
 
 // Oyuncu ve rol data class'ları
@@ -506,12 +508,16 @@ fun CategoryScreen(
                             isSelected = selectedCategory?.id == category.id,
                             onClick = {
                                 if (!category.isLocked) {
-                                    // YENİ MANTIK: Alt kategori varsa dialog göster
-                                    if (category.hasSubcategories) {
+                                    if (category.isRandomCategory) {
+                                        // Rastgele kategoriyi sadece işaretle, seçim oyun başlatılınca yapılacak
+                                        selectedCategory =
+                                            if (selectedCategory?.id == category.id) null else category
+                                        selectedSubcategory = null
+                                    } else if (category.hasSubcategories) {
+                                        // Normal alt kategori seçimi
                                         selectedCategoryForSubcategories = category
                                         showSubcategoryDialog = true
                                     } else {
-                                        // Alt kategori yoksa direkt seç
                                         selectedCategory =
                                             if (selectedCategory?.id == category.id) null else category
                                         selectedSubcategory = null
@@ -528,7 +534,9 @@ fun CategoryScreen(
                                 }
                             },
                             onFavoriteClick = {
-                                toggleFavorite(category.id)
+                                if (!category.isRandomCategory) {
+                                    toggleFavorite(category.id)
+                                }
                             },
                             productPrice = productPrice,
                             isLoading = isLoadingPurchase
@@ -546,8 +554,6 @@ fun CategoryScreen(
                     showSubcategoryDialog = false
                 },
                 onWatchAdForSubcategory = { subcategory ->
-                    // Reklam izletme işlemi (AdManager ile yapılacak)
-                    // Şimdilik test için direkt açalım
                     categoryManager.unlockSubcategoryWithAd(subcategory.id)
                     loadCategories()
                     showSubcategoryDialog = false
@@ -577,29 +583,75 @@ fun CategoryScreen(
             ) {
                 Button(
                     onClick = {
-                        // YENİ MANTIK: Alt kategori seçildiyse onun itemlarını kullan
-                        val itemsToUse =
-                            if (category.hasSubcategories && selectedSubcategory != null) {
-                                selectedSubcategory!!.items
-                            } else {
-                                category.items
+                        if (category.isRandomCategory) {
+                            // Açık kategorileri topla
+                            val unlockedCategories = categories.filter {
+                                !it.isLocked && !it.isRandomCategory
                             }
 
-                        val hintsToUse =
-                            if (category.hasSubcategories && selectedSubcategory != null) {
-                                selectedSubcategory!!.hints
-                            } else {
-                                category.hints
+                            if (unlockedCategories.isEmpty()) {
+                                errorMessage = "Henüz açık kategori bulunmuyor!"
+                                return@Button
                             }
 
-                        // Geçici kategori oluştur (seçilen itemlar ile)
-                        val categoryWithSelectedItems = category.copy(
-                            items = itemsToUse,
-                            hints = hintsToUse
-                        )
+                            // Rastgele bir kategori seç
+                            val randomCategory = unlockedCategories.random()
 
-                        val gamePlayers = assignRoles(players, categoryWithSelectedItems)
-                        onCategorySelected(categoryWithSelectedItems, gamePlayers)
+                            val itemsToUse: List<String>
+                            val hintsToUse: List<String>
+
+                            if (randomCategory.hasSubcategories) {
+                                // Alt kategorileri olan kategoriden rastgele alt kategori seç
+                                val unlockedSubs =
+                                    randomCategory.subcategories.filter { it.isUnlocked }
+
+                                if (unlockedSubs.isEmpty()) {
+                                    errorMessage =
+                                        "Rastgele seçilen kategoride açık alt kategori yok!"
+                                    return@Button
+                                }
+
+                                val randomSub = unlockedSubs.random()
+                                itemsToUse = randomSub.items
+                                hintsToUse = randomSub.hints
+                            } else {
+                                itemsToUse = randomCategory.items
+                                hintsToUse = randomCategory.hints
+                            }
+
+                            // Geçici kategori oluştur (seçilen itemlar ile)
+                            val categoryWithSelectedItems = randomCategory.copy(
+                                items = itemsToUse,
+                                hints = hintsToUse
+                            )
+
+                            val gamePlayers = assignRoles(players, categoryWithSelectedItems)
+                            onCategorySelected(categoryWithSelectedItems, gamePlayers)
+                        } else {
+                            // NORMAL KATEGORİLER İÇİN
+                            val itemsToUse =
+                                if (category.hasSubcategories && selectedSubcategory != null) {
+                                    selectedSubcategory!!.items
+                                } else {
+                                    category.items
+                                }
+
+                            val hintsToUse =
+                                if (category.hasSubcategories && selectedSubcategory != null) {
+                                    selectedSubcategory!!.hints
+                                } else {
+                                    category.hints
+                                }
+
+                            // Geçici kategori oluştur (seçilen itemlar ile)
+                            val categoryWithSelectedItems = category.copy(
+                                items = itemsToUse,
+                                hints = hintsToUse
+                            )
+
+                            val gamePlayers = assignRoles(players, categoryWithSelectedItems)
+                            onCategorySelected(categoryWithSelectedItems, gamePlayers)
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -610,7 +662,19 @@ fun CategoryScreen(
                     shape = RoundedCornerShape(16.dp),
                     enabled = if (category.hasSubcategories) selectedSubcategory != null else true
                 ) {
-                    val buttonText = if (category.hasSubcategories && selectedSubcategory != null) {
+                    val buttonText = if (category.isRandomCategory) {
+                        val unlockedCategories = categories.filter {
+                            !it.isLocked && !it.isRandomCategory
+                        }
+                        val totalUnlockedItems = unlockedCategories.sumOf { cat ->
+                            if (cat.hasSubcategories) {
+                                cat.subcategories.filter { it.isUnlocked }.sumOf { it.items.size }
+                            } else {
+                                cat.items.size
+                            }
+                        }
+                        "Oyunu Başlat - Rastgele ($totalUnlockedItems öge)"
+                    } else if (category.hasSubcategories && selectedSubcategory != null) {
                         "Oyunu Başlat - ${selectedSubcategory!!.name}"
                     } else if (category.hasSubcategories) {
                         "Alt Kategori Seçin"

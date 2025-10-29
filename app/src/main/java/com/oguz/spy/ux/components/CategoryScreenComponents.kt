@@ -53,7 +53,7 @@ fun CategoryCard(
     onUnlockClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     productPrice: String?,
-    isLoading: Boolean
+    isLoading: Boolean,
 ) {
     Card(
         modifier = Modifier
@@ -99,19 +99,10 @@ fun CategoryCard(
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(
                                     if (category.isLocked) {
-                                        Brush.linearGradient(
-                                            colors = listOf(
-                                                Color.Gray.copy(alpha = 0.3f),
-                                                Color.Gray.copy(alpha = 0.2f)
-                                            )
-                                        )
+                                        Color.Gray.copy(alpha = 0.3f)
                                     } else {
-                                        Brush.linearGradient(
-                                            colors = listOf(
-                                                category.color.copy(alpha = 0.3f),
-                                                category.color.copy(alpha = 0.2f)
-                                            )
-                                        )
+                                        category.color.copy(alpha = 0.2f)
+
                                     }
                                 ),
                             contentAlignment = Alignment.Center
@@ -151,7 +142,7 @@ fun CategoryCard(
                                     text = if (category.hasSubcategories) {
                                         "${category.subcategories.size} alt kategori"
                                     } else {
-                                        "${category.items.size} öğe"
+                                        if (category.id != "random_all") "${category.items.size} öğe" else "Akışına bırak."
                                     },
                                     fontSize = 14.sp,
                                     color = if (category.isLocked) Color.Gray.copy(alpha = 0.6f)
@@ -178,7 +169,9 @@ fun CategoryCard(
                         Icon(
                             imageVector = if (category.isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
                             contentDescription = "Favori",
-                            tint = if (category.isFavorite) category.color else Color.Gray.copy(alpha = 0.5f),
+                            tint = if (category.isFavorite) category.color else Color.Gray.copy(
+                                alpha = 0.5f
+                            ),
                             modifier = Modifier.size(24.dp)
                         )
                     }

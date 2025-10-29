@@ -5,11 +5,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Color
 import com.oguz.spy.ux.Category
+import com.oguz.spy.ux.Subcategory
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.oguz.spy.ux.Subcategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+data class CategoryJson(
+    @SerializedName("id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("iconName") val iconName: String,
+    @SerializedName("colorHex") val colorHex: String,
+    @SerializedName("items") val items: List<String>? = null,
+    @SerializedName("hints") val hints: List<String>? = null,
+    @SerializedName("isLocked") val isLocked: Boolean,
+    @SerializedName("priceTL") val priceTL: Double,
+    @SerializedName("hasSubcategories") val hasSubcategories: Boolean = false,
+    @SerializedName("subcategories") val subcategories: List<SubcategoryJson>? = null,
+    @SerializedName("isRandomCategory") val isRandomCategory: Boolean = false
+)
 
 data class SubcategoryJson(
     @SerializedName("id") val id: String,
@@ -18,18 +32,6 @@ data class SubcategoryJson(
     @SerializedName("isUnlocked") val isUnlocked: Boolean,
     @SerializedName("items") val items: List<String>,
     @SerializedName("hints") val hints: List<String>
-)
-data class CategoryJson(
-    @SerializedName("id") val id: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("iconName") val iconName: String,
-    @SerializedName("colorHex") val colorHex: String,
-    @SerializedName("items") val items: List<String>? = null, // Ana kategorinin kendi itemları
-    @SerializedName("hints") val hints: List<String>? = null,
-    @SerializedName("isLocked") val isLocked: Boolean,
-    @SerializedName("priceTL") val priceTL: Double,
-    @SerializedName("hasSubcategories") val hasSubcategories: Boolean = false,
-    @SerializedName("subcategories") val subcategories: List<SubcategoryJson>? = null
 )
 
 data class CategoriesData(
@@ -80,7 +82,8 @@ class CategoryDataManager(private val context: Context) {
                     priceTL = json.priceTL,
                     isFavorite = favorites.contains(json.id),
                     hasSubcategories = json.hasSubcategories,
-                    subcategories = subcategories
+                    subcategories = subcategories,
+                    isRandomCategory = json.isRandomCategory
                 )
             }
         } catch (e: Exception) {
@@ -89,28 +92,16 @@ class CategoryDataManager(private val context: Context) {
         }
     }
 
-    private fun getUnlockedSubcategoryIds(): Set<String> {
-        return prefs.getStringSet(UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
-    }
-
-    fun unlockSubcategoryWithAd(subcategoryId: String) {
-        val unlocked = getUnlockedSubcategoryIds().toMutableSet()
-        unlocked.add(subcategoryId)
-        prefs.edit().putStringSet(UNLOCKED_SUBCATEGORIES_KEY, unlocked).apply()
-    }
-
-    fun isSubcategoryUnlocked(subcategoryId: String): Boolean {
-        return getUnlockedSubcategoryIds().contains(subcategoryId)
-    }
-
-
-
     private fun getFavoriteIds(): Set<String> {
         return prefs.getStringSet(FAVORITES_KEY, emptySet()) ?: emptySet()
     }
 
     private fun getPurchasedIds(): Set<String> {
         return prefs.getStringSet(PURCHASED_KEY, emptySet()) ?: emptySet()
+    }
+
+    private fun getUnlockedSubcategoryIds(): Set<String> {
+        return prefs.getStringSet(UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
     }
 
     fun toggleFavorite(categoryId: String) {
@@ -123,16 +114,24 @@ class CategoryDataManager(private val context: Context) {
         prefs.edit().putStringSet(FAVORITES_KEY, favorites).apply()
     }
 
-    // Satın alınan kategoriyi kaydet
     fun markAsPurchased(categoryId: String) {
         val purchased = getPurchasedIds().toMutableSet()
         purchased.add(categoryId)
         prefs.edit().putStringSet(PURCHASED_KEY, purchased).apply()
     }
 
-    // Kategori satın alınmış mı kontrol et
     fun isPurchased(categoryId: String): Boolean {
         return getPurchasedIds().contains(categoryId)
+    }
+
+    fun unlockSubcategoryWithAd(subcategoryId: String) {
+        val unlocked = getUnlockedSubcategoryIds().toMutableSet()
+        unlocked.add(subcategoryId)
+        prefs.edit().putStringSet(UNLOCKED_SUBCATEGORIES_KEY, unlocked).apply()
+    }
+
+    fun isSubcategoryUnlocked(subcategoryId: String): Boolean {
+        return getUnlockedSubcategoryIds().contains(subcategoryId)
     }
 
     private fun getIconByName(iconName: String) = when (iconName) {
@@ -154,6 +153,7 @@ class CategoryDataManager(private val context: Context) {
         "mood" -> Icons.Default.Mood
         "home" -> Icons.Default.Home
         "public" -> Icons.Default.Public
+        "shuffle" -> Icons.Default.Shuffle  // YENİ İKON
         else -> Icons.Default.Category
     }
 }

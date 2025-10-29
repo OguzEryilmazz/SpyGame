@@ -2,6 +2,18 @@
   "version": 13 ,
   "categories": [
     {
+      "id": "random_all",
+      "name": "🎲 Rastgele",
+      "iconName": "shuffle",
+      "colorHex": "#000000",
+      "items": [],
+      "hints": [],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false,
+      "isRandomCategory": true
+    },
+    {
       "id": "professions",
       "name": "Meslekler",
       "iconName": "work",
@@ -351,26 +363,162 @@
       "name": "Şarkıcılar",
       "iconName": "music",
       "colorHex": "#E91E63",
-      "items": [
-        "Tarkan", "Sezen Aksu", "Ajda Pekkan", "Barış Manço", "Cem Karaca",
-        "Sertab Erener", "Kenan Doğulu", "Mustafa Sandal", "Hadise", "Demet Akalın",
-        "Gülben Ergen", "Sibel Can", "İbrahim Tatlıses", "Müslüm Gürses", "Orhan Gencebay",
-        "Taylor Swift", "Ed Sheeran", "Adele", "Beyoncé", "Rihanna",
-        "Justin Bieber", "The Weeknd", "Dua Lipa", "Ariana Grande", "Bruno Mars",
-        "Eminem", "Drake", "Kanye West", "Jay-Z", "Kendrick Lamar"
-      ],
-      "hints": [
-        "Mikrofon kullanır",
-        "Sahne alır",
-        "Konser verir",
-        "Albümü var",
-        "Klip çeker",
-        "Müzik ödülü",
-        "Radyoda çalar"
-      ],
-      "isLocked": true,
-      "priceTL": 24.99,
-      "hasSubcategories": false
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "singers_domestic_pop",
+          "name": "Yerli Pop",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Sezen Aksu", "Tarkan", "Ajda Pekkan", "Kenan Doğulu", "Sertab Erener",
+            "Mustafa Sandal", "Gülben", "Eda", "Zeynep Bastık", "Simge",
+            "Hayko Cepkin", "Serdar Ortaç", "Murat Boz", "Oğuzhan Koç", "İrem Derici",
+            "Yalın", "Yaşar", "Manifest", "Semicenk"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_domestic_rap_trap",
+          "name": "Yerli Rap/Trap",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Ceza", "Sagopa Kajmer", "Ezhel", "Uzi", "Ben Fero",
+            "Şehinşah", "Ckay", "Murda", "Norm Ender", "Gazapizm",
+            "Reckol", "Joker", "Güneş", "Khontkar", "Baneva",
+            "Mero", "Ati242", "Şam", "Blok3", "Erzoo&Mansur",
+            "Eae!", "Eba", "Ezcannur", "Jeff Red", "Organize", "Posi"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_domestic_arabesque",
+          "name": "Yerli Arabesk",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Müslüm Gürses", "Ferdi Tayfur", "Orhan Gencebay", "İbrahim Tatlıses",
+            "Bergen", "Azer Bülbül", "Mahsun Kırmızıgül", "Ebru Gündeş",
+            "Hüsnü Şenlendirici", "Gülü"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_domestic_rock",
+          "name": "Yerli Rock",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Barış Manço", "Cem Karaca", "Erkin Koray", "Duman",
+            "Şebnem Ferah", "Teoman", "Mor ve Ötesi", "Athena",
+            "Haluk Levent", "Manga", "Gripin", "Pinhani"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_domestic_alternative",
+          "name": "Yerli Alternatif",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Büyük Ev Ablukada", "Adamlar", "Melisa Şahin", "Kalben",
+            "Can Ozan", "Sena Şener", "Son Feci Bisiklet"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_foreign_pop",
+          "name": "Yabancı Pop",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Beyoncé", "Taylor Swift", "Britney Spears", "Rihanna",
+            "Lady Gaga", "Adele", "Bruno Mars", "Justin Timberlake",
+            "Adam Levine", "Katy Perry", "Justin Bieber", "Troye Sivan",
+            "Jennifer Lopez", "Dua Lipa", "Billie Eilish", "The Weeknd",
+            "Harry Styles", "Ed Sheeran", "Miley Cyrus", "Selena Gomez",
+            "Maroon 5", "Michael Jackson", "Madonna"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_foreign_hiphop",
+          "name": "Yabancı Hip-Hop/Rap",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Eminem", "Tupac", "Snoop Dogg", "Jay-Z", "Drake",
+            "Kanye West", "Kendrick Lamar", "J. Cole", "Nicki Minaj",
+            "Lil Wayne", "50 Cent", "Dr. Dre", "Cardi B",
+            "Future", "Post Malone", "XXXTentacion", "Pop Smoke",
+            "21 Savage", "Doja Cat", "Lil Baby", "Juice WRLD",
+            "Lil Uzi Vert", "Playboi Carti", "Young Thug", "Gunna", "Central Cee"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_foreign_latin",
+          "name": "Yabancı Latin",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Shakira", "Daddy Yankee", "J Balvin", "Jennifer Lopez",
+            "Maluma", "Pitbull", "Camila Cabello", "Luis Fonsi"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "singers_foreign_rock",
+          "name": "Yabancı Rock",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "The Beatles", "Queen", "Pink Floyd", "Eagles",
+            "AC DC", "Guns N' Roses", "Metallica", "Scorpions",
+            "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        }
+      ]
     },
     {
       "id": "places",
@@ -686,6 +834,198 @@
       "isLocked": true,
       "priceTL": 69.99,
       "hasSubcategories": false
+    },
+    {
+      "id": "actors",
+      "name": "Oyuncular",
+      "iconName": "movie",
+      "colorHex": "#F44336",
+      "isLocked": true,
+      "priceTL": 79.99,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "actors_domestic_male",
+          "name": "Yerli Erkek Oyuncu",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Kıvanç Tatlıtuğ", "Kenan İmirzalıoğlu", "Halit Ergenç", "Burak Özçivit",
+            "Çağatay Ulusoy", "Aras Bulut İynemli", "Nejat İşler", "Can Yaman",
+            "Kerem Bürsin", "Barış Arduç", "Cem Yılmaz", "Şahan Gökbakar",
+            "Ata Demirer", "Yılmaz Erdoğan", "Şafak Sezer", "Erdal Beşikçioğlu",
+            "Kemal Sunal", "Haluk Bilginer", "İlker Kaleli", "Selahattin Paşalı",
+            "Mert Ramazan Demir"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "actors_domestic_female",
+          "name": "Yerli Kadın Oyuncu",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Beren Saat", "Serenay Sarıkaya", "Hande Erçel", "Cansu Dere",
+            "Hazal Kaya", "Afra Saraçoğlu", "Pınar Deniz", "Ezgi Mola",
+            "Burcu Biricik", "Elçin Sangu", "Gupse Özay", "Melisa Aslı Pamuk",
+            "Tuba Büyüküstün", "Fahriye Evcen", "Nurgül Yeşilçay", "Aslı Enver",
+            "Merve Dizdar"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "actors_foreign_male",
+          "name": "Yabancı Erkek Oyuncu",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Leonardo DiCaprio", "Tom Cruise", "Brad Pitt", "Johnny Depp",
+            "Will Smith", "Keanu Reeves", "Dwayne Johnson", "Robert Downey Jr.",
+            "Joaquin Phoenix", "Hugh Jackman", "Bradley Cooper", "Ryan Gosling",
+            "Tom Holland", "Chris Hemsworth", "Vin Diesel", "Jason Statham",
+            "Adam Sandler", "Ben Affleck", "Cillian Murphy", "Tom Hardy",
+            "Chris Evans", "Morgan Freeman"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "actors_foreign_female",
+          "name": "Yabancı Kadın Oyuncu",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Angelina Jolie", "Jennifer Aniston", "Scarlett Johansson", "Margot Robbie",
+            "Emma Stone", "Zendaya", "Anne Hathaway", "Natalie Portman",
+            "Kristen Stewart", "Emma Watson", "Gal Gadot", "Sydney Sweeney",
+            "Anya Taylor-Joy", "Millie Bobby Brown", "Elizabeth Olsen", "Ana de Armas",
+            "Dakota Johnson"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "streamers",
+      "name": "Yayıncılar",
+      "iconName": "live_tv",
+      "colorHex": "#9C27B0",
+      "items": [
+        "Elraenn", "Jahrein", "Wtcn", "Pqueen", "Kendine Müzisyen",
+        "Mithrain", "Unlost", "Eray", "Levo", "zeoN",
+        "PurpleBixi", "Efe Uygaç", "Miafitz", "Hazreti Yasuo", "Elwind",
+        "Hype", "Anna Deniz", "Rraenee", "Vales", "Htalks",
+        "Ataberk Doğan", "Tolunay Ören"
+      ],
+      "hints": [
+        "Canlı yayın yapar",
+        "İnternet platformu",
+        "İzleyici kitlesi",
+        "Twitch YouTube",
+        "Etkileşimli içerik",
+        "Bağış alabilir",
+        "Dijital medya"
+      ],
+      "isLocked": true,
+      "priceTL": 79.99,
+      "hasSubcategories": false
+    },
+    {
+      "id": "youtubers",
+      "name": "Youtuberlar",
+      "iconName": "play_circle",
+      "colorHex": "#C75083",
+      "isLocked": true,
+      "priceTL": 79.99,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "youtubers_male",
+          "name": "Erkek Youtuberlar",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Enes Batur",
+            "Ruhi Çenet",
+            "Orkun Işıtmak",
+            "Deli Mi Ne?",
+            "Kafalar",
+            "Reynmen",
+            "Berkcan Güven",
+            "Ali Biçim",
+            "Mesut Can Tomay",
+            "Enis Kirazoğlu",
+            "Ümidi",
+            "Doğan Kabak",
+            "Barış Özcan",
+            "Evrim Ağacı",
+            "Diamond Tema",
+            "Porçay",
+            "Alper Rende",
+            "Fırat Sobutay",
+            "Melih Abuaf",
+            "Oha Diyorum",
+            "Yapyap",
+            "CZN Burak",
+            "Burak Oyunda",
+            "Yusuf Kayaalp",
+            "BARIŞ BRA",
+            "Murat Abi GF",
+            "Testo Taylan",
+            "Mertcan Bahar",
+            "Amerikalı Aynasız",
+            "Murat Soner",
+            "Rıdvan Abi",
+            "Röportaj Adam",
+            "SeseGel",
+            "Noluyo Ya?"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        },
+        {
+          "id": "youtubers_female",
+          "name": "Kadın Youtuberlar",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Duygu Özaslan",
+            "Merve Özkaynak",
+            "Şeyda Erdoğan",
+            "Danla Bilic",
+            "Betül Çakmak",
+            "Ecenaz Üçer",
+            "Meryem Can",
+            "Eda Biçim",
+            "Berfu Yenenler",
+            "İdil Yazar",
+            "Refika Birgül"
+          ],
+          "hints": [
+            "HINT 1",
+            "HINT 2",
+            "HINT 3"
+          ]
+        }
+      ]
     }
   ]
 }
