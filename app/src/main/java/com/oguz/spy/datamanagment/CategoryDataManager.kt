@@ -153,7 +153,7 @@ class CategoryDataManager(private val context: Context) {
         "mood" -> Icons.Default.Mood
         "home" -> Icons.Default.Home
         "public" -> Icons.Default.Public
-        "shuffle" -> Icons.Default.Shuffle  // YENİ İKON
+        "shuffle" -> Icons.Default.Shuffle
         else -> Icons.Default.Category
     }
 }

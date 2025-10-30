@@ -98,11 +98,10 @@ fun CategoryCard(
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(
-                                    if (category.isLocked) {
-                                        Color.Gray.copy(alpha = 0.3f)
+                                    color = if (category.isLocked) {
+                                        Color.Gray.copy(alpha = 0.2f)
                                     } else {
                                         category.color.copy(alpha = 0.2f)
-
                                     }
                                 ),
                             contentAlignment = Alignment.Center

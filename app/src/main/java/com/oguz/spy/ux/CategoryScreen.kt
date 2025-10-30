@@ -594,7 +594,18 @@ fun CategoryScreen(
                                 return@Button
                             }
 
-                            // Rastgele bir kategori seç
+                            val playableCategories = unlockedCategories.filter { cat ->
+                                if (cat.hasSubcategories) {
+                                    cat.subcategories.any { it.isUnlocked }
+                                } else {
+                                    cat.items.isNotEmpty()
+                                }
+                            }
+
+                            if (playableCategories.isEmpty()) {
+                                errorMessage = "Oynanabilir kategori bulunmuyor!"
+                                return@Button
+                            }
                             val randomCategory = unlockedCategories.random()
 
                             val itemsToUse: List<String>

@@ -134,12 +134,19 @@
             "Kenan Yıldız", "Can Uzun", "Arda Güler", "Orkun Kökçü",
             "İsmail Yüksek", "Hakan Çalhanoğlu", "Mert Müldür", "Abdülkerim Bardakçı",
             "Eren Elmalı", "Ferdi Kadıoğlu", "Merih Demiral", "Uğurcan Çakır",
-            "Yusuf Akçiçek", "Zeki Çelik", "Berke Özer", "Cenk Tosun", "Ozan Tufan"
+            "Yusuf Akçiçek", "Zeki Çelik", "Berke Özer", "Cenk Tosun", "Ozan Tufan",
+            "Altay Bayındır" , "Mert Günok" ,"Ersin Destanoğlu" ,"Volkan Babacan",
+            "Çağlar Söyüncü" ,"Samet Akaydın" , "Rıdvan Yılmaz","Ozan Kabak","Ahmetcan Kaplan",
+            "Emirhan İlkhan" ,"Berkay Vardar" ,"Salih Özcan" ,"Okay Yokuşlu", "Taylan Antalyalı",
+            "Semih Kılıçsoy" ,"Berkan Kutlu" ,"İrfan Can Kahveci","Emre Akbaba","Emre Mor","Yusuf Yazıcı",
+            "Berat Özdemir" , "Kerem Demirbay" ,"Enes Ünal" ,"Umut Nayir" ,"Halil Dervişoğlu","Bertuğ Yıldırım",
+            "Cengiz Ünder" ,"Abdülkadir Ömür" ,"Emre Akbaba" ,"Yusuf Sarı" ,"Güven Yalçın" ,"Emrecan Uzunhan",
+            "Efe Akman" ,"Bartuğ Elmaz" ,"Emrecan Bulut"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Yerli",
+            "Para",
+            "Yetenekli"
           ]
         },
         {
@@ -159,7 +166,11 @@
             "Lucas Torreira", "Leroy Sané", "Mauro Icardi", "Ederson",
             "Jhon Durán", "Talisca", "Sebastian Szymanski", "Rafa Silva",
             "Tammy Abraham", "Milot Rashica", "Dušan Tadić", "Edin Džeko",
-            "Michy Batshuayi", "Enner Valencia"
+            "Michy Batshuayi", "Enner Valencia","Pedri" ,"Gavi","Jamal Musiala","Rafael Leão",
+            "Marcus Rashford" ,"Bruno Fernandes" ,"Alejandro Garnacho" ,"João Félix" ,"Federico Chiesa",
+            "Nicolo Barella","Achraf Hakim" ,"Sandro Tonali" ,"Frankie de Jong","Kolo Muan" ,"João Cancelo",
+            "Bukayo Saka","Martin Ødegaard","Rafael Varane","Joshua Kimmich" ,"Diogo Jota-RİP","Darwin Núñez",
+            "Khvicha Kvaratskhelia" ,"André Onana" ,"Antonio Rüdiger" ,"Marquinhos" ,"Niclas Füllkrug"
           ],
           "hints": [
             "HINT 1",
@@ -173,9 +184,9 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Rüştü Reçber", "Bülent Korkmaz", "Emre Belözoğlu", "Arda Turan",
-            "Hamit Altıntop", "Burak Yılmaz", "Nihat Kahveci", "Gökhan Gönül",
-            "Volkan Demirel", "Fatih Tekke", "Semih Şentürk", "Okan Buruk",
+            "Rüştü Reçber", "Bülent Korkmaz", "Emre Belözoğlu", "Arda Turan","Metin Oktay","Can Bartu","Tanju Çolak","Tugay Kerimoğlu",
+            "Hamit Altıntop", "Burak Yılmaz", "Nihat Kahveci", "Gökhan Gönül","Tuncay Şanlı","Servet Çetin","Oğuz Çetin",
+            "Volkan Demirel", "Fatih Tekke", "Semih Şentürk", "Okan Buruk","Yattara","Ümit Davala","Hasan Şaş",
             "Selçuk İnan", "Tümer Metin", "Rıdvan Dilmen", "Sergen Yalçın", "Serhat Akın"
           ],
           "hints": [
@@ -190,14 +201,20 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Pelé", "Diego Maradona", "Johan Cruyff", "Ronaldo Nazário",
-            "Zinedine Zidane", "Michel Platini", "Ronaldinho", "Lev Yashin",
+            "Pelé", "Diego Maradona", "Johan Cruyff", "Ronaldo Nazário","Romário",
+            "Zinedine Zidane", "Michel Platini", "Ronaldinho", "Lev Yashin","Rivaldo",
             "Roberto Carlos", "Gianluigi Buffon", "Thierry Henry", "Xavi Hernández",
-            "Andrés Iniesta", "Kaká", "Steven Gerrard", "Didier Drogba",
-            "Zlatan Ibrahimović", "Arjen Robben", "Wayne Rooney", "Gareth Bale",
-            "Frank Lampard", "Mesut Özil", "Gerard Piqué", "Sergio Agüero",
-            "Iker Casillas", "Wesley Sneijder", "Robin van Persie", "Gheorghe Hagi",
-            "Samuel Eto'o", "Pepe", "Alex de Souza", "Ricardo Quaresma"
+            "Andrés Iniesta", "Kaká", "Steven Gerrard", "Didier Drogba","Cafu","Dani Alves",
+            "Zlatan Ibrahimović", "Arjen Robben", "Wayne Rooney", "Gareth Bale","Esteban Cambiasso",
+            "Frank Lampard", "Mesut Özil", "Gerard Piqué", "Sergio Agüero","Bebeto","Juan Román Riquelme",
+            "Iker Casillas", "Wesley Sneijder", "Robin van Persie", "Gheorghe Hagi","Fernando Torres",
+            "Samuel Eto'o", "Pepe", "Alex de Souza", "Ricardo Quaresma","Zinedine Zidane","Javier Zanetti",
+            "David Villa","Carles Puyol","Raúl González","Cesc Fàbregas","Rio Ferdinand","Paul Scholes",
+            "John Terry","Ashley Cole" ,"Alan Shearer","David Beckham","Michael Owen","Peter Crouch","Ashley Cole"
+            ,"Paolo Maldini" ,"Alessandro Nesta" ,"Fabio Cannavaro" ,"Francesco Totti" ,"Alessandro Del Piero",
+            "Andrea Pirlo" ,"Marco Materazzi" ,"Filippo Inzaghi","Miroslav Klose","Bastian Schweinsteiger","Philipp Lahm",
+            "Oliver Kahn","Lothar Matthäus","Patrick Vieira","Claude Makélélé","Eric Cantona","Eusébio","Deco","Luís Figo","George Best",
+            "Pavel Nedvěd","Andriy Shevchenko","Clarence Seedorf"
           ],
           "hints": [
             "HINT 1",
@@ -218,7 +235,10 @@
             "Jimmy Butler", "Paul George", "Donovan Mitchell", "Zion Williamson",
             "Trae Young", "Alperen Şengün", "LaMelo Ball", "Draymond Green",
             "Klay Thompson", "Karl-Anthony Towns", "James Harden", "Russell Westbrook",
-            "Chris Paul", "DeMar DeRozan", "Adem Bona"
+            "Chris Paul", "DeMar DeRozan", "Adem Bona","Jaylen Brown","SGA","Anthony Edwards",
+            "De’Aaron Fox","Jalen Brunson","Domantas Sabonis","Rudy Gobert","Brandon Ingram",
+            "Chet Holmgren","Scoot Henderson","Franz Wagner","Tyrese Maxey","Evan Mobley","Paolo Banchero",
+            "Alex Caruso"
           ],
           "hints": [
             "HINT 1",
@@ -235,7 +255,8 @@
             "Shane Larkin", "Ercan Osmani", "Şehmus Hazer", "Tarık Biberović",
             "Talen-Horton Tucker", "Melih Mahmutoğlu", "Scottie Wilbekin", "Nicolò Melli",
             "Cedi Osman", "Mario Hezonja", "Willy Hernangómez", "Jabari Parker",
-            "Nikola Mirotić", "Mike James"
+            "Nikola Mirotić", "Mike James","Pau Gasol","Hidayet Türkoğlu","Mehmet Okur",
+            "Vassilis Spanoulis","Andrei Kirilenko"
           ],
           "hints": [
             "HINT 1",
@@ -254,7 +275,7 @@
             "Hakeem Olajuwon", "Julius Erving", "Allen Iverson", "Charles Barkley",
             "Vince Carter", "Dwyane Wade", "Dirk Nowitzki", "Tim Duncan",
             "Kevin Garnett", "Scottie Pippen", "Karl Malone", "Isiah Thomas",
-            "Jerry West", "John Stockton", "Dennis Rodman"
+            "Jerry West", "John Stockton", "Dennis Rodman","Dikembe Mutombo","Yao Ming"
           ],
           "hints": [
             "HINT 1",
@@ -299,7 +320,10 @@
             "Justin Gaethje", "Alexander Volkanovski", "Max Holloway", "José Aldo",
             "Charles Oliveira", "Stipe Miocic", "Tom Aspinall", "Kevin Holland",
             "Magomed Ankalaev", "Merab Dvalişvili", "Jiří Procházka", "Dricus Du Plessis",
-            "Michael Chandler", "Sean Strickland", "Umar Nurmagomedov"
+            "Michael Chandler", "Sean Strickland", "Umar Nurmagomedov","Brandon Moreno",
+            "Aljamain Sterling","Beneil Dariush","Gilbert Burns","Yair Rodríguez","Marlon Vera",
+            "Renato Moicano","Movsar Evloev","Ciryl Gane","BJ Penn","Tito Ortiz","Lyoto Machida",
+            "Michael Bisping","Arman Tsarukyan","Mateusz Gamrot","Manel Kape"
           ],
           "hints": [
             "HINT 1",
@@ -316,7 +340,8 @@
             "The Rock", "John Cena", "The Undertaker", "Roman Reigns",
             "Triple H", "Brock Lesnar", "Rey Mysterio", "Kane",
             "Batista", "Randy Orton", "Edge", "CM Punk",
-            "Jeff Hardy", "Big Show"
+            "Jeff Hardy", "Big Show","Logan Paul","Shawn Michaels","Seth Rollins",
+            "AJ Styles","Kevin Owens","Finn Bálor","Dominik Mysterio",""
           ],
           "hints": [
             "HINT 1",
@@ -332,7 +357,10 @@
           "items": [
             "Muhammad Ali", "Mike Tyson", "Floyd Mayweather Jr.", "Manny Pacquiao",
             "Canelo Álvarez", "Oleksandr Usyk", "Terence Crawford", "Tyson Fury",
-            "Gervonta Davis", "Ryan García", "Jake Paul"
+            "Gervonta Davis", "Ryan García", "Jake Paul","Ryan Garcia","Joe Frazier",
+            "George Foreman","Larry Holmes","Evander Holyfield","Sugar Ray Leonard",
+            "Ray Robinson", "Gennady Golovkin (GGG)", "Devin Haney","Naoya Inoue",
+            "Artur Beterbiev","Dmitry Bivol"
           ],
           "hints": [
             "HINT 1",
@@ -348,7 +376,9 @@
           "items": [
             "Lando Norris", "Oscar Piastri", "Max Verstappen", "George Russell",
             "Charles Leclerc", "Lewis Hamilton", "Fernando Alonso", "Sebastian Vettel",
-            "Michael Schumacer", "Andrea Antonelli", "Alexander Albon"
+            "Michael Schumacer", "Andrea Antonelli", "Alexander Albon","Sergio Pérez",
+            "Carlos Sainz","Esteban Ocon","Pierre Gasly","Nico Hülkenberg","Kevin Magnussen",
+            "Nigel Mansell","Alain Prost","Jackie Stewart"
           ],
           "hints": [
             "HINT 1",
@@ -855,12 +885,15 @@
             "Kerem Bürsin", "Barış Arduç", "Cem Yılmaz", "Şahan Gökbakar",
             "Ata Demirer", "Yılmaz Erdoğan", "Şafak Sezer", "Erdal Beşikçioğlu",
             "Kemal Sunal", "Haluk Bilginer", "İlker Kaleli", "Selahattin Paşalı",
-            "Mert Ramazan Demir"
+            "Mert Ramazan Demir","Aytaç Şaşmaz","Alperen Duymaz", "Boran Kuzum",
+            "Uraz Kaygılaroğlu", "Tolga Sarıtaş","Şener Şen","Tamer Karadağlı" ,
+            "Ali Atay" , "Erkan Petekkaya", "Mehmet Günsür", "Doğu Demirkol" ,"Murat Cemcir",
+            "Metin Akpınar" ,"Zeki Alasya" , "Murat Cemcir" ,"Kubilay Aka"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Yakışıklı",
+            "Zengin",
+            "Televizyon"
           ]
         },
         {
@@ -873,12 +906,16 @@
             "Hazal Kaya", "Afra Saraçoğlu", "Pınar Deniz", "Ezgi Mola",
             "Burcu Biricik", "Elçin Sangu", "Gupse Özay", "Melisa Aslı Pamuk",
             "Tuba Büyüküstün", "Fahriye Evcen", "Nurgül Yeşilçay", "Aslı Enver",
-            "Merve Dizdar"
+            "Merve Dizdar" ,"Demet Özdemir","Alina Boz","Miray Daner" ,"Dilan Çiçek Deniz" ,
+            "Hafsanur Sancaktutan" ,"Ayça Ayşin Turan" ,"Neslihan Atagül","Türkan Şoray" ,
+            "Hülya Koçyiğit" ,"Gonca Vuslateri" ,"Gülse Birsel" ,"Büşra Pekin" , "Seda Bakan" ,
+            "Pelin Akil" ,"Nilperi Şahinkaya" ,"Ecem Erkek" , "Melisa Döngel" ,"İpek Filiz Yazıcı",
+            "Cemre Baysel"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Güzel",
+            "Yetenekli",
+            "Türkiye"
           ]
         },
         {
@@ -930,7 +967,7 @@
         "Mithrain", "Unlost", "Eray", "Levo", "zeoN",
         "PurpleBixi", "Efe Uygaç", "Miafitz", "Hazreti Yasuo", "Elwind",
         "Hype", "Anna Deniz", "Rraenee", "Vales", "Htalks",
-        "Ataberk Doğan", "Tolunay Ören"
+        "Ataberk Doğan", "Tolunay Ören","PintiPanda","Ege Arseven" ,"ZgocBrayt"
       ],
       "hints": [
         "Canlı yayın yapar",
@@ -960,40 +997,12 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Enes Batur",
-            "Ruhi Çenet",
-            "Orkun Işıtmak",
-            "Deli Mi Ne?",
-            "Kafalar",
-            "Reynmen",
-            "Berkcan Güven",
-            "Ali Biçim",
-            "Mesut Can Tomay",
-            "Enis Kirazoğlu",
-            "Ümidi",
-            "Doğan Kabak",
-            "Barış Özcan",
-            "Evrim Ağacı",
-            "Diamond Tema",
-            "Porçay",
-            "Alper Rende",
-            "Fırat Sobutay",
-            "Melih Abuaf",
-            "Oha Diyorum",
-            "Yapyap",
-            "CZN Burak",
-            "Burak Oyunda",
-            "Yusuf Kayaalp",
-            "BARIŞ BRA",
-            "Murat Abi GF",
-            "Testo Taylan",
-            "Mertcan Bahar",
-            "Amerikalı Aynasız",
-            "Murat Soner",
-            "Rıdvan Abi",
-            "Röportaj Adam",
-            "SeseGel",
-            "Noluyo Ya?"
+            "Enes Batur", "Ruhi Çenet", "Orkun Işıtmak", "Deli Mi Ne?", "Kafalar", "Reynmen",
+            "Berkcan Güven", "Ali Biçim", "Mesut Can Tomay", "Enis Kirazoğlu", "Ümidi", "Doğan Kabak", "Barış Özcan", "Evrim Ağacı",
+            "Diamond Tema", "Porçay", "Alper Rende", "Fırat Sobutay", "Melih Abuaf", "Oha Diyorum", "Yapyap", "CZN Burak", "Burak Oyunda",
+            "Yusuf Kayaalp", "BARIŞ BRA", "Murat Abi GF", "Testo Taylan", "Mertcan Bahar",
+            "Amerikalı Aynasız", "Murat Soner", "Rıdvan Abi", "Röportaj Adam",
+            "SeseGel", "Noluyo Ya?","Mert Karadeniz" ,"SeeOK" ,"Furkan Arabacı",""
           ],
           "hints": [
             "HINT 1",
@@ -1006,18 +1015,8 @@
           "name": "Kadın Youtuberlar",
           "unlockedByAd": true,
           "isUnlocked": false,
-          "items": [
-            "Duygu Özaslan",
-            "Merve Özkaynak",
-            "Şeyda Erdoğan",
-            "Danla Bilic",
-            "Betül Çakmak",
-            "Ecenaz Üçer",
-            "Meryem Can",
-            "Eda Biçim",
-            "Berfu Yenenler",
-            "İdil Yazar",
-            "Refika Birgül"
+          "items": ["Duygu Özaslan", "Merve Özkaynak", "Şeyda Erdoğan", "Danla Bilic", "Betül Çakmak", "Ecenaz Üçer",
+            "Meryem Can", "Eda Biçim", "Berfu Yenenler", "İdil Yazar", "Refika Birgül","Elvin Levinler"
           ],
           "hints": [
             "HINT 1",
