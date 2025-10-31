@@ -34,6 +34,10 @@
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2309411454414388~8176919244"/>
+
         <receiver
             android:name="com.android.billingclient.api.ProxyBillingActivity"
             android:exported="false"

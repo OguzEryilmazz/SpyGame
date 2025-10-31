@@ -6,10 +6,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.ux.*
 
 @Composable
-fun PageTransition() {
+fun PageTransition(
+    rewardedAdManager: RewardedAdManager //
+) {
     val navController = rememberNavController()
 
     // Oyun ayarları state'leri
@@ -18,7 +21,6 @@ fun PageTransition() {
     var showHints by remember { mutableStateOf(true) }
 
     // Oyuncu verileri - Bu veriler tüm navigation boyunca korunacak
-    // Player data class'ı artık selectedCharacter alanını da içeriyor
     var playersData by remember { mutableStateOf<List<Player>>(emptyList()) }
 
     // Seçilen kategori ve oyun verileri
@@ -44,7 +46,7 @@ fun PageTransition() {
         composable(
             "playerSetUpScreen/{playerCount}",
             arguments = listOf(
-                navArgument("playerCount") { type = NavType.IntType },
+                navArgument("playerCount") { type = NavType.IntType }
             )
         ) { backStackEntry ->
             val playerCount = backStackEntry.arguments?.getInt("playerCount") ?: 4
@@ -56,7 +58,7 @@ fun PageTransition() {
                     navController.popBackStack()
                 },
                 onStartGame = { players ->
-                    // Oyuncu verilerini kaydet (artık karakter seçimi de dahil)
+                    // Oyuncu verilerini kaydet (karakter seçimi dahil)
                     playersData = players
                     navController.navigate("categoryScreen")
                 }
@@ -67,6 +69,7 @@ fun PageTransition() {
             CategoryScreen(
                 navController = navController,
                 players = playersData,
+                rewardedAdManager = rewardedAdManager, // BURADA GEÇİRİN
                 onCategorySelected = { category, gamePlayers ->
                     // Seçilen kategori ve oyun oyuncularını kaydet
                     selectedCategory = category

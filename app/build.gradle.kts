@@ -95,5 +95,10 @@ dependencies {
 
     implementation("com.android.billingclient:billing-ktx:6.1.0")
 
+    implementation("com.google.android.gms:play-services-ads:22.6.0")
+
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
 
 }
