@@ -13,6 +13,8 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -178,10 +180,12 @@ fun TimerScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .padding(top = 16.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Üst başlık
             Card(
@@ -227,7 +231,7 @@ fun TimerScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(0.3f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Ana zamanlayıcı
             Box(
@@ -237,7 +241,7 @@ fun TimerScreen(
                 CircularProgressIndicator(
                     progress = { (timeLeft.toFloat() / (gameDuration * 60)) },
                     modifier = Modifier
-                        .size(320.dp)
+                        .size(280.dp)
                         .scale(pulseScale),
                     color = primaryColor.copy(alpha = 0.3f),
                     strokeWidth = 12.dp,
@@ -248,7 +252,7 @@ fun TimerScreen(
                 // Ana zaman kartı
                 Card(
                     modifier = Modifier
-                        .size(280.dp)
+                        .size(240.dp)
                         .scale(pulseScale),
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(
@@ -268,7 +272,7 @@ fun TimerScreen(
                             // Ana zaman
                             Text(
                                 text = String.format("%02d:%02d", timeLeft / 60, timeLeft % 60),
-                                fontSize = 72.sp,
+                                fontSize = 64.sp,
                                 fontWeight = FontWeight.Black,
                                 color = primaryColor,
                                 textAlign = TextAlign.Center,
@@ -293,7 +297,7 @@ fun TimerScreen(
                 if (timeLeft <= 10 && !isGameFinished && isTimerRunning) {
                     Canvas(
                         modifier = Modifier
-                            .size(320.dp)
+                            .size(280.dp)
                             .scale(pulseScale)
                     ) {
                         val radius = size.minDimension / 2
@@ -311,13 +315,13 @@ fun TimerScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(0.5f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Alt kontroller
             if (isGameFinished) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier.padding(bottom = 16.dp)
                 ) {
                     Card(
                         modifier = Modifier
@@ -421,7 +425,7 @@ fun TimerScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 32.dp),
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
                     shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Black.copy(alpha = 0.5f)

@@ -1,17 +1,22 @@
 package com.oguz.spy
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.oguz.spy.ads.BannerAdManager
 import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.ux.*
+import com.oguz.spy.ux.components.BannerAd
 
 @Composable
 fun PageTransition(
-    rewardedAdManager: RewardedAdManager //
+    rewardedAdManager: RewardedAdManager,
+    bannerAdManager: BannerAdManager,
 ) {
     val navController = rememberNavController()
 
@@ -27,106 +32,116 @@ fun PageTransition(
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
     var gamePlayersData by remember { mutableStateOf<List<GamePlayer>>(emptyList()) }
 
-    NavHost(navController = navController, startDestination = "setUpScreen") {
-
-        composable("setUpScreen") {
-            SetupScreen(
-                navController = navController,
-                initialPlayerCount = gamePlayerCount,
-                initialGameDuration = gameDuration,
-                initialShowHints = showHints,
-                onSettingsChange = { playerCount, duration, hints ->
-                    gamePlayerCount = playerCount
-                    gameDuration = duration
-                    showHints = hints
-                }
-            )
+    Scaffold(
+        bottomBar = {
+            BannerAd(bannerAdManager = bannerAdManager)
         }
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = "setUpScreen",
+            modifier = androidx.compose.ui.Modifier.padding(paddingValues)
+        ) {
 
-        composable(
-            "playerSetUpScreen/{playerCount}",
-            arguments = listOf(
-                navArgument("playerCount") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-            val playerCount = backStackEntry.arguments?.getInt("playerCount") ?: 4
-            PlayerSetupScreen(
-                navController = navController,
-                playerCount = playerCount,
-                existingPlayers = playersData.take(playerCount),
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onStartGame = { players ->
-                    // Oyuncu verilerini kaydet (karakter seçimi dahil)
-                    playersData = players
-                    navController.navigate("categoryScreen")
-                }
-            )
-        }
-
-        composable("categoryScreen") {
-            CategoryScreen(
-                navController = navController,
-                players = playersData,
-                rewardedAdManager = rewardedAdManager, // BURADA GEÇİRİN
-                onCategorySelected = { category, gamePlayers ->
-                    // Seçilen kategori ve oyun oyuncularını kaydet
-                    selectedCategory = category
-                    gamePlayersData = gamePlayers
-                    navController.navigate("gameScreen")
-                }
-            )
-        }
-
-        composable("gameScreen") {
-            // Eğer gerekli veriler yoksa geri dön
-            val category = selectedCategory
-            if (category == null || gamePlayersData.isEmpty()) {
-                LaunchedEffect(Unit) {
-                    navController.popBackStack("setUpScreen", inclusive = false)
-                }
-                return@composable
+            composable("setUpScreen") {
+                SetupScreen(
+                    navController = navController,
+                    initialPlayerCount = gamePlayerCount,
+                    initialGameDuration = gameDuration,
+                    initialShowHints = showHints,
+                    onSettingsChange = { playerCount, duration, hints ->
+                        gamePlayerCount = playerCount
+                        gameDuration = duration
+                        showHints = hints
+                    }
+                )
             }
 
-            GameScreen(
-                navController = navController,
-                gamePlayers = gamePlayersData,
-                category = category,
-                gameDurationMinutes = gameDuration,
-                showHints = showHints
-            )
-        }
-
-        composable("timerScreen") {
-            // Eğer gerekli veriler yoksa geri dön
-            if (gamePlayersData.isEmpty()) {
-                LaunchedEffect(Unit) {
-                    navController.popBackStack("setUpScreen", inclusive = false)
-                }
-                return@composable
+            composable(
+                "playerSetUpScreen/{playerCount}",
+                arguments = listOf(
+                    navArgument("playerCount") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
+                val playerCount = backStackEntry.arguments?.getInt("playerCount") ?: 4
+                PlayerSetupScreen(
+                    navController = navController,
+                    playerCount = playerCount,
+                    existingPlayers = playersData.take(playerCount),
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onStartGame = { players ->
+                        // Oyuncu verilerini kaydet (karakter seçimi dahil)
+                        playersData = players
+                        navController.navigate("categoryScreen")
+                    }
+                )
             }
 
-            TimerScreen(
-                navController = navController,
-                gameDuration = gameDuration,
-                gamePlayers = gamePlayersData
-            )
-        }
-
-        composable("votingScreen") {
-            // Eğer gerekli veriler yoksa geri dön
-            if (gamePlayersData.isEmpty()) {
-                LaunchedEffect(Unit) {
-                    navController.popBackStack("setUpScreen", inclusive = false)
-                }
-                return@composable
+            composable("categoryScreen") {
+                CategoryScreen(
+                    navController = navController,
+                    players = playersData,
+                    rewardedAdManager = rewardedAdManager, // BURADA GEÇİRİN
+                    onCategorySelected = { category, gamePlayers ->
+                        // Seçilen kategori ve oyun oyuncularını kaydet
+                        selectedCategory = category
+                        gamePlayersData = gamePlayers
+                        navController.navigate("gameScreen")
+                    }
+                )
             }
 
-            VotingScreen(
-                navController = navController,
-                gamePlayers = gamePlayersData
-            )
+            composable("gameScreen") {
+                // Eğer gerekli veriler yoksa geri dön
+                val category = selectedCategory
+                if (category == null || gamePlayersData.isEmpty()) {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack("setUpScreen", inclusive = false)
+                    }
+                    return@composable
+                }
+
+                GameScreen(
+                    navController = navController,
+                    gamePlayers = gamePlayersData,
+                    category = category,
+                    gameDurationMinutes = gameDuration,
+                    showHints = showHints
+                )
+            }
+
+            composable("timerScreen") {
+                // Eğer gerekli veriler yoksa geri dön
+                if (gamePlayersData.isEmpty()) {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack("setUpScreen", inclusive = false)
+                    }
+                    return@composable
+                }
+
+                TimerScreen(
+                    navController = navController,
+                    gameDuration = gameDuration,
+                    gamePlayers = gamePlayersData
+                )
+            }
+
+            composable("votingScreen") {
+                // Eğer gerekli veriler yoksa geri dön
+                if (gamePlayersData.isEmpty()) {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack("setUpScreen", inclusive = false)
+                    }
+                    return@composable
+                }
+
+                VotingScreen(
+                    navController = navController,
+                    gamePlayers = gamePlayersData
+                )
+            }
         }
     }
 }

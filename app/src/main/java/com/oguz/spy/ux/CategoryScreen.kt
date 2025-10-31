@@ -924,7 +924,7 @@ fun SubcategoryItem(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(color = categoryColor.copy(alpha = 0.1f))
+                        .background(color =Color.White)
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Icon(

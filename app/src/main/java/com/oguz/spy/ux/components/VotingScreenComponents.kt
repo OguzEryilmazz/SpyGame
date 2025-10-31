@@ -8,8 +8,10 @@ import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -24,6 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oguz.spy.ux.GamePlayer
@@ -394,6 +397,7 @@ fun VotingResultsScreen(
     gamePlayers: List<GamePlayer>,
     onPlayAgain: () -> Unit,
     onMainMenu: () -> Unit,
+    topPadding: Int = 16
 ) {
     val isImpostorCaught = mostVotedPlayer?.role == "SPY"
 
@@ -408,39 +412,44 @@ fun VotingResultsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 32.dp , top = 10.dp , end = 32.dp , bottom = 32.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .padding(top = topPadding.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Ana başlık
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "OYUN BITTI",
-                    fontSize = 52.sp,
+                    fontSize = 44.sp,
                     fontWeight = FontWeight.Black,
                     color = titleColor,
                     textAlign = TextAlign.Center,
-                    letterSpacing = 5.sp,
-                    lineHeight = 50.sp,
+                    letterSpacing = 4.sp,
+                    lineHeight = 44.sp,
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
                     text = if (isImpostorCaught)
                         "Oyuncular Kazandı"
                     else
                         "Spy Kazandı",
-                    fontSize = 28.sp,
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White.copy(alpha = 0.9f),
                     textAlign = TextAlign.Center
                 )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Ortadaki karakter gösterimi
             Column(
@@ -449,7 +458,7 @@ fun VotingResultsScreen(
                 if (mostVotedPlayer != null) {
                     Box(
                         modifier = Modifier
-                            .size(140.dp)
+                            .size(200.dp)
                             .clip(CircleShape)
                             .background(
                                 if (isImpostorCaught)
@@ -465,19 +474,19 @@ fun VotingResultsScreen(
                             Image(
                                 painter = painterResource(id = displayPlayer.selectedCharacter.drawableRes),
                                 contentDescription = null,
-                                modifier = Modifier.size(120.dp)
+                                modifier = Modifier.size(200.dp)
                             )
                         } else {
                             Text(
                                 text = (displayPlayer?.name?.first()?.uppercase() ?: "?"),
-                                fontSize = 64.sp,
+                                fontSize = 56.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Color.White
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
                         text = if (isImpostorCaught)
@@ -490,30 +499,30 @@ fun VotingResultsScreen(
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
                         text = "Gerçek Spy",
-                        fontSize = 20.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Medium,
                         color = titleColor,
                         textAlign = TextAlign.Center
                     )
 
                     if (isImpostorCaught) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
 
                         Box(
                             modifier = Modifier
                                 .background(
                                     Color.White.copy(alpha = 0.1f),
-                                    RoundedCornerShape(20.dp)
+                                    RoundedCornerShape(16.dp)
                                 )
-                                .padding(horizontal = 24.dp, vertical = 12.dp)
+                                .padding(horizontal = 20.dp, vertical = 10.dp)
                         ) {
                             Text(
                                 text = "${votes[mostVotedPlayer.name] ?: 0} oy",
-                                fontSize = 18.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White.copy(alpha = 0.8f)
                             )
@@ -522,15 +531,18 @@ fun VotingResultsScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
             // Alt butonlar
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
                     onClick = onPlayAgain,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(64.dp),
+                        .height(60.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = titleColor
                     ),
@@ -538,14 +550,16 @@ fun VotingResultsScreen(
                 ) {
                     Text(
                         text = "TEKRAR OYNA",
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Black,
                         letterSpacing = 2.sp
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
 }
+
+
