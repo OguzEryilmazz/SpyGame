@@ -11,6 +11,9 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+
+private const val SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY = "single_use_unlocked_subcategories"
+
 data class CategoryJson(
     @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
@@ -45,6 +48,7 @@ class CategoryDataManager(private val context: Context) {
     private val FAVORITES_KEY = "favorite_categories"
     private val PURCHASED_KEY = "purchased_categories"
     private val UNLOCKED_SUBCATEGORIES_KEY = "unlocked_subcategories"
+    private val PURCHASED_SUBCATEGORIES_KEY = "purchased_subcategories"
 
     suspend fun getCategories(): List<Category> = withContext(Dispatchers.IO) {
         try {
@@ -100,10 +104,6 @@ class CategoryDataManager(private val context: Context) {
         return prefs.getStringSet(PURCHASED_KEY, emptySet()) ?: emptySet()
     }
 
-    private fun getUnlockedSubcategoryIds(): Set<String> {
-        return prefs.getStringSet(UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
-    }
-
     fun toggleFavorite(categoryId: String) {
         val favorites = getFavoriteIds().toMutableSet()
         if (favorites.contains(categoryId)) {
@@ -124,14 +124,55 @@ class CategoryDataManager(private val context: Context) {
         return getPurchasedIds().contains(categoryId)
     }
 
+    fun markSubcategoryAsPurchased(subcategoryId: String) {
+        val purchased = getPurchasedSubcategoryIds().toMutableSet()
+        purchased.add(subcategoryId)
+        prefs.edit().putStringSet(PURCHASED_SUBCATEGORIES_KEY, purchased).apply()
+    }
+
+    fun getPurchasedSubcategoryIds(): Set<String> {
+        return prefs.getStringSet(PURCHASED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
+    }
+
+    fun isPermanentlyUnlocked(subcategoryId: String): Boolean {
+        val permanentUnlocked = prefs.getStringSet(UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
+        val purchased = getPurchasedSubcategoryIds()
+        return permanentUnlocked.contains(subcategoryId) || purchased.contains(subcategoryId)
+    }
+
     fun unlockSubcategoryWithAd(subcategoryId: String) {
         val unlocked = getUnlockedSubcategoryIds().toMutableSet()
         unlocked.add(subcategoryId)
         prefs.edit().putStringSet(UNLOCKED_SUBCATEGORIES_KEY, unlocked).apply()
     }
 
-    fun isSubcategoryUnlocked(subcategoryId: String): Boolean {
-        return getUnlockedSubcategoryIds().contains(subcategoryId)
+    fun grantSingleUseAccess(subcategoryId: String) {
+        val singleUseAccessIds =
+            prefs.getStringSet(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY, emptySet())
+                ?.toMutableSet()
+                ?: mutableSetOf()
+
+        singleUseAccessIds.add(subcategoryId)
+
+        prefs.edit().putStringSet(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY, singleUseAccessIds).apply()
+    }
+
+    fun getUnlockedSubcategoryIds(): Set<String> {
+        val permanentUnlocked = prefs.getStringSet(UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
+        val purchased = getPurchasedSubcategoryIds()
+        val singleUseUnlocked = prefs.getStringSet(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY, emptySet()) ?: emptySet()
+
+        return permanentUnlocked + purchased + singleUseUnlocked
+    }
+
+    fun consumeSingleUseAccess(subcategoryId: String) {
+        val singleUseAccessIds = prefs.getStringSet(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY, emptySet())
+            ?.toMutableSet()
+            ?: mutableSetOf()
+
+        if (singleUseAccessIds.remove(subcategoryId)) {
+            prefs.edit().putStringSet(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY, singleUseAccessIds).apply()
+        }
     }
 
     private fun getIconByName(iconName: String) = when (iconName) {

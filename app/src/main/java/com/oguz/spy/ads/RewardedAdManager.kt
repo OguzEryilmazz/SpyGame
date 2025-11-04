@@ -45,7 +45,7 @@ class RewardedAdManager(
 
     fun showAd(
         activity: Activity,
-        onUserEarnedReward: (Int, String) -> Unit, // Miktar ve tür
+        onUserEarnedReward: (Int, String) -> Unit,
         onAdDismissed: () -> Unit = {},
         onAdShowFailed: (String) -> Unit = {}
     ) {

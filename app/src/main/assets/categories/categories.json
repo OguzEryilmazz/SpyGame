@@ -335,7 +335,7 @@
           "id": "athletes_wwe",
           "name": "WWE",
           "unlockedByAd": true,
-          "isUnlocked": false,
+          "isUnlocked": true,
           "items": [
             "The Rock", "John Cena", "The Undertaker", "Roman Reigns",
             "Triple H", "Brock Lesnar", "Rey Mysterio", "Kane",
@@ -988,13 +988,13 @@
       "iconName": "play_circle",
       "colorHex": "#C75083",
       "isLocked": true,
-      "priceTL": 79.99,
+      "priceTL": 59.99,
       "hasSubcategories": true,
       "subcategories": [
         {
           "id": "youtubers_male",
           "name": "Erkek Youtuberlar",
-          "unlockedByAd": true,
+          "unlockedByAd": false,
           "isUnlocked": false,
           "items": [
             "Enes Batur", "Ruhi Çenet", "Orkun Işıtmak", "Deli Mi Ne?", "Kafalar", "Reynmen",
@@ -1013,7 +1013,7 @@
         {
           "id": "youtubers_female",
           "name": "Kadın Youtuberlar",
-          "unlockedByAd": true,
+          "unlockedByAd": false,
           "isUnlocked": false,
           "items": ["Duygu Özaslan", "Merve Özkaynak", "Şeyda Erdoğan", "Danla Bilic", "Betül Çakmak", "Ecenaz Üçer",
             "Meryem Can", "Eda Biçim", "Berfu Yenenler", "İdil Yazar", "Refika Birgül","Elvin Levinler"

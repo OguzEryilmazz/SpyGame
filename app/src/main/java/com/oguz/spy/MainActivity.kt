@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load rewarded: $error") }
         )
 
-        // Banner Ad Manager - AdView'ı burada oluştur
+        // Banner Ad Manager
         bannerAdManager = BannerAdManager()
         bannerAdManager.createAdView(
             context = this,
@@ -45,22 +45,57 @@ class MainActivity : ComponentActivity() {
         )
         bannerAdManager.loadAd()
 
+        // CategoryDataManager'ı önce oluştur
+        categoryDataManager = CategoryDataManager(this)
+
         // Billing Manager'ı başlat
         billingManager = BillingManager(
             context = applicationContext,
             coroutineScope = lifecycleScope
         )
 
-        categoryDataManager = CategoryDataManager(this)
-
-        // Satın alma durumunu dinle
+        // ✅ Satın alma durumunu dinle
         lifecycleScope.launch {
             billingManager.purchaseState.collect { state ->
                 when (state) {
                     is BillingManager.PurchaseState.Success -> {
-                        categoryDataManager.markAsPurchased(state.categoryId)
+                        val categoryId = state.categoryId
+                        Log.d("MainActivity", "Satın alma başarılı: $categoryId")
+
+                        // Subcategory mi ana kategori mi kontrol et
+                        if (isSubcategory(categoryId)) {
+                            categoryDataManager.markSubcategoryAsPurchased(categoryId)
+                            Log.d("MainActivity", "Subcategory satın alındı olarak işaretlendi: $categoryId")
+                        } else {
+                            categoryDataManager.markAsPurchased(categoryId)
+                            Log.d("MainActivity", "Ana kategori satın alındı olarak işaretlendi: $categoryId")
+                        }
+                    }
+                    is BillingManager.PurchaseState.Error -> {
+                        Log.e("MainActivity", "Satın alma hatası: ${state.message}")
                     }
                     else -> { /* Loading veya Idle */ }
+                }
+            }
+        }
+
+        // ✅ Uygulama başladığında mevcut satın almaları yükle
+        lifecycleScope.launch {
+            // Billing client hazır olana kadar bekle
+            kotlinx.coroutines.delay(2000)
+
+            // Tüm satın alınmış ürünleri al
+            val purchasedProducts = billingManager.getAllPurchasedProducts()
+
+            Log.d("MainActivity", "Toplam ${purchasedProducts.size} satın alınmış ürün bulundu")
+
+            purchasedProducts.forEach { productId ->
+                if (isSubcategory(productId)) {
+                    categoryDataManager.markSubcategoryAsPurchased(productId)
+                    Log.d("MainActivity", "Subcategory yüklendi: $productId")
+                } else {
+                    categoryDataManager.markAsPurchased(productId)
+                    Log.d("MainActivity", "Ana kategori yüklendi: $productId")
                 }
             }
         }
@@ -76,6 +111,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Subcategory mi kontrol et (ID'de underscore varsa subcategory'dir)
+    private fun isSubcategory(productId: String): Boolean {
+        val subcategoryPrefixes = listOf(
+            "athletes_", "singers_", "actors_", "youtubers_"
+        )
+        return subcategoryPrefixes.any { productId.startsWith(it) }
+    }
+
     override fun onPause() {
         super.onPause()
         bannerAdManager.pause()
@@ -89,5 +132,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         bannerAdManager.destroy()
+        billingManager.destroy()
     }
 }

@@ -41,8 +41,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextOverflow
+import com.oguz.spy.billing.BillingManager
 
 
 @Composable
@@ -244,51 +244,54 @@ fun CategoryCard(
                 if (isSelected && !category.isLocked) {
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Divider(
-                        color = category.color.copy(alpha = 0.3f),
-                        thickness = 1.dp
-                    )
+                    if (category.id != "random_all") {
+                        Divider(
+                            color = category.color.copy(alpha = 0.3f),
+                            thickness = 1.dp
+                        )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    // İpuçları
-                    Text(
-                        text = "İpuçları",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = category.color
-                    )
+                        // İpuçları
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "İpuçları",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = category.color
+                        )
 
-                    category.hints.take(3).forEach { hint ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .clip(RoundedCornerShape(3.dp))
-                                    .background(category.color.copy(alpha = 0.5f))
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        category.hints.take(3).forEach { hint ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(6.dp)
+                                        .clip(RoundedCornerShape(3.dp))
+                                        .background(category.color.copy(alpha = 0.5f))
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = hint,
+                                    fontSize = 13.sp,
+                                    color = Color.Black.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+
+                        if (category.hints.size > 3) {
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = hint,
-                                fontSize = 13.sp,
-                                color = Color.Black.copy(alpha = 0.7f)
+                                text = "+ ${category.hints.size - 3} ipucu daha",
+                                fontSize = 12.sp,
+                                color = category.color.copy(alpha = 0.7f),
+                                fontWeight = FontWeight.Medium
                             )
                         }
-                    }
-
-                    if (category.hints.size > 3) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "+ ${category.hints.size - 3} ipucu daha",
-                            fontSize = 12.sp,
-                            color = category.color.copy(alpha = 0.7f),
-                            fontWeight = FontWeight.Medium
-                        )
                     }
                 }
             }
