@@ -1,5 +1,5 @@
 {
-  "version": 13 ,
+  "version": 16 ,
   "categories": [
     {
       "id": "random_all",
@@ -25,7 +25,11 @@
         "Veteriner", "Eczacı", "Diyetisyen", "Psikolog", "Fizyoterapist",
         "Muhasebeci", "Mimar", "Gazeteci", "Fotoğrafçı", "Ressam",
         "Müzisyen", "Oyuncu", "Dansçı", "Çiftçi", "Tamirci",
-        "Kuaför", "Güvenlik Görevlisi", "Temizlik Görevlisi", "Garson", "Barista"
+        "Kuaför", "Güvenlik Görevlisi", "Temizlik Görevlisi", "Garson", "Barista",
+        "Grafik Tasarımcı", "Yazılımcı", "Diş Hekimi", "Ebe",
+        "İçerik Üreticisi", "Bankacı", "Emlakçı",
+        "Marangoz", "Boyacı", "Tesisatçı", "Demirci",
+        "Postacı", "Kargo Görevlisi", "Kapıcı", "Bahçıvan", "Temizlikçi"
       ],
       "hints": [
         "Çalışma hayatı",
@@ -51,21 +55,23 @@
         "Tost", "Sandviç", "Omlet", "Pancake", "Waffle",
         "Sushi", "Ramen", "Biryani", "Falafel", "Tacos",
         "Burrito", "Köfte", "Dolma", "Mantı", "Gözleme",
-        "Pide", "İskender", "Adana Kebap", "Şiş Kebap", "Tavuk Döner"
+        "Pide", "İskender", "Adana Kebap", "Şiş Kebap", "Tavuk Döner",
+        "Menemen", "Çiğ Köfte", "Mercimek Çorbası", "Tavuk Sote", "Karnıyarık",
+        "İmam Bayıldı", "Hünkar Beğendi", "Etli Ekmek", "Kuru Fasulye", "Nohut",
+        "Patates Kızartması", "Soğan Halkası", "Chicken Nugget", "Hot Dog", "Dürüm"
       ],
       "hints": [
         "Açlık giderir",
-        "Restoran menüsü",
         "Tarifi var",
-        "Mutfakta hazırlanır",
+        "Mutfak",
         "Tabakta servis",
         "Kalori içerir",
-        "Lezzet var"
+        "Lezzetli"
       ],
       "isLocked": false,
       "priceTL": 0.0,
       "hasSubcategories": false
-    },
+    },       
     {
       "id": "fruits",
       "name": "Meyveler",
@@ -76,7 +82,9 @@
         "Üzüm", "Portakal", "Mandalina", "Kiraz", "Ananas",
         "Kivi", "Mango", "Nar", "İncir", "Hurma",
         "Kavun", "Şeftali", "Erik", "Kayısı", "Avokado",
-        "Limon", "Greyfurt", "Böğürtlen", "Ahududa", "Dut"
+        "Limon", "Greyfurt", "Böğürtlen", "Ahududa", "Dut",
+        "Vişne","Ayva", "Ejder Meyvesi", "Mango", "Yaban Mersini",
+        "Nektarin", "Çarkıfelek Meyvesi", "Karpuz", "Kayısı"
       ],
       "hints": [
         "Ağaçta yetişir",
@@ -90,7 +98,7 @@
       "isLocked": false,
       "priceTL": 0.0,
       "hasSubcategories": false
-    },
+    },      
     {
       "id": "colors",
       "name": "Renkler",
@@ -100,10 +108,11 @@
         "Kırmızı", "Mavi", "Yeşil", "Sarı", "Turuncu",
         "Mor", "Pembe", "Beyaz", "Siyah", "Gri",
         "Kahverengi", "Lacivert", "Turkuaz", "Altın", "Gümüş",
-        "Bordo", "Krem", "Bej", "Koyu Mavi", "Açık Yeşil"
+        "Bordo", "Krem", "Bej", "Koyu Mavi", "Açık Yeşil",
+        "Eflatun", "Fuşya", "Mercan", "Zeytin Yeşili",
+        "Koyu Yeşil", "Açık Mavi"
       ],
       "hints": [
-        "Gökkuşağında var",
         "Gözle görülür",
         "Boyalar arasında",
         "Sanat eserinde",
@@ -114,7 +123,83 @@
       "isLocked": false,
       "priceTL": 0.0,
       "hasSubcategories": false
-    },
+    },      
+    {
+      "id": "desserts",
+      "name": "Tatlılar",
+      "iconName": "cake",
+      "colorHex": "#FF6B9D",
+      "items": [
+        "Baklava", "Künefe", "Sütlaç", "Kazandibi", "Keşkül",
+        "Profiterol", "Tiramisu", "Cheesecake", "Brownie", "Dondurma",
+        "Magnolia", "San Sebastian", "Revani", "Şöbiyet", "Lokum",
+        "Kadayıf", "Tulumba", "İrmik Helvası", "Kek", "Kurabiye",
+        "Sufle", "Panna Cotta", "Crème Brûlée", "Puding", "Muhallebi",
+        "Aşure", "Güllaç", "Trileçe", "Ekler", "Yaş Pasta"
+      ],
+      "hints": [
+        "Şeker içerir",
+        "Özel günler",
+        "Kahvaltı sonrası",
+        "Fırında pişer",
+        "Mutluluk verir"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },      
+    {
+      "id": "drinks",
+      "name": "İçecekler",
+      "iconName": "local_cafe",
+      "colorHex": "#795548",
+      "items": [
+        "Çay", "Kahve", "Su", "Süt", "Ayran",
+        "Limonata", "Portakal Suyu", "Kola", "Fanta", "Sprite",
+        "Ice Tea", "Smoothie", "Milkshake", "Soda", "Gazoz",
+        "Şalgam", "Boza", "Salep", "Nar Suyu", "Şıra",
+        "Soğuk Kahve", "Latte", "Cappuccino", "Espresso", "Americano",
+        "Mojito", "Frappuccino", "Buzlu Çay", "Kayısı Suyu", "Vişne Suyu"
+      ],
+      "hints": [
+        "Susuzluk giderir",
+        "Sıvı halde",
+        "Bardakta içilir",
+        "Serinletir",
+        "Enerji verir",
+        "Kafein var"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },      
+    {
+      "id": "brands",
+      "name": "Markalar",
+      "iconName": "store",
+      "colorHex": "#2f4721",
+      "items": [
+        "Nike", "Adidas", "Apple", "Samsung", "Coca Cola",
+        "Pepsi", "McDonald's", "Starbucks", "Amazon", "Google",
+        "Microsoft", "Sony", "LG", "BMW", "Mercedes",
+        "Toyota", "Volkswagen", "Zara", "H&M", "LC Waikiki",
+        "Puma", "New Balance", "Reebok", "Under Armour", "Tesla",
+        "Netflix", "Spotify", "Instagram", "Facebook", "WhatsApp",
+        "TikTok", "YouTube", "PlayStation", "Xbox", "Nintendo",
+        "Bershka","Louis Vuitton","Beymen"
+      ],
+      "hints": [
+        "Ticari kimlik",
+        "Logo var",
+        "Ürün üretir",
+        "Tanınır",
+        "Reklam yapar",
+        "Müşteri kitlesi"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },      
     {
       "id": "athletes",
       "name": "Sporcular",
@@ -173,9 +258,9 @@
             "Khvicha Kvaratskhelia" ,"André Onana" ,"Antonio Rüdiger" ,"Marquinhos" ,"Niclas Füllkrug"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Aktif",
+            "Yabancı",
+            "Ünlü"
           ]
         },
         {
@@ -190,9 +275,9 @@
             "Selçuk İnan", "Tümer Metin", "Rıdvan Dilmen", "Sergen Yalçın", "Serhat Akın"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Yerli",
+            "Efsane",
+            "Yorumcu"
           ]
         },
         {
@@ -217,9 +302,9 @@
             "Pavel Nedvěd","Andriy Shevchenko","Clarence Seedorf"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Global",
+            "Ikonik",
+            "Efsane"
           ]
         },
         {
@@ -241,9 +326,9 @@
             "Alex Caruso"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Konferans",
+            "1 , 2, 3",
+            "Uzun"
           ]
         },
         {
@@ -259,9 +344,9 @@
             "Vassilis Spanoulis","Andrei Kirilenko"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Set Oyunu",
+            "Koçlar",
+            "Savunma"
           ]
         },
         {
@@ -278,9 +363,9 @@
             "Jerry West", "John Stockton", "Dennis Rodman","Dikembe Mutombo","Yao Ming"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "İkonik",
+            "Marka",
+            "Eski"
           ]
         },
         {
@@ -302,9 +387,9 @@
             "Zhu Ting"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Türkiye",
+            "Kadın",
+            "Servis"
           ]
         },
         {
@@ -326,9 +411,9 @@
             "Michael Bisping","Arman Tsarukyan","Mateusz Gamrot","Manel Kape"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Knock Out",
+            "Sekizgen",
+            "Dağıstan"
           ]
         },
         {
@@ -344,9 +429,9 @@
             "AJ Styles","Kevin Owens","Finn Bálor","Dominik Mysterio",""
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Aktör",
+            "Sandalye",
+            "İmza Hareket"
           ]
         },
         {
@@ -363,9 +448,9 @@
             "Artur Beterbiev","Dmitry Bivol"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Eldiven",
+            "Atlama İpi",
+            "Rocky"
           ]
         },
         {
@@ -381,13 +466,13 @@
             "Nigel Mansell","Alain Prost","Jackie Stewart"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Hız",
+            "Refleks",
+            "Pit Stop"
           ]
         }
       ]
-    },
+    },      
     {
       "id": "singers",
       "name": "Şarkıcılar",
@@ -409,9 +494,9 @@
             "Yalın", "Yaşar", "Manifest", "Semicenk"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Yerli",
+            "Konser",
+            "Top 50"
           ]
         },
         {
@@ -421,15 +506,16 @@
           "isUnlocked": false,
           "items": [
             "Ceza", "Sagopa Kajmer", "Ezhel", "Uzi", "Ben Fero",
-            "Şehinşah", "Ckay", "Murda", "Norm Ender", "Gazapizm",
+            "Şehinşah", "Cakal", "Murda", "Norm Ender", "Gazapizm",
             "Reckol", "Joker", "Güneş", "Khontkar", "Baneva",
-            "Mero", "Ati242", "Şam", "Blok3", "Erzoo&Mansur",
-            "Eae!", "Eba", "Ezcannur", "Jeff Red", "Organize", "Posi"
+            "Mero", "Ati242", "Şam", "Blok3", "Eray067&Mansur",
+            "Jeff Red", "Organize", "Poizi","Era07capone" , "Fuat Ergin",
+            "Batuflex","Motive","Abugat","EGE!"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Hız",
+            "Flow",
+            "Lirik"
           ]
         },
         {
@@ -443,9 +529,9 @@
             "Hüsnü Şenlendirici", "Gülü"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Eski",
+            "Hüzün",
+            "Hayran"
           ]
         },
         {
@@ -459,9 +545,8 @@
             "Haluk Levent", "Manga", "Gripin", "Pinhani"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Konser",
+            "Ses"
           ]
         },
         {
@@ -474,9 +559,9 @@
             "Can Ozan", "Sena Şener", "Son Feci Bisiklet"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Farklı",
+            "Ünlü",
+            "Konser"
           ]
         },
         {
@@ -493,9 +578,9 @@
             "Maroon 5", "Michael Jackson", "Madonna"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Global",
+            "Grammy",
+            "HIT"
           ]
         },
         {
@@ -512,24 +597,8 @@
             "Lil Uzi Vert", "Playboi Carti", "Young Thug", "Gunna", "Central Cee"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
-          ]
-        },
-        {
-          "id": "singers_foreign_latin",
-          "name": "Yabancı Latin",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Shakira", "Daddy Yankee", "J Balvin", "Jennifer Lopez",
-            "Maluma", "Pitbull", "Camila Cabello", "Luis Fonsi"
-          ],
-          "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Sokak",
+            "Yabancı"
           ]
         },
         {
@@ -543,13 +612,13 @@
             "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Konser",
+            "Siyah",
+            "Metal"
           ]
         }
       ]
-    },
+    },      
     {
       "id": "places",
       "name": "Yerler",
@@ -571,35 +640,10 @@
         "Çalışma saati",
         "Konum belirtir"
       ],
-      "isLocked": true,
-      "priceTL": 19.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
-    {
-      "id": "animals",
-      "name": "Hayvanlar",
-      "iconName": "pets",
-      "colorHex": "#FF9800",
-      "items": [
-        "Kedi", "Köpek", "Kuş", "Balık", "At",
-        "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
-        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan",
-        "Kartal", "Papağan", "Köpekbalığı", "Yunus", "Penguen",
-        "Zürafa", "Hipopotam", "Kaplumbağa", "Kurbağa", "Yılan"
-      ],
-      "hints": [
-        "Canlı varlık",
-        "Doğal yaşam",
-        "Hareket eder",
-        "Beslenme ihtiyacı",
-        "Evcil veya vahşi",
-        "Çeşitli türler",
-        "Nefes alır"
-      ],
-      "isLocked": true,
-      "priceTL": 19.99,
-      "hasSubcategories": false
-    },
+    },      
     {
       "id": "vehicles",
       "name": "Taşıtlar",
@@ -620,32 +664,8 @@
         "Yakıt gerekir",
         "Hız yapar"
       ],
-      "isLocked": true,
-      "priceTL": 29.99,
-      "hasSubcategories": false
-    },
-    {
-      "id": "sports",
-      "name": "Sporlar",
-      "iconName": "sports_esports",
-      "colorHex": "#4CAF50",
-      "items": [
-        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
-        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
-        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş",
-        "Atletizm", "Jimnastik", "Eskrim", "Okçuluk", "Halter"
-      ],
-      "hints": [
-        "Fiziksel aktivite",
-        "Rekabet var",
-        "Sağlık kondisyon",
-        "Takım bireysel",
-        "Antrenman gerekir",
-        "Turnuvalar var",
-        "Spor salonu"
-      ],
-      "isLocked": true,
-      "priceTL": 29.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
     },
     {
@@ -668,10 +688,10 @@
         "Sürekli gelişir",
         "Garanti vardır"
       ],
-      "isLocked": true,
-      "priceTL": 39.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
+    },      
     {
       "id": "clothing",
       "name": "Giysiler",
@@ -692,10 +712,10 @@
         "Yıkanabilir",
         "Giyilir"
       ],
-      "isLocked": true,
-      "priceTL": 39.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
+    },      
     {
       "id": "school_subjects",
       "name": "Okul Dersleri",
@@ -716,10 +736,10 @@
         "Diploma gerekli",
         "Ders saati"
       ],
-      "isLocked": true,
-      "priceTL": 49.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
+    },      
     {
       "id": "games",
       "name": "Oyunlar",
@@ -740,10 +760,10 @@
         "Sosyal etkileşim",
         "Zaman geçirir"
       ],
-      "isLocked": true,
-      "priceTL": 49.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
+    },          
     {
       "id": "books",
       "name": "Kitap Türleri",
@@ -764,10 +784,10 @@
         "Kütüphanede bulunur",
         "Sayfa sayısı"
       ],
-      "isLocked": true,
-      "priceTL": 59.99,
+      "isLocked": false,
+      "priceTL":0,
       "hasSubcategories": false
-    },
+    },          
     {
       "id": "weather",
       "name": "Hava Durumu",
@@ -788,10 +808,10 @@
         "Sıcaklık nem",
         "Meteoroloji"
       ],
-      "isLocked": true,
-      "priceTL": 59.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
+    },          
     {
       "id": "emotions",
       "name": "Duygular",
@@ -812,10 +832,10 @@
         "Herkes yaşar",
         "Duygu durumu"
       ],
-      "isLocked": true,
-      "priceTL": 69.99,
+      "isLocked": false,
+      "priceTL": 0,
       "hasSubcategories": false
-    },
+    },          
     {
       "id": "household_items",
       "name": "Ev Eşyaları",
@@ -836,8 +856,91 @@
         "Ev konforu",
         "Ev içi"
       ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },      
+    {
+      "id": "animals",
+      "name": "Hayvanlar",
+      "iconName": "pets",
+      "colorHex": "#FF9800",
+      "items": [
+        "Kedi", "Köpek", "Kuş", "Balık", "At",
+        "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
+        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan",
+        "Kartal", "Papağan", "Köpekbalığı", "Yunus", "Penguen",
+        "Zürafa", "Hipopotam", "Kaplumbağa", "Kurbağa", "Yılan",
+        "Hamster", "Muhabbet Kuşu", "Fare", "Keçi",
+        "Ördek", "Kaz", "Eşek", "Deve", "Leopar",
+        "Çita", "Puma", "Jaguar", "Ahtapot",
+        "Kalamar", "Yengeç", "İstakoz", "Fok", "Balina",
+        "Baykuş", "Şahin", "Flamingo", "Pelikan",
+        "Serçe", "Karga", "Kertenkele", "Timsah", "İguana",
+        "Bukalemun", "Sincap", "Kirpi", "Gergedan", "Zebra",
+        "Koala", "Panda", "Kanguru", "Tilki", "Vaşak",
+        "Çakal", "Samur", "Kunduz", "Porsuk", "Gelincik",
+        "Sansar","Sırtlan", "Geyik", "Karaca",
+        "Ceylan","Keklik", "Sülün","Turna", "Leylek","Martı", "Albatros",
+        "Pelikan", "Karabatak", "Su Samuru", "Deniz Aslanı","Orka",
+        "Morina", "Ton Balığı", "Kılıç Balığı", "Vatoz",
+        "Mürekkep Balığı", "Deniz Yıldızı", "Deniz Kestanesi",
+        "Ateş Böceği", "Kelebek", "Arı", "Karınca", "Çekirge",
+        "Ağustosböceği", "Uğur Böceği", "Yusufçuk","Tırtıl",
+        "Solucan", "Sümüklüböcek", "Salyangoz", "Örümcek", "Akrep",
+        "Deve Kuşu", "Emu", "Kivi", "Orangutan", "Goril", "Şempanze", "Lemur","Babun",
+        "Semender", "Aksalotl", "Kobra", "Anakonda", "Piton", "Çıngıraklı Yılan", "Mamba",
+        "Komodo Ejderi", "Geko", "Ağaçkakan",
+        "Bülbül", "Saksağan", "Kırlangıç", "Güvercin",
+        "Kumru","Angut","Devekuşu", "Tukan", "Sülük"
+      ],
+      "hints": [
+        "Canlı varlık",
+        "Doğal yaşam",
+        "Hareket eder",
+        "Beslenme ihtiyacı",
+        "Evcil veya vahşi",
+        "Çeşitli türler",
+        "Nefes alır"
+      ],
       "isLocked": true,
-      "priceTL": 69.99,
+      "priceTL": 25.99,
+      "hasSubcategories": false
+    },
+    {
+      "id": "sports",
+      "name": "Sporlar",
+      "iconName": "sports_esports",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
+        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
+        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş",
+        "Atletizm", "Jimnastik", "Eskrim", "Okçuluk", "Halter",
+        "Rugby", "Amerikan Futbolu", "Beyzbol", "Kriket", "Hokey",
+        "Masa Tenisi", "Ragbi", "Su Topu", "Dalış",
+        "Sörf", "Snowboard", "Kayak", "Paten", "Buz Pateni",
+        "Tekvando", "Kickboks", "Muay Thai", "Jiu Jitsu", "Aikido",
+        "Kung Fu","Sumo", "MMA","Maraton", "Parkur", "Crossfit", "Pilates",
+        "Yoga", "Yelken", "Kürek", "Kano", "Rafting", "Paraşüt",
+        "Yamaç Paraşütü","Dağcılık", "Kaya Tırmanışı", "Bungee Jumping",
+        "Paintball", "Airsoft", "Dart", "Bilardo", "Bowling",
+        "Bale", "Dans Sporları", "Ritmik Jimnastik",
+        "Artistik Jimnastik","Disk Atma", "Gülle Atma", "Cirit Atma",
+        "Uzun Atlama","Formula 1", "Ralli", "Motokros", "Motosiklet Yarışı", "At Yarışı",
+        "Binicilik","Rodeo", "BMX", "Mountain Bike"
+      ],
+      "hints": [
+        "Fiziksel aktivite",
+        "Rekabet var",
+        "Sağlık kondisyon",
+        "Takım bireysel",
+        "Antrenman gerekir",
+        "Turnuvalar var",
+        "Spor salonu"
+      ],
+      "isLocked": true,
+      "priceTL": 34.99,
       "hasSubcategories": false
     },
     {
@@ -871,13 +974,13 @@
       "iconName": "movie",
       "colorHex": "#F44336",
       "isLocked": true,
-      "priceTL": 79.99,
+      "priceTL": 49.99,
       "hasSubcategories": true,
       "subcategories": [
         {
           "id": "actors_domestic_male",
           "name": "Yerli Erkek Oyuncu",
-          "unlockedByAd": true,
+          "unlockedByAd": false,
           "isUnlocked": false,
           "items": [
             "Kıvanç Tatlıtuğ", "Kenan İmirzalıoğlu", "Halit Ergenç", "Burak Özçivit",
@@ -899,7 +1002,7 @@
         {
           "id": "actors_domestic_female",
           "name": "Yerli Kadın Oyuncu",
-          "unlockedByAd": true,
+          "unlockedByAd": false,
           "isUnlocked": false,
           "items": [
             "Beren Saat", "Serenay Sarıkaya", "Hande Erçel", "Cansu Dere",
@@ -979,7 +1082,7 @@
         "Dijital medya"
       ],
       "isLocked": true,
-      "priceTL": 79.99,
+      "priceTL": 49.99,
       "hasSubcategories": false
     },
     {
@@ -988,14 +1091,14 @@
       "iconName": "play_circle",
       "colorHex": "#C75083",
       "isLocked": true,
-      "priceTL": 59.99,
+      "priceTL": 49.99,
       "hasSubcategories": true,
       "subcategories": [
         {
           "id": "youtubers_male",
           "name": "Erkek Youtuberlar",
           "unlockedByAd": false,
-          "isUnlocked": false,
+          "isUnlocked":true ,
           "items": [
             "Enes Batur", "Ruhi Çenet", "Orkun Işıtmak", "Deli Mi Ne?", "Kafalar", "Reynmen",
             "Berkcan Güven", "Ali Biçim", "Mesut Can Tomay", "Enis Kirazoğlu", "Ümidi", "Doğan Kabak", "Barış Özcan", "Evrim Ağacı",
@@ -1014,7 +1117,7 @@
           "id": "youtubers_female",
           "name": "Kadın Youtuberlar",
           "unlockedByAd": false,
-          "isUnlocked": false,
+          "isUnlocked": true,
           "items": ["Duygu Özaslan", "Merve Özkaynak", "Şeyda Erdoğan", "Danla Bilic", "Betül Çakmak", "Ecenaz Üçer",
             "Meryem Can", "Eda Biçim", "Berfu Yenenler", "İdil Yazar", "Refika Birgül","Elvin Levinler"
           ],

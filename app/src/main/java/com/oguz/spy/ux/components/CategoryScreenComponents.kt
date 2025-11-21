@@ -253,7 +253,6 @@ fun CategoryCard(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         // İpuçları
-
                         Text(
                             text = "İpuçları",
                             fontSize = 14.sp,

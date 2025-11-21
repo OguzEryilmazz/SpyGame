@@ -64,6 +64,9 @@ class CategoryDataManager(private val context: Context) {
             val unlockedSubs = getUnlockedSubcategoryIds()
 
             data.categories.map { json ->
+                // 🆕 Ana kategori satın alındı mı kontrol et
+                val isMainCategoryPurchased = purchased.contains(json.id)
+
                 val subcategories = json.subcategories?.map { subJson ->
                     Subcategory(
                         id = subJson.id,
@@ -71,7 +74,10 @@ class CategoryDataManager(private val context: Context) {
                         items = subJson.items,
                         hints = subJson.hints,
                         unlockedByAd = subJson.unlockedByAd,
-                        isUnlocked = unlockedSubs.contains(subJson.id)
+                        // 🆕 Ana kategori satın alındıysa VEYA alt kategori açıksa VEYA JSON'da açıksa
+                        isUnlocked = isMainCategoryPurchased ||
+                                unlockedSubs.contains(subJson.id) ||
+                                subJson.isUnlocked
                     )
                 } ?: emptyList()
 
@@ -178,14 +184,14 @@ class CategoryDataManager(private val context: Context) {
     private fun getIconByName(iconName: String) = when (iconName) {
         "work" -> Icons.Default.Work
         "restaurant" -> Icons.Default.Restaurant
-        "apple" -> Icons.Default.EmojiFoodBeverage
+        "apple" -> Icons.Default.FoodBank
         "palette" -> Icons.Default.Palette
         "sports" -> Icons.Default.Sports
         "music" -> Icons.Default.MusicNote
         "place" -> Icons.Default.Place
         "pets" -> Icons.Default.Pets
         "directions_car" -> Icons.Default.DirectionsCar
-        "sports_esports" -> Icons.Default.SportsEsports
+        "sports_esports" -> Icons.Default.SportsBasketball
         "computer" -> Icons.Default.Computer
         "checkroom" -> Icons.Default.Checkroom
         "school" -> Icons.Default.School
@@ -195,6 +201,12 @@ class CategoryDataManager(private val context: Context) {
         "home" -> Icons.Default.Home
         "public" -> Icons.Default.Public
         "shuffle" -> Icons.Default.Shuffle
+        "cake"-> Icons.Default.Cake
+        "local_cafe"-> Icons.Default.LocalCafe
+        "store"->Icons.Default.Store
+        "movie" -> Icons.Default.Movie
+        "live_tv" -> Icons.Default.LiveTv
+        "play_circle" -> Icons.Default.PlayCircle
         else -> Icons.Default.Category
     }
 }
