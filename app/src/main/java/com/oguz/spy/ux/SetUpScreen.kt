@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -135,7 +137,7 @@ fun SetupScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // İpucu Ayarı - Güncellenmiş
+                    // İpucu Ayarı
                     SettingItem(
                         icon = if (showHints) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                         title = "Imposter İpucu",
@@ -143,6 +145,37 @@ fun SetupScreen(
                         iconColor = if(showHints) Color(0xFF4CAF50) else Color(0xFFF44336), // Green/Red
                         onIconClick = { showHints = !showHints }
                     ){}
+
+                    // İpucu Açıklama Notu
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(12.dp),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = null,
+                                    tint = Color(0xFF4CAF50),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "İpuçlarını açtığınız takdirde Imposter'a kategori hakkında ipucu verilecektir.",
+                                    fontSize = 14.sp,
+                                    color = Color.White.copy(alpha = 0.9f),
+                                    lineHeight = 18.sp,
+                                )
+                        }
+                    }
                 }
             }
 

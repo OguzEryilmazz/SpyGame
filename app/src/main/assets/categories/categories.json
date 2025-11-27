@@ -29,7 +29,7 @@
         "Grafik Tasarımcı", "Yazılımcı", "Diş Hekimi", "Ebe",
         "İçerik Üreticisi", "Bankacı", "Emlakçı",
         "Marangoz", "Boyacı", "Tesisatçı", "Demirci",
-        "Postacı", "Kargo Görevlisi", "Kapıcı", "Bahçıvan", "Temizlikçi"
+        "Postacı", "Kargocu", "Kapıcı", "Bahçıvan"
       ],
       "hints": [
         "Çalışma hayatı",
@@ -472,153 +472,7 @@
           ]
         }
       ]
-    },      
-    {
-      "id": "singers",
-      "name": "Şarkıcılar",
-      "iconName": "music",
-      "colorHex": "#E91E63",
-      "isLocked": false,
-      "priceTL": 0,
-      "hasSubcategories": true,
-      "subcategories": [
-        {
-          "id": "singers_domestic_pop",
-          "name": "Yerli Pop",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Sezen Aksu", "Tarkan", "Ajda Pekkan", "Kenan Doğulu", "Sertab Erener",
-            "Mustafa Sandal", "Gülben", "Eda", "Zeynep Bastık", "Simge",
-            "Hayko Cepkin", "Serdar Ortaç", "Murat Boz", "Oğuzhan Koç", "İrem Derici",
-            "Yalın", "Yaşar", "Manifest", "Semicenk"
-          ],
-          "hints": [
-            "Yerli",
-            "Konser",
-            "Top 50"
-          ]
-        },
-        {
-          "id": "singers_domestic_rap_trap",
-          "name": "Yerli Rap/Trap",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Ceza", "Sagopa Kajmer", "Ezhel", "Uzi", "Ben Fero",
-            "Şehinşah", "Cakal", "Murda", "Norm Ender", "Gazapizm",
-            "Reckol", "Joker", "Güneş", "Khontkar", "Baneva",
-            "Mero", "Ati242", "Şam", "Blok3", "Eray067&Mansur",
-            "Jeff Red", "Organize", "Poizi","Era07capone" , "Fuat Ergin",
-            "Batuflex","Motive","Abugat","EGE!"
-          ],
-          "hints": [
-            "Hız",
-            "Flow",
-            "Lirik"
-          ]
-        },
-        {
-          "id": "singers_domestic_arabesque",
-          "name": "Yerli Arabesk",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Müslüm Gürses", "Ferdi Tayfur", "Orhan Gencebay", "İbrahim Tatlıses",
-            "Bergen", "Azer Bülbül", "Mahsun Kırmızıgül", "Ebru Gündeş",
-            "Hüsnü Şenlendirici", "Gülü"
-          ],
-          "hints": [
-            "Eski",
-            "Hüzün",
-            "Hayran"
-          ]
-        },
-        {
-          "id": "singers_domestic_rock",
-          "name": "Yerli Rock",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Barış Manço", "Cem Karaca", "Erkin Koray", "Duman",
-            "Şebnem Ferah", "Teoman", "Mor ve Ötesi", "Athena",
-            "Haluk Levent", "Manga", "Gripin", "Pinhani"
-          ],
-          "hints": [
-            "Konser",
-            "Ses"
-          ]
-        },
-        {
-          "id": "singers_domestic_alternative",
-          "name": "Yerli Alternatif",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Büyük Ev Ablukada", "Adamlar", "Melisa Şahin", "Kalben",
-            "Can Ozan", "Sena Şener", "Son Feci Bisiklet"
-          ],
-          "hints": [
-            "Farklı",
-            "Ünlü",
-            "Konser"
-          ]
-        },
-        {
-          "id": "singers_foreign_pop",
-          "name": "Yabancı Pop",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Beyoncé", "Taylor Swift", "Britney Spears", "Rihanna",
-            "Lady Gaga", "Adele", "Bruno Mars", "Justin Timberlake",
-            "Adam Levine", "Katy Perry", "Justin Bieber", "Troye Sivan",
-            "Jennifer Lopez", "Dua Lipa", "Billie Eilish", "The Weeknd",
-            "Harry Styles", "Ed Sheeran", "Miley Cyrus", "Selena Gomez",
-            "Maroon 5", "Michael Jackson", "Madonna"
-          ],
-          "hints": [
-            "Global",
-            "Grammy",
-            "HIT"
-          ]
-        },
-        {
-          "id": "singers_foreign_hiphop",
-          "name": "Yabancı Hip-Hop/Rap",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "Eminem", "Tupac", "Snoop Dogg", "Jay-Z", "Drake",
-            "Kanye West", "Kendrick Lamar", "J. Cole", "Nicki Minaj",
-            "Lil Wayne", "50 Cent", "Dr. Dre", "Cardi B",
-            "Future", "Post Malone", "XXXTentacion", "Pop Smoke",
-            "21 Savage", "Doja Cat", "Lil Baby", "Juice WRLD",
-            "Lil Uzi Vert", "Playboi Carti", "Young Thug", "Gunna", "Central Cee"
-          ],
-          "hints": [
-            "Sokak",
-            "Yabancı"
-          ]
-        },
-        {
-          "id": "singers_foreign_rock",
-          "name": "Yabancı Rock",
-          "unlockedByAd": true,
-          "isUnlocked": false,
-          "items": [
-            "The Beatles", "Queen", "Pink Floyd", "Eagles",
-            "AC DC", "Guns N' Roses", "Metallica", "Scorpions",
-            "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys"
-          ],
-          "hints": [
-            "Konser",
-            "Siyah",
-            "Metal"
-          ]
-        }
-      ]
-    },      
+    },
     {
       "id": "places",
       "name": "Yerler",
@@ -859,7 +713,7 @@
       "isLocked": false,
       "priceTL": 0,
       "hasSubcategories": false
-    },      
+    },
     {
       "id": "animals",
       "name": "Hayvanlar",
@@ -880,19 +734,16 @@
         "Bukalemun", "Sincap", "Kirpi", "Gergedan", "Zebra",
         "Koala", "Panda", "Kanguru", "Tilki", "Vaşak",
         "Çakal", "Samur", "Kunduz", "Porsuk", "Gelincik",
-        "Sansar","Sırtlan", "Geyik", "Karaca",
-        "Ceylan","Keklik", "Sülün","Turna", "Leylek","Martı", "Albatros",
+        "Sansar","Sırtlan", "Geyik", "Ceylan","Keklik", "Leylek","Martı", "Albatros",
         "Pelikan", "Karabatak", "Su Samuru", "Deniz Aslanı","Orka",
-        "Morina", "Ton Balığı", "Kılıç Balığı", "Vatoz",
-        "Mürekkep Balığı", "Deniz Yıldızı", "Deniz Kestanesi",
+        "Ton Balığı", "Kılıç Balığı", "Vatoz",
+        "Mürekkep Balığı", "Deniz Yıldızı",
         "Ateş Böceği", "Kelebek", "Arı", "Karınca", "Çekirge",
         "Ağustosböceği", "Uğur Böceği", "Yusufçuk","Tırtıl",
         "Solucan", "Sümüklüböcek", "Salyangoz", "Örümcek", "Akrep",
-        "Deve Kuşu", "Emu", "Kivi", "Orangutan", "Goril", "Şempanze", "Lemur","Babun",
-        "Semender", "Aksalotl", "Kobra", "Anakonda", "Piton", "Çıngıraklı Yılan", "Mamba",
-        "Komodo Ejderi", "Geko", "Ağaçkakan",
-        "Bülbül", "Saksağan", "Kırlangıç", "Güvercin",
-        "Kumru","Angut","Devekuşu", "Tukan", "Sülük"
+        "Deve Kuşu", "Kivi", "Orangutan", "Goril", "Şempanze", "Lemur","Babun",
+        "Semender", "Kobra", "Anakonda", "Piton"
+
       ],
       "hints": [
         "Canlı varlık",
@@ -906,6 +757,152 @@
       "isLocked": true,
       "priceTL": 25.99,
       "hasSubcategories": false
+    },
+    {
+      "id": "singers",
+      "name": "Şarkıcılar",
+      "iconName": "music",
+      "colorHex": "#E91E63",
+      "isLocked": true,
+      "priceTL": 39.99,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "singers_domestic_pop",
+          "name": "Yerli Pop",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Sezen Aksu", "Tarkan", "Ajda Pekkan", "Kenan Doğulu", "Sertab Erener",
+            "Mustafa Sandal", "Gülben", "Eda", "Zeynep Bastık", "Simge",
+            "Hayko Cepkin", "Serdar Ortaç", "Murat Boz", "Oğuzhan Koç", "İrem Derici",
+            "Yalın", "Yaşar", "Manifest", "Semicenk"
+          ],
+          "hints": [
+            "Yerli",
+            "Konser",
+            "Top 50"
+          ]
+        },
+        {
+          "id": "singers_domestic_rap_trap",
+          "name": "Yerli Rap/Trap",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Ceza", "Sagopa Kajmer", "Ezhel", "Uzi", "Ben Fero",
+            "Şehinşah", "Cakal", "Murda", "Norm Ender", "Gazapizm",
+            "Reckol", "Joker", "Güneş", "Khontkar", "Baneva",
+            "Mero", "Ati242", "Şam", "Blok3", "Eray067&Mansur",
+            "Jeff Red", "Organize", "Poizi","Era07capone" , "Fuat Ergin",
+            "Batuflex","Motive","Abugat","EGE!"
+          ],
+          "hints": [
+            "Hız",
+            "Flow",
+            "Lirik"
+          ]
+        },
+        {
+          "id": "singers_domestic_arabesque",
+          "name": "Yerli Arabesk",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Müslüm Gürses", "Ferdi Tayfur", "Orhan Gencebay", "İbrahim Tatlıses",
+            "Bergen", "Azer Bülbül", "Mahsun Kırmızıgül", "Ebru Gündeş",
+            "Hüsnü Şenlendirici", "Gülü"
+          ],
+          "hints": [
+            "Eski",
+            "Hüzün",
+            "Hayran"
+          ]
+        },
+        {
+          "id": "singers_domestic_rock",
+          "name": "Yerli Rock",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Barış Manço", "Cem Karaca", "Erkin Koray", "Duman",
+            "Şebnem Ferah", "Teoman", "Mor ve Ötesi", "Athena",
+            "Haluk Levent", "Manga", "Gripin", "Pinhani"
+          ],
+          "hints": [
+            "Konser",
+            "Ses"
+          ]
+        },
+        {
+          "id": "singers_domestic_alternative",
+          "name": "Yerli Alternatif",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Büyük Ev Ablukada", "Adamlar", "Melisa Şahin", "Kalben",
+            "Can Ozan", "Sena Şener", "Son Feci Bisiklet"
+          ],
+          "hints": [
+            "Farklı",
+            "Ünlü",
+            "Konser"
+          ]
+        },
+        {
+          "id": "singers_foreign_pop",
+          "name": "Yabancı Pop",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Beyoncé", "Taylor Swift", "Britney Spears", "Rihanna",
+            "Lady Gaga", "Adele", "Bruno Mars", "Justin Timberlake",
+            "Adam Levine", "Katy Perry", "Justin Bieber", "Troye Sivan",
+            "Jennifer Lopez", "Dua Lipa", "Billie Eilish", "The Weeknd",
+            "Harry Styles", "Ed Sheeran", "Miley Cyrus", "Selena Gomez",
+            "Maroon 5", "Michael Jackson", "Madonna"
+          ],
+          "hints": [
+            "Global",
+            "Grammy",
+            "HIT"
+          ]
+        },
+        {
+          "id": "singers_foreign_hiphop",
+          "name": "Yabancı Hip-Hop/Rap",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Eminem", "Tupac", "Snoop Dogg", "Jay-Z", "Drake",
+            "Kanye West", "Kendrick Lamar", "J. Cole", "Nicki Minaj",
+            "Lil Wayne", "50 Cent", "Dr. Dre", "Cardi B",
+            "Future", "Post Malone", "XXXTentacion", "Pop Smoke",
+            "21 Savage", "Doja Cat", "Lil Baby", "Juice WRLD",
+            "Lil Uzi Vert", "Playboi Carti", "Young Thug", "Gunna", "Central Cee"
+          ],
+          "hints": [
+            "Sokak",
+            "Yabancı"
+          ]
+        },
+        {
+          "id": "singers_foreign_rock",
+          "name": "Yabancı Rock",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "The Beatles", "Queen", "Pink Floyd", "Eagles",
+            "AC DC", "Guns N' Roses", "Metallica", "Scorpions",
+            "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys"
+          ],
+          "hints": [
+            "Konser",
+            "Siyah",
+            "Metal"
+          ]
+        }
+      ]
     },
     {
       "id": "sports",
@@ -959,17 +956,17 @@
         "Coğrafi sınır",
         "Hükümeti var",
         "Bayrak simge",
-        "Dil kültür",
-        "Başkent şehir",
-        "Uluslararası ilişki",
-        "Pasaport gerekir"
+        "Kültür",
+        "Başkent",
+        "Uluslararası ",
+        "Pasaport"
       ],
       "isLocked": true,
       "priceTL": 69.99,
       "hasSubcategories": false
     },
     {
-      "id": "actors",
+      "id":"actors",
       "name": "Oyuncular",
       "iconName": "movie",
       "colorHex": "#F44336",
@@ -1035,9 +1032,9 @@
             "Chris Evans", "Morgan Freeman"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Para",
+            "Yakışıklı",
+            "Jön"
           ]
         },
         {
@@ -1053,15 +1050,15 @@
             "Dakota Johnson"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Güzel",
+            "Kadın",
+            "Ana Karakter"
           ]
         }
       ]
     },
     {
-      "id": "streamers",
+      "id":"streamers",
       "name": "Yayıncılar",
       "iconName": "live_tv",
       "colorHex": "#9C27B0",
@@ -1108,9 +1105,9 @@
             "SeseGel", "Noluyo Ya?","Mert Karadeniz" ,"SeeOK" ,"Furkan Arabacı",""
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "Internet",
+            "Fenomen",
+            "Youtube"
           ]
         },
         {
@@ -1122,9 +1119,9 @@
             "Meryem Can", "Eda Biçim", "Berfu Yenenler", "İdil Yazar", "Refika Birgül","Elvin Levinler"
           ],
           "hints": [
-            "HINT 1",
-            "HINT 2",
-            "HINT 3"
+            "İçerik",
+            "Kadın",
+            "Para"
           ]
         }
       ]

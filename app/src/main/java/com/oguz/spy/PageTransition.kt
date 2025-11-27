@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.oguz.spy.ads.BannerAdManager
+import com.oguz.spy.ads.InterstitialAdManager
 import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.ux.*
 import com.oguz.spy.ux.components.BannerAd
@@ -17,6 +18,7 @@ import com.oguz.spy.ux.components.BannerAd
 fun PageTransition(
     rewardedAdManager: RewardedAdManager,
     bannerAdManager: BannerAdManager,
+    interstitialAdManager: InterstitialAdManager
 ) {
     val navController = rememberNavController()
 
@@ -83,7 +85,7 @@ fun PageTransition(
                 CategoryScreen(
                     navController = navController,
                     players = playersData,
-                    rewardedAdManager = rewardedAdManager, // BURADA GEÇİRİN
+                    rewardedAdManager = rewardedAdManager,
                     onCategorySelected = { category, gamePlayers ->
                         // Seçilen kategori ve oyun oyuncularını kaydet
                         selectedCategory = category
@@ -107,6 +109,7 @@ fun PageTransition(
                     navController = navController,
                     gamePlayers = gamePlayersData,
                     category = category,
+                    interstitialAdManager = interstitialAdManager,
                     gameDurationMinutes = gameDuration,
                     showHints = showHints
                 )
@@ -124,7 +127,8 @@ fun PageTransition(
                 TimerScreen(
                     navController = navController,
                     gameDuration = gameDuration,
-                    gamePlayers = gamePlayersData
+                    gamePlayers = gamePlayersData,
+                    interstitialAdManager = interstitialAdManager
                 )
             }
 
@@ -139,7 +143,8 @@ fun PageTransition(
 
                 VotingScreen(
                     navController = navController,
-                    gamePlayers = gamePlayersData
+                    gamePlayers = gamePlayersData,
+                    interstitialAdManager = interstitialAdManager
                 )
             }
         }

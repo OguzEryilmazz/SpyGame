@@ -7,6 +7,8 @@ import android.util.Log
 import com.android.billingclient.api.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,14 +24,13 @@ class BillingManager(
     private var billingClient: BillingClient? = null
     private var isClientReady = false
 
-    // SharedPreferences ekle
     private val prefs: SharedPreferences = context.getSharedPreferences("purchases", Context.MODE_PRIVATE)
 
-    // Satın alma durumunu izlemek için
-    private val _purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Idle)
-    val purchaseState: StateFlow<PurchaseState> = _purchaseState
+    // ✅ StateFlow yerine SharedFlow kullan
+    private val _purchaseState = MutableSharedFlow<PurchaseState>(replay = 0)
+    val purchaseState: SharedFlow<PurchaseState> = _purchaseState
 
-    // Ürün fiyatlarını saklamak için
+    // Ürün fiyatlarını saklamak için StateFlow kullanmaya devam et
     private val _productDetails = MutableStateFlow<Map<String, ProductDetails>>(emptyMap())
     val productDetails: StateFlow<Map<String, ProductDetails>> = _productDetails
 
@@ -64,14 +65,15 @@ class BillingManager(
                 } else {
                     Log.e(TAG, "Billing client bağlantı hatası: ${billingResult.debugMessage}")
                     isClientReady = false
-                    _purchaseState.value = PurchaseState.Error("Play Store bağlantısı kurulamadı")
+                    coroutineScope.launch {
+                        _purchaseState.emit(PurchaseState.Error("Play Store bağlantısı kurulamadı"))
+                    }
                 }
             }
 
             override fun onBillingServiceDisconnected() {
                 Log.w(TAG, "Billing servis bağlantısı kesildi")
                 isClientReady = false
-                // 3 saniye sonra yeniden bağlanmayı dene
                 coroutineScope.launch {
                     kotlinx.coroutines.delay(3000)
                     startConnection()
@@ -80,17 +82,15 @@ class BillingManager(
         })
     }
 
-    // Ürünleri sorgula (fiyatları almak için)
     private fun queryProducts() {
         coroutineScope.launch {
-            // Mevcut ana kategoriler
             val mainCategories = listOf(
                 "singers", "places", "animals", "vehicles", "sports",
                 "electronics", "clothing", "school_subjects", "games",
-                "books", "weather", "emotions", "household_items", "countries", "youtubers"
+                "books", "weather", "emotions", "household_items", "countries", "youtubers",
+                "streamers","actors"
             )
 
-            // 🆕 Alt kategori ID'lerini ekle (categories.json'dan)
             val subcategoryIds = listOf(
                 "athletes_active_football_domestic",
                 "athletes_active_football_foreign",
@@ -121,7 +121,6 @@ class BillingManager(
                 "youtubers_female"
             )
 
-            // Tüm ID'leri birleştir
             val allProductIds = mainCategories + subcategoryIds
 
             val productList = allProductIds.map { id ->
@@ -149,7 +148,6 @@ class BillingManager(
         }
     }
 
-    // Mevcut satın almaları kontrol et
     fun queryPurchases() {
         coroutineScope.launch {
             withContext(Dispatchers.IO) {
@@ -171,12 +169,12 @@ class BillingManager(
         }
     }
 
-    // Satın alma başlat
     fun launchPurchaseFlow(activity: Activity, productId: String) {
-        // Önce bağlantı kontrolü
         if (!isClientReady) {
             Log.e(TAG, "Billing client hazır değil")
-            _purchaseState.value = PurchaseState.Error("Play Store bağlantısı kurulamadı. Lütfen tekrar deneyin.")
+            coroutineScope.launch {
+                _purchaseState.emit(PurchaseState.Error("Play Store bağlantısı kurulamadı. Lütfen tekrar deneyin."))
+            }
             return
         }
 
@@ -184,11 +182,15 @@ class BillingManager(
 
         if (productDetails == null) {
             Log.e(TAG, "Ürün bulunamadı: $productId")
-            _purchaseState.value = PurchaseState.Error("Ürün bilgileri yüklenemedi. Lütfen uygulamayı yeniden başlatın.")
+            coroutineScope.launch {
+                _purchaseState.emit(PurchaseState.Error("Ürün bilgileri yüklenemedi. Lütfen uygulamayı yeniden başlatın."))
+            }
             return
         }
 
-        _purchaseState.value = PurchaseState.Loading
+        coroutineScope.launch {
+            _purchaseState.emit(PurchaseState.Loading)
+        }
         Log.d(TAG, "Satın alma başlatılıyor: $productId")
 
         val productDetailsParamsList = listOf(
@@ -205,34 +207,36 @@ class BillingManager(
 
         if (billingResult?.responseCode != BillingClient.BillingResponseCode.OK) {
             Log.e(TAG, "Billing flow başlatılamadı: ${billingResult?.debugMessage}")
-            _purchaseState.value = PurchaseState.Error("Satın alma ekranı açılamadı: ${billingResult?.debugMessage}")
+            coroutineScope.launch {
+                _purchaseState.emit(PurchaseState.Error("Satın alma ekranı açılamadı: ${billingResult?.debugMessage}"))
+            }
         }
     }
 
-    // Satın alma güncellemelerini dinle
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         Log.d(TAG, "onPurchasesUpdated: ${billingResult.responseCode}")
 
-        when (billingResult.responseCode) {
-            BillingClient.BillingResponseCode.OK -> {
-                purchases?.forEach { purchase ->
-                    Log.d(TAG, "Satın alma başarılı: ${purchase.products}")
-                    handlePurchase(purchase)
+        coroutineScope.launch {
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> {
+                    purchases?.forEach { purchase ->
+                        Log.d(TAG, "Satın alma başarılı: ${purchase.products}")
+                        handlePurchase(purchase)
+                    }
                 }
-            }
-            BillingClient.BillingResponseCode.USER_CANCELED -> {
-                Log.d(TAG, "Kullanıcı satın almayı iptal etti")
-                _purchaseState.value = PurchaseState.Error("Satın alma iptal edildi")
-            }
-            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
-                Log.d(TAG, "Ürün zaten satın alınmış")
-                // Satın almaları yeniden sorgula ve kaydet
-                queryPurchases()
-                _purchaseState.value = PurchaseState.Error("Bu kategori zaten satın alınmış")
-            }
-            else -> {
-                Log.e(TAG, "Satın alma hatası: ${billingResult.debugMessage}")
-                _purchaseState.value = PurchaseState.Error("Satın alma hatası: ${billingResult.debugMessage}")
+                BillingClient.BillingResponseCode.USER_CANCELED -> {
+                    Log.d(TAG, "Kullanıcı satın almayı iptal etti")
+                    _purchaseState.emit(PurchaseState.Error("Satın alma iptal edildi"))
+                }
+                BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
+                    Log.d(TAG, "Ürün zaten satın alınmış")
+                    queryPurchases()
+                    _purchaseState.emit(PurchaseState.Error("Bu kategori zaten satın alınmış"))
+                }
+                else -> {
+                    Log.e(TAG, "Satın alma hatası: ${billingResult.debugMessage}")
+                    _purchaseState.emit(PurchaseState.Error("Satın alma hatası: ${billingResult.debugMessage}"))
+                }
             }
         }
     }
@@ -243,19 +247,17 @@ class BillingManager(
                 acknowledgePurchase(purchase)
             }
 
-            // Kategoriyi kilitsiz yap ve kaydet
             purchase.products.forEach { productId ->
-                // SharedPreferences'a kaydet
                 prefs.edit().putBoolean(productId, true).apply()
 
-                // Success event'ini gönder - MainActivity bu eventi dinliyor
-                _purchaseState.value = PurchaseState.Success(productId)
+                coroutineScope.launch {
+                    _purchaseState.emit(PurchaseState.Success(productId))
+                }
                 Log.d(TAG, "Kategori kilidi açıldı ve kaydedildi: $productId")
             }
         }
     }
 
-    // Tüm satın alınmış ürünleri döndür
     fun getAllPurchasedProducts(): Set<String> {
         return prefs.all.keys.filter { key ->
             prefs.getBoolean(key, false)
@@ -280,16 +282,13 @@ class BillingManager(
         }
     }
 
-    // Kategori satın alınmış mı kontrol et
     suspend fun isCategoryPurchased(categoryId: String): Boolean {
-        // Önce local cache'den kontrol et
         val cachedPurchase = prefs.getBoolean(categoryId, false)
         if (cachedPurchase) {
             Log.d(TAG, "Kategori cache'de bulundu: $categoryId")
             return true
         }
 
-        // Cache'de yoksa Play Store'dan kontrol et
         return withContext(Dispatchers.IO) {
             val params = QueryPurchasesParams.newBuilder()
                 .setProductType(BillingClient.ProductType.INAPP)
@@ -303,7 +302,6 @@ class BillingManager(
                                 purchase.products.contains(categoryId)
                     }
 
-                    // Eğer Play Store'da varsa cache'e de kaydet
                     if (isPurchased) {
                         prefs.edit().putBoolean(categoryId, true).apply()
                         Log.d(TAG, "Kategori Play Store'da bulundu ve cache'e kaydedildi: $categoryId")
@@ -314,7 +312,6 @@ class BillingManager(
         }
     }
 
-    // Fiyat bilgisini al
     fun getProductPrice(categoryId: String): String? {
         val productDetails = _productDetails.value[categoryId]
         Log.d("price", productDetails.toString())

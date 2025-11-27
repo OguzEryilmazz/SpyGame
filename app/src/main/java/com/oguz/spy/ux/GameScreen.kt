@@ -1,8 +1,11 @@
 package com.oguz.spy.ux
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.oguz.spy.ads.InterstitialAdManager
 import com.oguz.spy.ux.components.PlayerGameScreen
 import kotlinx.coroutines.delay
 
@@ -12,9 +15,13 @@ fun GameScreen(
     navController: NavController,
     gamePlayers: List<GamePlayer>,
     category: Category,
+    interstitialAdManager: InterstitialAdManager,
     gameDurationMinutes: Int,
     showHints: Boolean,
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
     var currentPlayerIndex by remember { mutableStateOf(0) }
     var timeLeft by remember { mutableStateOf(gameDurationMinutes * 60) }
     var isTimerRunning by remember { mutableStateOf(false) }
@@ -25,7 +32,6 @@ fun GameScreen(
             delay(1000L)
             timeLeft--
         } else if (isTimerRunning && timeLeft <= 0) {
-            // Zaman dolduğunda zamanlayıcıyı durdur
             isTimerRunning = false
         }
     }
@@ -44,8 +50,6 @@ fun GameScreen(
         onNext = {
             if (currentPlayerIndex < gamePlayers.size - 1) {
                 currentPlayerIndex++
-            } else {
-                println("DEBUG: Son oyuncudayız, index artırılmadı")
             }
         },
         onPrevious = {
@@ -54,7 +58,21 @@ fun GameScreen(
             }
         },
         onStartTimer = {
-            navController.navigate("timerScreen")
+            // ✅ Oyun başlarken reklam göster (sıklık kontrolü ile)
+            activity?.let {
+                interstitialAdManager.showAdWithFrequencyControl(
+                    activity = it,
+                    onAdDismissed = {
+                        navController.navigate("timerScreen")
+                    },
+                    onAdShowFailed = { error ->
+                        println("Reklam gösterilemedi: $error")
+                        navController.navigate("timerScreen")
+                    }
+                )
+            } ?: run {
+                navController.navigate("timerScreen")
+            }
         }
     )
 }

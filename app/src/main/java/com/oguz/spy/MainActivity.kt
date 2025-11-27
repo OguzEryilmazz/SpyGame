@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import com.oguz.spy.ads.BannerAdManager
+import com.oguz.spy.ads.InterstitialAdManager
 import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.billing.BillingManager
 import com.oguz.spy.datamanagment.CategoryDataManager
@@ -20,6 +21,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var billingManager: BillingManager
     private lateinit var categoryDataManager: CategoryDataManager
     private lateinit var bannerAdManager: BannerAdManager
+
+    private lateinit var interstitialAdManager: InterstitialAdManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,12 @@ class MainActivity : ComponentActivity() {
             onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load rewarded: $error") }
         )
 
+        interstitialAdManager = InterstitialAdManager()
+        interstitialAdManager.loadAd(
+            context = this,
+            onAdLoaded = { Log.d("AdMob", "Interstitial ad loaded") },
+            onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load interstitial: $error") }
+        )
         // Banner Ad Manager
         bannerAdManager = BannerAdManager()
         bannerAdManager.createAdView(
@@ -105,7 +114,8 @@ class MainActivity : ComponentActivity() {
             SpyTheme {
                 PageTransition(
                     rewardedAdManager = rewardedAdManager,
-                    bannerAdManager = bannerAdManager
+                    bannerAdManager = bannerAdManager,
+                    interstitialAdManager = interstitialAdManager
                 )
             }
         }
@@ -131,6 +141,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        interstitialAdManager.destroy()
         bannerAdManager.destroy()
         billingManager.destroy()
     }

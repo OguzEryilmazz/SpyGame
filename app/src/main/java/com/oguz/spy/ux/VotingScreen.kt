@@ -1,15 +1,22 @@
 package com.oguz.spy.ux
 
+import android.app.Activity
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.oguz.spy.ads.InterstitialAdManager
 import com.oguz.spy.ux.components.VotingInterface
 import com.oguz.spy.ux.components.VotingResultsScreen
 
 @Composable
 fun VotingScreen(
     navController: NavController,
-    gamePlayers: List<GamePlayer>
+    gamePlayers: List<GamePlayer>,
+    interstitialAdManager: InterstitialAdManager
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
     var votingPhase by remember { mutableStateOf(VotingPhase.VOTING) }
     var currentVoterIndex by remember { mutableStateOf(0) }
     var votes by remember { mutableStateOf(mutableMapOf<String, String>()) }
@@ -69,13 +76,49 @@ fun VotingScreen(
                 votes = votes.values.groupingBy { it }.eachCount(),
                 gamePlayers = gamePlayers,
                 onPlayAgain = {
-                    navController.navigate("categoryScreen") {
-                        popUpTo("categoryScreen") { inclusive = true }
+                    // ✅ Tekrar oyna butonunda reklam göster (sıklık kontrolü ile)
+                    activity?.let {
+                        interstitialAdManager.showAdWithFrequencyControl(
+                            activity = it,
+                            onAdDismissed = {
+                                navController.navigate("categoryScreen") {
+                                    popUpTo("categoryScreen") { inclusive = true }
+                                }
+                            },
+                            onAdShowFailed = { error ->
+                                println("Reklam gösterilemedi: $error")
+                                navController.navigate("categoryScreen") {
+                                    popUpTo("categoryScreen") { inclusive = true }
+                                }
+                            }
+                        )
+                    } ?: run {
+                        navController.navigate("categoryScreen") {
+                            popUpTo("categoryScreen") { inclusive = true }
+                        }
                     }
                 },
                 onMainMenu = {
-                    navController.navigate("categoryScreen") {
-                        popUpTo("categoryScreen") { inclusive = true }
+                    // ✅ Ana menü butonunda reklam göster (sıklık kontrolü ile)
+                    activity?.let {
+                        interstitialAdManager.showAdWithFrequencyControl(
+                            activity = it,
+                            onAdDismissed = {
+                                navController.navigate("categoryScreen") {
+                                    popUpTo("categoryScreen") { inclusive = true }
+                                }
+                            },
+                            onAdShowFailed = { error ->
+                                println("Reklam gösterilemedi: $error")
+                                navController.navigate("categoryScreen") {
+                                    popUpTo("categoryScreen") { inclusive = true }
+                                }
+                            }
+                        )
+                    } ?: run {
+                        navController.navigate("categoryScreen") {
+                            popUpTo("categoryScreen") { inclusive = true }
+                        }
                     }
                 }
             )

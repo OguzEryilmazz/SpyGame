@@ -136,7 +136,7 @@ fun CategoryScreen(
     fun showRewardedAdForSubcategory(activity: Activity, subcategoryId: String) {
         isWatchingAdForSubcategory = subcategoryId
         adLoadingMessage = null
-        isLoadingAdForUnlock = false // 🆕 EKLE
+        isLoadingAdForUnlock = false
 
         rewardedAdManager.showAd(
             activity = activity,
@@ -154,19 +154,19 @@ fun CategoryScreen(
 
                 errorMessage = "🎉 Alt kategori bir oyunluk başarıyla açıldı!"
                 isWatchingAdForSubcategory = null
-                showSubcategoryUnlockDialog = false // 🆕 EKLE
+                showSubcategoryUnlockDialog = false
             },
             onAdDismissed = {
                 isWatchingAdForSubcategory = null
-                isLoadingAdForUnlock = false // 🆕 EKLE
-                showSubcategoryUnlockDialog = false // 🆕 EKLE
+                isLoadingAdForUnlock = false
+                showSubcategoryUnlockDialog = false
                 rewardedAdManager.loadAd()
             },
             onAdShowFailed = { error ->
                 errorMessage = "Reklam gösterilemedi: $error"
                 isWatchingAdForSubcategory = null
-                isLoadingAdForUnlock = false // 🆕 EKLE
-                showSubcategoryUnlockDialog = false // 🆕 EKLE
+                isLoadingAdForUnlock = false
+                showSubcategoryUnlockDialog = false
                 rewardedAdManager.loadAd()
             }
         )
@@ -229,32 +229,28 @@ fun CategoryScreen(
     }
 
     // Satın alma durumunu izle
+    // LaunchedEffect içindeki satın alma durumu kontrolünü şu şekilde değiştirin:
+
     LaunchedEffect(Unit) {
         billingManager.purchaseState.collect { state ->
             when (state) {
                 is BillingManager.PurchaseState.Success -> {
                     val productId = state.categoryId
 
-                    // Kategori mi yoksa subcategory mi kontrol et
                     val isSubcategory = categories.any { category ->
                         category.subcategories.any { it.id == productId }
                     }
 
                     if (isSubcategory) {
-                        // Subcategory satın alındı
                         categoryManager.markSubcategoryAsPurchased(productId)
-                        errorMessage = "🎉 Alt kategori kalıcı olarak açıldı!"
                         showSubcategoryUnlockDialog = false
                     } else {
-                        // Ana kategori satın alındı
                         categoryManager.markAsPurchased(productId)
-                        errorMessage = "🎉 Kategori başarıyla satın alındı!"
                     }
 
                     categories = categoryManager.getCategories()
                     purchasingCategoryId = null
 
-                    // Dialog açıksa kategorileri güncelle
                     selectedCategoryForSubcategories?.let { category ->
                         coroutineScope.launch {
                             val updatedCategories = categoryManager.getCategories()
@@ -262,14 +258,14 @@ fun CategoryScreen(
                                 updatedCategories.find { it.id == category.id }
                         }
                     }
-
-                    kotlinx.coroutines.delay(2000)
-                    errorMessage = null
                 }
 
                 is BillingManager.PurchaseState.Error -> {
                     purchasingCategoryId = null
                     errorMessage = state.message
+
+                    kotlinx.coroutines.delay(3000)
+                    errorMessage = null
                 }
 
                 is BillingManager.PurchaseState.Loading -> {}

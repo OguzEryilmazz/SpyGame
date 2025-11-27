@@ -2,6 +2,7 @@ package com.oguz.spy.ux
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
@@ -29,26 +30,24 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.coroutines.delay
-import kotlin.math.cos
-import kotlin.math.sin
 import androidx.activity.ComponentActivity
+import com.oguz.spy.ads.InterstitialAdManager
+import kotlinx.coroutines.delay
 
 @SuppressLint("MissingPermission")
 @Composable
 fun TimerScreen(
     navController: NavController,
     gameDuration: Int,
-    gamePlayers: List<GamePlayer>
+    gamePlayers: List<GamePlayer>,
+    interstitialAdManager: InterstitialAdManager
 ) {
     var timeLeft by remember { mutableStateOf(gameDuration * 60) }
     var isTimerRunning by remember { mutableStateOf(true) }
@@ -380,11 +379,29 @@ fun TimerScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Ana menü butonu
+                    // Ana menü butonu (Reklam ile)
                     OutlinedButton(
                         onClick = {
-                            navController.navigate("categoryScreen") {
-                                popUpTo("categoryScreen") { inclusive = true }
+                            // ✅ Ana menü butonunda reklam göster (sıklık kontrolü ile)
+                            (activity as? Activity)?.let {
+                                interstitialAdManager.showAdWithFrequencyControl(
+                                    activity = it,
+                                    onAdDismissed = {
+                                        navController.navigate("categoryScreen") {
+                                            popUpTo("categoryScreen") { inclusive = true }
+                                        }
+                                    },
+                                    onAdShowFailed = { error ->
+                                        println("Reklam gösterilemedi: $error")
+                                        navController.navigate("categoryScreen") {
+                                            popUpTo("categoryScreen") { inclusive = true }
+                                        }
+                                    }
+                                )
+                            } ?: run {
+                                navController.navigate("categoryScreen") {
+                                    popUpTo("categoryScreen") { inclusive = true }
+                                }
                             }
                         },
                         modifier = Modifier
