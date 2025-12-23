@@ -10,7 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 class InterstitialAdManager(
-    private val adUnitId: String = AdIds.INTERSTITIAL_TEST
+    private val adUnitId: String = AdIds.INTERSTITIAL_PROD
 ) {
     private var interstitialAd: InterstitialAd? = null
     private var isLoading = false

@@ -8,7 +8,7 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 
 class BannerAdManager(
-    private val adUnitId: String = AdIds.BANNER_TEST
+    private val adUnitId: String = AdIds.BANNER_PROD
 ) {
     private var adView: AdView? = null
     private var isLoading = false

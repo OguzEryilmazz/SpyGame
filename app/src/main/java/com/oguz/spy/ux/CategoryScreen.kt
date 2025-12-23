@@ -1,255 +1,148 @@
-package com.oguz.spy.ux
+    package com.oguz.spy.ux
 
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.oguz.spy.ads.RewardedAdManager
-import com.oguz.spy.billing.BillingManager
-import com.oguz.spy.datamanagment.CategoryDataManager
-import com.oguz.spy.models.CharacterAvatar
-import com.oguz.spy.ux.components.CategoryCard
-import com.oguz.spy.ux.components.EmptyFavoritesComponent
-import com.oguz.spy.ux.components.assignRoles
-import kotlinx.coroutines.launch
+    import android.annotation.SuppressLint
+    import android.app.Activity
+    import androidx.compose.foundation.BorderStroke
+    import androidx.compose.foundation.background
+    import androidx.compose.foundation.layout.*
+    import androidx.compose.foundation.lazy.LazyColumn
+    import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+    import androidx.compose.foundation.lazy.grid.GridCells
+    import androidx.compose.foundation.lazy.grid.items
+    import androidx.compose.foundation.lazy.items
+    import androidx.compose.foundation.shape.CircleShape
+    import androidx.compose.foundation.shape.RoundedCornerShape
+    import androidx.compose.material.icons.Icons
+    import androidx.compose.material.icons.filled.*
+    import androidx.compose.material3.*
+    import androidx.compose.runtime.*
+    import androidx.compose.ui.Alignment
+    import androidx.compose.ui.Modifier
+    import androidx.compose.ui.draw.clip
+    import androidx.compose.ui.graphics.Brush
+    import androidx.compose.ui.graphics.Color
+    import androidx.compose.ui.graphics.vector.ImageVector
+    import androidx.compose.ui.platform.LocalContext
+    import androidx.compose.ui.text.font.FontWeight
+    import androidx.compose.ui.text.input.TextFieldValue
+    import androidx.compose.ui.text.style.TextAlign
+    import androidx.compose.ui.unit.dp
+    import androidx.compose.ui.unit.sp
+    import androidx.navigation.NavController
+    import com.oguz.spy.ads.RewardedAdManager
+    import com.oguz.spy.billing.BillingManager
+    import com.oguz.spy.datamanagment.CategoryDataManager
+    import com.oguz.spy.models.CharacterAvatar
+    import com.oguz.spy.ux.components.CategoryCard
+    import com.oguz.spy.ux.components.EmptyFavoritesComponent
+    import com.oguz.spy.ux.components.assignRoles
+    import kotlinx.coroutines.launch
 
-// Kategori data class'ı
-data class Subcategory(
-    val id: String,
-    val name: String,
-    val items: List<String>,
-    val hints: List<String>,
-    val unlockedByAd: Boolean,
-    val isUnlocked: Boolean,
-)
+    // Kategori data class'ı
+    data class Subcategory(
+        val id: String,
+        val name: String,
+        val items: List<String>,
+        val hints: List<String>,
+        val unlockedByAd: Boolean,
+        val isUnlocked: Boolean,
+    )
 
-data class Category(
-    val id: String,
-    val name: String,
-    val icon: ImageVector,
-    val color: Color,
-    val items: List<String>,
-    val hints: List<String>,
-    val isLocked: Boolean,
-    val priceTL: Double,
-    val isFavorite: Boolean,
-    val hasSubcategories: Boolean = false,
-    val subcategories: List<Subcategory> = emptyList(),
-    val isRandomCategory: Boolean = false,
-)
+    data class Category(
+        val id: String,
+        val name: String,
+        val icon: ImageVector,
+        val color: Color,
+        val items: List<String>,
+        val hints: List<String>,
+        val isLocked: Boolean,
+        val priceTL: Double,
+        val isFavorite: Boolean,
+        val hasSubcategories: Boolean = false,
+        val subcategories: List<Subcategory> = emptyList(),
+        val isRandomCategory: Boolean = false,
+    )
 
-// Oyuncu ve rol data class'ları
-data class GamePlayer(
-    val id: Int,
-    val name: String,
-    val color: Color,
-    val selectedCharacter: CharacterAvatar? = null,
-    val role: String,
-    val hint: String? = null, // sadece spy için
-)
+    // Oyuncu ve rol data class'ları
+    data class GamePlayer(
+        val id: Int,
+        val name: String,
+        val color: Color,
+        val selectedCharacter: CharacterAvatar? = null,
+        val role: String,
+        val hint: String? = null, // sadece spy için
+    )
 
-enum class FilterType {
-    ALL, FAVORITES, UNLOCKED
-}
-
-@SuppressLint("ContextCastToActivity")
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CategoryScreen(
-    navController: NavController,
-    players: List<Player> = emptyList(),
-    onCategorySelected: (Category, List<GamePlayer>) -> Unit = { _, _ -> },
-    rewardedAdManager: RewardedAdManager,
-) {
-    val context = LocalContext.current
-    val activity = context as? Activity
-
-    val categoryManager = remember { CategoryDataManager(context) }
-    val coroutineScope = rememberCoroutineScope()
-
-    val billingManager = remember {
-        BillingManager(context, coroutineScope)
+    enum class FilterType {
+        ALL, FAVORITES, UNLOCKED
     }
 
-    var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var isRefreshing by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf<Category?>(null) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var purchasingCategoryId by remember { mutableStateOf<String?>(null) }
+    @SuppressLint("ContextCastToActivity")
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun CategoryScreen(
+        navController: NavController,
+        players: List<Player> = emptyList(),
+        onCategorySelected: (Category, List<GamePlayer>) -> Unit = { _, _ -> },
+        rewardedAdManager: RewardedAdManager,
+    ) {
+        val context = LocalContext.current
+        val activity = context as? Activity
 
-    var searchText by remember { mutableStateOf(TextFieldValue()) }
-    var isSearchActive by remember { mutableStateOf(false) }
-    var currentFilter by remember { mutableStateOf(FilterType.ALL) }
-    var showSubcategoryDialog by remember { mutableStateOf(false) }
-    var selectedCategoryForSubcategories by remember { mutableStateOf<Category?>(null) }
-    var selectedSubcategory by remember { mutableStateOf<Subcategory?>(null) }
+        val categoryManager = remember { CategoryDataManager(context) }
+        val coroutineScope = rememberCoroutineScope()
 
-    var isWatchingAdForSubcategory by remember { mutableStateOf<String?>(null) }
-    var adLoadingMessage by remember { mutableStateOf<String?>(null) }
-
-    var showSubcategoryUnlockDialog by remember { mutableStateOf(false) }
-    var subcategoryToUnlock by remember { mutableStateOf<Subcategory?>(null) }
-    var isLoadingAdForUnlock by remember { mutableStateOf(false) }
-
-    fun loadCategories() {
-        coroutineScope.launch {
-            try {
-                isRefreshing = true
-                categories = categoryManager.getCategories()
-                errorMessage = null
-            } catch (e: Exception) {
-                errorMessage = "Kategoriler yüklenirken hata oluştu: ${e.message}"
-            } finally {
-                isLoading = false
-                isRefreshing = false
-            }
-        }
-    }
-
-    fun showRewardedAdForSubcategory(activity: Activity, subcategoryId: String) {
-        isWatchingAdForSubcategory = subcategoryId
-        adLoadingMessage = null
-        isLoadingAdForUnlock = false
-
-        rewardedAdManager.showAd(
-            activity = activity,
-            onUserEarnedReward = { amount, type ->
-                categoryManager.grantSingleUseAccess(subcategoryId)
-                loadCategories()
-
-                selectedCategoryForSubcategories?.let { category ->
-                    coroutineScope.launch {
-                        val updatedCategories = categoryManager.getCategories()
-                        selectedCategoryForSubcategories =
-                            updatedCategories.find { it.id == category.id }
-                    }
-                }
-
-                errorMessage = "🎉 Alt kategori bir oyunluk başarıyla açıldı!"
-                isWatchingAdForSubcategory = null
-                showSubcategoryUnlockDialog = false
-            },
-            onAdDismissed = {
-                isWatchingAdForSubcategory = null
-                isLoadingAdForUnlock = false
-                showSubcategoryUnlockDialog = false
-                rewardedAdManager.loadAd()
-            },
-            onAdShowFailed = { error ->
-                errorMessage = "Reklam gösterilemedi: $error"
-                isWatchingAdForSubcategory = null
-                isLoadingAdForUnlock = false
-                showSubcategoryUnlockDialog = false
-                rewardedAdManager.loadAd()
-            }
-        )
-    }
-
-    fun watchAdForSubcategory(subcategoryId: String) {
-        if (activity == null) {
-            errorMessage = "Activity bulunamadı!"
-            return
+        val billingManager = remember {
+            BillingManager(context, coroutineScope)
         }
 
-        if (!rewardedAdManager.isAdReady()) {
-            isLoadingAdForUnlock = true // 🆕 DEĞİŞTİ
-            adLoadingMessage = "Reklam yükleniyor, lütfen bekleyin..."
+        var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
+        var isLoading by remember { mutableStateOf(true) }
+        var isRefreshing by remember { mutableStateOf(false) }
+        var selectedCategory by remember { mutableStateOf<Category?>(null) }
+        var errorMessage by remember { mutableStateOf<String?>(null) }
+        var purchasingCategoryId by remember { mutableStateOf<String?>(null) }
 
-            rewardedAdManager.loadAd(
-                onAdLoaded = {
-                    adLoadingMessage = null
-                    showRewardedAdForSubcategory(activity, subcategoryId)
-                },
-                onAdFailedToLoad = { error ->
-                    adLoadingMessage = null
-                    isLoadingAdForUnlock = false // 🆕 EKLE
-                    errorMessage = "Reklam yüklenemedi. Lütfen internet bağlantınızı kontrol edin."
-                }
-            )
-        } else {
-            showRewardedAdForSubcategory(activity, subcategoryId)
-        }
-    }
+        var searchText by remember { mutableStateOf(TextFieldValue()) }
+        var isSearchActive by remember { mutableStateOf(false) }
+        var currentFilter by remember { mutableStateOf(FilterType.ALL) }
+        var showSubcategoryDialog by remember { mutableStateOf(false) }
+        var selectedCategoryForSubcategories by remember { mutableStateOf<Category?>(null) }
+        var selectedSubcategory by remember { mutableStateOf<Subcategory?>(null) }
 
-    fun toggleFavorite(categoryId: String) {
-        coroutineScope.launch {
-            try {
-                categoryManager.toggleFavorite(categoryId)
-                categories = categories.map { category ->
-                    if (category.id == categoryId) {
-                        category.copy(isFavorite = !category.isFavorite)
-                    } else {
-                        category
-                    }
-                }
-            } catch (e: Exception) {
-                errorMessage = "Favori güncelleme hatası: ${e.message}"
-            }
-        }
-    }
+        var isWatchingAdForSubcategory by remember { mutableStateOf<String?>(null) }
+        var adLoadingMessage by remember { mutableStateOf<String?>(null) }
 
-    fun purchaseSubcategory(subcategoryId: String) {
-        if (activity == null) {
-            errorMessage = "Activity bulunamadı!"
-            return
-        }
+        var showSubcategoryUnlockDialog by remember { mutableStateOf(false) }
+        var subcategoryToUnlock by remember { mutableStateOf<Subcategory?>(null) }
+        var isLoadingAdForUnlock by remember { mutableStateOf(false) }
 
-        purchasingCategoryId = subcategoryId
-        billingManager.launchPurchaseFlow(
-            activity = activity,
-            productId = subcategoryId
-        )
-    }
-
-    // Satın alma durumunu izle
-    // LaunchedEffect içindeki satın alma durumu kontrolünü şu şekilde değiştirin:
-
-    LaunchedEffect(Unit) {
-        billingManager.purchaseState.collect { state ->
-            when (state) {
-                is BillingManager.PurchaseState.Success -> {
-                    val productId = state.categoryId
-
-                    val isSubcategory = categories.any { category ->
-                        category.subcategories.any { it.id == productId }
-                    }
-
-                    if (isSubcategory) {
-                        categoryManager.markSubcategoryAsPurchased(productId)
-                        showSubcategoryUnlockDialog = false
-                    } else {
-                        categoryManager.markAsPurchased(productId)
-                    }
-
+        fun loadCategories() {
+            coroutineScope.launch {
+                try {
+                    isRefreshing = true
                     categories = categoryManager.getCategories()
-                    purchasingCategoryId = null
+                    errorMessage = null
+                } catch (e: Exception) {
+                    errorMessage = "Kategoriler yüklenirken hata oluştu: ${e.message}"
+                } finally {
+                    isLoading = false
+                    isRefreshing = false
+                }
+            }
+        }
+
+        fun showRewardedAdForSubcategory(activity: Activity, subcategoryId: String) {
+            isWatchingAdForSubcategory = subcategoryId
+            adLoadingMessage = null
+            isLoadingAdForUnlock = false
+
+            rewardedAdManager.showAd(
+                activity = activity,
+                onUserEarnedReward = { amount, type ->
+                    categoryManager.grantSingleUseAccess(subcategoryId)
+                    loadCategories()
 
                     selectedCategoryForSubcategories?.let { category ->
                         coroutineScope.launch {
@@ -258,1040 +151,1147 @@ fun CategoryScreen(
                                 updatedCategories.find { it.id == category.id }
                         }
                     }
+
+                    errorMessage = "🎉 Alt kategori bir oyunluk başarıyla açıldı!"
+                    isWatchingAdForSubcategory = null
+                    showSubcategoryUnlockDialog = false
+                },
+                onAdDismissed = {
+                    isWatchingAdForSubcategory = null
+                    isLoadingAdForUnlock = false
+                    showSubcategoryUnlockDialog = false
+                    rewardedAdManager.loadAd()
+                },
+                onAdShowFailed = { error ->
+                    errorMessage = "Reklam gösterilemedi: $error"
+                    isWatchingAdForSubcategory = null
+                    isLoadingAdForUnlock = false
+                    showSubcategoryUnlockDialog = false
+                    rewardedAdManager.loadAd()
                 }
-
-                is BillingManager.PurchaseState.Error -> {
-                    purchasingCategoryId = null
-                    errorMessage = state.message
-
-                    kotlinx.coroutines.delay(3000)
-                    errorMessage = null
-                }
-
-                is BillingManager.PurchaseState.Loading -> {}
-                is BillingManager.PurchaseState.Idle -> {
-                    purchasingCategoryId = null
-                }
-            }
-        }
-    }
-
-    val filteredCategories = remember(categories, searchText, currentFilter) {
-        var filtered = categories
-
-        if (searchText.text.isNotBlank()) {
-            filtered = filtered.filter {
-                it.name.contains(searchText.text, ignoreCase = true)
-            }
-        }
-
-        filtered = when (currentFilter) {
-            FilterType.ALL -> filtered
-            FilterType.FAVORITES -> filtered.filter { it.isFavorite }
-            FilterType.UNLOCKED -> filtered.filter { !it.isLocked }
-        }
-
-        filtered
-    }
-
-    LaunchedEffect(Unit) {
-        loadCategories()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            billingManager.destroy()
-        }
-    }
-
-    // Error message auto-clear
-    errorMessage?.let { error ->
-        LaunchedEffect(error) {
-            kotlinx.coroutines.delay(3000)
-            errorMessage = null
-        }
-    }
-
-    // Ad loading message auto-clear
-    adLoadingMessage?.let { msg ->
-        LaunchedEffect(msg) {
-            kotlinx.coroutines.delay(5000)
-            adLoadingMessage = null
-        }
-    }
-
-    // Loading State
-    if (isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFE91E63)),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Kategoriler yükleniyor...",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-            }
-        }
-        return
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFFE91E63),
-                        Color(0xFF9C27B0),
-                        Color(0xFFF44336)
-                    )
-                )
             )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 80.dp, top = 20.dp)
-        ) {
-            // Top Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.2f))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Geri",
-                        tint = Color.White
-                    )
+        }
+
+        fun watchAdForSubcategory(subcategoryId: String) {
+            if (activity == null) {
+                errorMessage = "Activity bulunamadı!"
+                return
+            }
+
+            if (!rewardedAdManager.isAdReady()) {
+                isLoadingAdForUnlock = true // 🆕 DEĞİŞTİ
+                adLoadingMessage = "Reklam yükleniyor, lütfen bekleyin..."
+
+                rewardedAdManager.loadAd(
+                    onAdLoaded = {
+                        adLoadingMessage = null
+                        showRewardedAdForSubcategory(activity, subcategoryId)
+                    },
+                    onAdFailedToLoad = { error ->
+                        adLoadingMessage = null
+                        isLoadingAdForUnlock = false // 🆕 EKLE
+                        errorMessage = "Reklam yüklenemedi. Lütfen internet bağlantınızı kontrol edin."
+                    }
+                )
+            } else {
+                showRewardedAdForSubcategory(activity, subcategoryId)
+            }
+        }
+
+        fun toggleFavorite(categoryId: String) {
+            coroutineScope.launch {
+                try {
+                    categoryManager.toggleFavorite(categoryId)
+                    categories = categories.map { category ->
+                        if (category.id == categoryId) {
+                            category.copy(isFavorite = !category.isFavorite)
+                        } else {
+                            category
+                        }
+                    }
+                } catch (e: Exception) {
+                    errorMessage = "Favori güncelleme hatası: ${e.message}"
                 }
+            }
+        }
 
-                Spacer(modifier = Modifier.width(16.dp))
+        fun purchaseSubcategory(subcategoryId: String) {
+            if (activity == null) {
+                errorMessage = "Activity bulunamadı!"
+                return
+            }
 
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "Kategori Seç",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                    Text(
-                        text = "Oyun kategorisini belirleyin",
-                        fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                }
+            purchasingCategoryId = subcategoryId
+            billingManager.launchPurchaseFlow(
+                activity = activity,
+                productId = subcategoryId
+            )
+        }
 
-                IconButton(
-                    onClick = { isSearchActive = !isSearchActive },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(
-                            if (isSearchActive) Color.White.copy(alpha = 0.3f)
-                            else Color.White.copy(alpha = 0.2f)
-                        )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Ara",
-                        tint = Color.White
-                    )
-                }
+        // Satın alma durumunu izle
+        // LaunchedEffect içindeki satın alma durumu kontrolünü şu şekilde değiştirin:
 
-                Spacer(modifier = Modifier.width(8.dp))
+        LaunchedEffect(Unit) {
+            billingManager.purchaseState.collect { state ->
+                when (state) {
+                    is BillingManager.PurchaseState.Success -> {
+                        val productId = state.categoryId
 
-                IconButton(
-                    onClick = { loadCategories() },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.2f))
-                ) {
-                    if (isRefreshing) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Yenile",
-                            tint = Color.White
-                        )
+                        val isSubcategory = categories.any { category ->
+                            category.subcategories.any { it.id == productId }
+                        }
+
+                        if (isSubcategory) {
+                            categoryManager.markSubcategoryAsPurchased(productId)
+                            showSubcategoryUnlockDialog = false
+                        } else {
+                            categoryManager.markAsPurchased(productId)
+                        }
+
+                        categories = categoryManager.getCategories()
+                        purchasingCategoryId = null
+
+                        selectedCategoryForSubcategories?.let { category ->
+                            coroutineScope.launch {
+                                val updatedCategories = categoryManager.getCategories()
+                                selectedCategoryForSubcategories =
+                                    updatedCategories.find { it.id == category.id }
+                            }
+                        }
+                    }
+
+                    is BillingManager.PurchaseState.Error -> {
+                        purchasingCategoryId = null
+                        errorMessage = state.message
+
+                        kotlinx.coroutines.delay(3000)
+                        errorMessage = null
+                    }
+
+                    is BillingManager.PurchaseState.Loading -> {}
+                    is BillingManager.PurchaseState.Idle -> {
+                        purchasingCategoryId = null
                     }
                 }
             }
+        }
 
-            // Error/Success Message
-            errorMessage?.let { error ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (error.contains("başarıyla") || error.contains("🎉"))
-                            Color.Green.copy(alpha = 0.9f)
-                        else
-                            Color.Red.copy(alpha = 0.9f)
-                    )
-                ) {
-                    Text(
-                        text = error,
-                        color = Color.White,
-                        modifier = Modifier.padding(12.dp),
-                        fontSize = 14.sp
-                    )
+        val filteredCategories = remember(categories, searchText, currentFilter) {
+            var filtered = categories
+
+            if (searchText.text.isNotBlank()) {
+                filtered = filtered.filter {
+                    it.name.contains(searchText.text, ignoreCase = true)
                 }
             }
 
-            // Ad Loading Message
-            adLoadingMessage?.let { msg ->
-                Card(
+            filtered = when (currentFilter) {
+                FilterType.ALL -> filtered
+                FilterType.FAVORITES -> filtered.filter { it.isFavorite }
+                FilterType.UNLOCKED -> filtered.filter { !it.isLocked }
+            }
+
+            filtered
+        }
+
+        LaunchedEffect(Unit) {
+            loadCategories()
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                billingManager.destroy()
+            }
+        }
+
+        // Error message auto-clear
+        errorMessage?.let { error ->
+            LaunchedEffect(error) {
+                kotlinx.coroutines.delay(3000)
+                errorMessage = null
+            }
+        }
+
+        // Ad loading message auto-clear
+        adLoadingMessage?.let { msg ->
+            LaunchedEffect(msg) {
+                kotlinx.coroutines.delay(5000)
+                adLoadingMessage = null
+            }
+        }
+
+        // Loading State
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFFE91E63)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Kategoriler yükleniyor...",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+            return
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFE91E63),
+                            Color(0xFF9C27B0),
+                            Color(0xFFF44336)
+                        )
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp, top = 20.dp)
+            ) {
+                // Top Bar
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF2196F3).copy(alpha = 0.9f)
-                    )
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    IconButton(
+                        onClick = { navController.popBackStack() },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.2f))
                     ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Geri",
+                            tint = Color.White
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = msg,
+                            text = "Kategori Seç",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Oyun kategorisini belirleyin",
+                            fontSize = 14.sp,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { isSearchActive = !isSearchActive },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(
+                                if (isSearchActive) Color.White.copy(alpha = 0.3f)
+                                else Color.White.copy(alpha = 0.2f)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Ara",
+                            tint = Color.White
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    IconButton(
+                        onClick = { loadCategories() },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.2f))
+                    ) {
+                        if (isRefreshing) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Yenile",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+
+                // Error/Success Message
+                errorMessage?.let { error ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (error.contains("başarıyla") || error.contains("🎉"))
+                                Color.Green.copy(alpha = 0.9f)
+                            else
+                                Color.Red.copy(alpha = 0.9f)
+                        )
+                    ) {
+                        Text(
+                            text = error,
                             color = Color.White,
+                            modifier = Modifier.padding(12.dp),
                             fontSize = 14.sp
                         )
                     }
                 }
-            }
 
-            // Search Bar & Filters (keeping existing code)
-            if (isSearchActive) {
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    placeholder = {
-                        Text(
-                            "Kategori ara...",
-                            color = Color.White.copy(alpha = 0.7f)
+                // Ad Loading Message
+                adLoadingMessage?.let { msg ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF2196F3).copy(alpha = 0.9f)
                         )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.7f)
-                        )
-                    },
-                    trailingIcon = {
-                        if (searchText.text.isNotEmpty()) {
-                            IconButton(onClick = { searchText = TextFieldValue() }) {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = "Temizle",
-                                    tint = Color.White.copy(alpha = 0.7f)
-                                )
-                            }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = msg,
+                                color = Color.White,
+                                fontSize = 14.sp
+                            )
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color.White.copy(alpha = 0.7f),
-                        unfocusedBorderColor = Color.White.copy(alpha = 0.5f),
-                        cursorColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true
-                )
+                    }
+                }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    FilterChip(
-                        selected = currentFilter == FilterType.ALL,
-                        onClick = { currentFilter = FilterType.ALL },
-                        label = { Text("Tümü") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color.White.copy(alpha = 0.3f),
-                            selectedLabelColor = Color.White,
-                            containerColor = Color.White.copy(alpha = 0.1f),
-                            labelColor = Color.White.copy(alpha = 0.8f)
-                        )
-                    )
-
-                    val favoriteCount = categories.count { it.isFavorite }
-                    FilterChip(
-                        selected = currentFilter == FilterType.FAVORITES,
-                        onClick = { currentFilter = FilterType.FAVORITES },
-                        label = { Text("Favoriler ($favoriteCount)") },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Star,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
+                // Search Bar & Filters (keeping existing code)
+                if (isSearchActive) {
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        placeholder = {
+                            Text(
+                                "Kategori ara...",
+                                color = Color.White.copy(alpha = 0.7f)
                             )
                         },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color.White.copy(alpha = 0.3f),
-                            selectedLabelColor = Color.White,
-                            containerColor = Color.White.copy(alpha = 0.1f),
-                            labelColor = Color.White.copy(alpha = 0.8f)
-                        )
-                    )
-
-                    val unlockedCount = categories.count { !it.isLocked }
-                    FilterChip(
-                        selected = currentFilter == FilterType.UNLOCKED,
-                        onClick = { currentFilter = FilterType.UNLOCKED },
-                        label = { Text("Açık ($unlockedCount)") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color.White.copy(alpha = 0.3f),
-                            selectedLabelColor = Color.White,
-                            containerColor = Color.White.copy(alpha = 0.1f),
-                            labelColor = Color.White.copy(alpha = 0.8f)
-                        )
-                    )
-                }
-            }
-
-            // Categories Grid
-            if (filteredCategories.isEmpty() && currentFilter == FilterType.FAVORITES) {
-                EmptyFavoritesComponent(
-                    onAddFavoriteClick = {
-                        currentFilter = FilterType.ALL
-                        isSearchActive = true
-                    }
-                )
-            } else if (filteredCategories.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (searchText.text.isNotBlank())
-                            "Arama kriterlerinize uygun kategori bulunamadı"
-                        else "Henüz kategori bulunmuyor",
-                        color = Color.White.copy(alpha = 0.7f),
-                        fontSize = 16.sp
-                    )
-                }
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(1),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(bottom = 16.dp)
-                ) {
-                    items(filteredCategories) { category ->
-                        val productPrice = billingManager.getProductPrice(category.id)
-                        val isLoadingPurchase = purchasingCategoryId == category.id
-
-                        CategoryCard(
-                            category = category,
-                            isSelected = selectedCategory?.id == category.id,
-                            onClick = {
-                                if (!category.isLocked) {
-                                    if (category.isRandomCategory) {
-                                        selectedCategory =
-                                            if (selectedCategory?.id == category.id) null else category
-                                        selectedSubcategory = null
-                                    } else if (category.hasSubcategories) {
-                                        selectedCategoryForSubcategories = category
-                                        showSubcategoryDialog = true
-                                    } else {
-                                        selectedCategory =
-                                            if (selectedCategory?.id == category.id) null else category
-                                        selectedSubcategory = null
-                                    }
-                                }
-                            },
-                            onUnlockClick = {
-                                if (activity != null && category.isLocked) {
-                                    purchasingCategoryId = category.id
-                                    billingManager.launchPurchaseFlow(
-                                        activity = activity,
-                                        productId = category.id
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = null,
+                                tint = Color.White.copy(alpha = 0.7f)
+                            )
+                        },
+                        trailingIcon = {
+                            if (searchText.text.isNotEmpty()) {
+                                IconButton(onClick = { searchText = TextFieldValue() }) {
+                                    Icon(
+                                        Icons.Default.Close,
+                                        contentDescription = "Temizle",
+                                        tint = Color.White.copy(alpha = 0.7f)
                                     )
                                 }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedBorderColor = Color.White.copy(alpha = 0.7f),
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.5f),
+                            cursorColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        FilterChip(
+                            selected = currentFilter == FilterType.ALL,
+                            onClick = { currentFilter = FilterType.ALL },
+                            label = { Text("Tümü") },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Color.White.copy(alpha = 0.3f),
+                                selectedLabelColor = Color.White,
+                                containerColor = Color.White.copy(alpha = 0.1f),
+                                labelColor = Color.White.copy(alpha = 0.8f)
+                            )
+                        )
+
+                        val favoriteCount = categories.count { it.isFavorite }
+                        FilterChip(
+                            selected = currentFilter == FilterType.FAVORITES,
+                            onClick = { currentFilter = FilterType.FAVORITES },
+                            label = { Text("Favoriler ($favoriteCount)") },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
                             },
-                            onFavoriteClick = {
-                                if (!category.isRandomCategory) {
-                                    toggleFavorite(category.id)
-                                }
-                            },
-                            productPrice = productPrice,
-                            isLoading = isLoadingPurchase
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Color.White.copy(alpha = 0.3f),
+                                selectedLabelColor = Color.White,
+                                containerColor = Color.White.copy(alpha = 0.1f),
+                                labelColor = Color.White.copy(alpha = 0.8f)
+                            )
+                        )
+
+                        val unlockedCount = categories.count { !it.isLocked }
+                        FilterChip(
+                            selected = currentFilter == FilterType.UNLOCKED,
+                            onClick = { currentFilter = FilterType.UNLOCKED },
+                            label = { Text("Açık ($unlockedCount)") },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Color.White.copy(alpha = 0.3f),
+                                selectedLabelColor = Color.White,
+                                containerColor = Color.White.copy(alpha = 0.1f),
+                                labelColor = Color.White.copy(alpha = 0.8f)
+                            )
                         )
                     }
                 }
-            }
-        }
 
-        // Subcategory Dialog
-        // 🆕 YENİ: Subcategory Unlock Dialog
-        if (showSubcategoryUnlockDialog && subcategoryToUnlock != null && selectedCategoryForSubcategories != null) {
-            SubcategoryUnlockDialog(
-                subcategory = subcategoryToUnlock!!,
-                categoryColor = selectedCategoryForSubcategories!!.color,
-                onWatchAd = {
-                    watchAdForSubcategory(subcategoryToUnlock!!.id)
-                },
-                onPurchase = {
-                    purchaseSubcategory(subcategoryToUnlock!!.id)
-                },
-                onDismiss = {
-                    showSubcategoryUnlockDialog = false
-                    subcategoryToUnlock = null
-                    isLoadingAdForUnlock = false
-                },
-                isLoadingAd = isLoadingAdForUnlock,
-                subcategoryPrice = billingManager.getSubcategoryPrice(subcategoryToUnlock!!.id)
-            )
-        }
+                // Categories Grid
+                if (filteredCategories.isEmpty() && currentFilter == FilterType.FAVORITES) {
+                    EmptyFavoritesComponent(
+                        onAddFavoriteClick = {
+                            currentFilter = FilterType.ALL
+                            isSearchActive = true
+                        }
+                    )
+                } else if (filteredCategories.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (searchText.text.isNotBlank())
+                                "Arama kriterlerinize uygun kategori bulunamadı"
+                            else "Henüz kategori bulunmuyor",
+                            color = Color.White.copy(alpha = 0.7f),
+                            fontSize = 16.sp
+                        )
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(1),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(bottom = 16.dp)
+                    ) {
+                        items(filteredCategories) { category ->
+                            val productPrice = billingManager.getProductPrice(category.id)
+                            val isLoadingPurchase = purchasingCategoryId == category.id
 
-        if (showSubcategoryDialog && selectedCategoryForSubcategories != null) {
-            SubcategorySelectionDialog(
-                category = selectedCategoryForSubcategories!!,
-                onSubcategorySelected = { subcategory ->
-                    selectedCategory = selectedCategoryForSubcategories
-                    selectedSubcategory = subcategory
-                    showSubcategoryDialog = false
-                },
-                onSubcategoryUnlockRequest = { subcategory -> // 🆕 DEĞİŞTİ
-                    subcategoryToUnlock = subcategory
-                    showSubcategoryUnlockDialog = true
-                    // Ana dialogu kapatmıyoruz
-                },
-                onDismiss = {
-                    showSubcategoryDialog = false
-                    selectedCategoryForSubcategories = null
+                            CategoryCard(
+                                category = category,
+                                isSelected = selectedCategory?.id == category.id,
+                                onClick = {
+                                    if (!category.isLocked) {
+                                        if (category.isRandomCategory) {
+                                            selectedCategory =
+                                                if (selectedCategory?.id == category.id) null else category
+                                            selectedSubcategory = null
+                                        } else if (category.hasSubcategories) {
+                                            selectedCategoryForSubcategories = category
+                                            showSubcategoryDialog = true
+                                        } else {
+                                            selectedCategory =
+                                                if (selectedCategory?.id == category.id) null else category
+                                            selectedSubcategory = null
+                                        }
+                                    }
+                                },
+                                onUnlockClick = {
+                                    if (activity != null && category.isLocked) {
+                                        purchasingCategoryId = category.id
+                                        billingManager.launchPurchaseFlow(
+                                            activity = activity,
+                                            productId = category.id
+                                        )
+                                    }
+                                },
+                                onFavoriteClick = {
+                                    if (!category.isRandomCategory) {
+                                        toggleFavorite(category.id)
+                                    }
+                                },
+                                productPrice = productPrice,
+                                isLoading = isLoadingPurchase
+                            )
+                        }
+                    }
                 }
-            )
-        }
-        // Start Game Button (keeping existing code)
-        selectedCategory?.let { category ->
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(Color.Black.copy(alpha = 0.3f))
-                    .padding(16.dp)
-            ) {
-                Button(
-                    onClick = {
-                        if (category.isRandomCategory) {
-                            // Açık kategorileri topla
-                            val unlockedCategories = categories.filter {
-                                !it.isLocked && !it.isRandomCategory
-                            }
+            }
 
-                            if (unlockedCategories.isEmpty()) {
-                                errorMessage = "Henüz açık kategori bulunmuyor!"
-                                return@Button
-                            }
+            // Subcategory Dialog
+            // 🆕 YENİ: Subcategory Unlock Dialog
+            if (showSubcategoryUnlockDialog && subcategoryToUnlock != null && selectedCategoryForSubcategories != null) {
+                SubcategoryUnlockDialog(
+                    subcategory = subcategoryToUnlock!!,
+                    categoryColor = selectedCategoryForSubcategories!!.color,
+                    onWatchAd = {
+                        watchAdForSubcategory(subcategoryToUnlock!!.id)
+                    },
+                    onPurchase = {
+                        purchaseSubcategory(subcategoryToUnlock!!.id)
+                    },
+                    onDismiss = {
+                        showSubcategoryUnlockDialog = false
+                        subcategoryToUnlock = null
+                        isLoadingAdForUnlock = false
+                    },
+                    isLoadingAd = isLoadingAdForUnlock,
+                    subcategoryPrice = billingManager.getSubcategoryPrice(subcategoryToUnlock!!.id)
+                )
+            }
 
-                            // Oynanabilir kategorileri filtrele
-                            val playableCategories = unlockedCategories.filter { cat ->
-                                if (cat.hasSubcategories) {
-                                    cat.subcategories.any { it.isUnlocked }
-                                } else {
-                                    cat.items.isNotEmpty()
+            if (showSubcategoryDialog && selectedCategoryForSubcategories != null) {
+                SubcategorySelectionDialog(
+                    category = selectedCategoryForSubcategories!!,
+                    onSubcategorySelected = { subcategory ->
+                        selectedCategory = selectedCategoryForSubcategories
+                        selectedSubcategory = subcategory
+                        showSubcategoryDialog = false
+                    },
+                    onSubcategoryUnlockRequest = { subcategory -> // 🆕 DEĞİŞTİ
+                        subcategoryToUnlock = subcategory
+                        showSubcategoryUnlockDialog = true
+                        // Ana dialogu kapatmıyoruz
+                    },
+                    onDismiss = {
+                        showSubcategoryDialog = false
+                        selectedCategoryForSubcategories = null
+                    }
+                )
+            }
+            // Start Game Button (keeping existing code)
+            selectedCategory?.let { category ->
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .padding(16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            if (category.isRandomCategory) {
+                                // Açık kategorileri topla
+                                val unlockedCategories = categories.filter {
+                                    !it.isLocked && !it.isRandomCategory
                                 }
-                            }
 
-                            if (playableCategories.isEmpty()) {
-                                errorMessage = "Oynanabilir kategori bulunmuyor!"
-                                return@Button
-                            }
-
-                            val randomCategory = playableCategories.random()
-
-                            val itemsToUse: List<String>
-                            val hintsToUse: List<String>
-
-                            if (randomCategory.hasSubcategories) {
-                                // Alt kategorileri olan kategoriden rastgele alt kategori seç
-                                val unlockedSubs =
-                                    randomCategory.subcategories.filter { it.isUnlocked }
-
-                                if (unlockedSubs.isEmpty()) {
-                                    errorMessage =
-                                        "Rastgele seçilen kategoride açık alt kategori yok!"
+                                if (unlockedCategories.isEmpty()) {
+                                    errorMessage = "Henüz açık kategori bulunmuyor!"
                                     return@Button
                                 }
 
-                                val randomSub = unlockedSubs.random()
-                                itemsToUse = randomSub.items
-                                hintsToUse = randomSub.hints
+                                // Oynanabilir kategorileri filtrele
+                                val playableCategories = unlockedCategories.filter { cat ->
+                                    if (cat.hasSubcategories) {
+                                        cat.subcategories.any { it.isUnlocked }
+                                    } else {
+                                        cat.items.isNotEmpty()
+                                    }
+                                }
+
+                                if (playableCategories.isEmpty()) {
+                                    errorMessage = "Oynanabilir kategori bulunmuyor!"
+                                    return@Button
+                                }
+
+                                val randomCategory = playableCategories.random()
+
+                                val itemsToUse: List<String>
+                                val hintsToUse: List<String>
+
+                                if (randomCategory.hasSubcategories) {
+                                    // Alt kategorileri olan kategoriden rastgele alt kategori seç
+                                    val unlockedSubs =
+                                        randomCategory.subcategories.filter { it.isUnlocked }
+
+                                    if (unlockedSubs.isEmpty()) {
+                                        errorMessage =
+                                            "Rastgele seçilen kategoride açık alt kategori yok!"
+                                        return@Button
+                                    }
+
+                                    val randomSub = unlockedSubs.random()
+                                    itemsToUse = randomSub.items
+                                    hintsToUse = randomSub.hints
+                                } else {
+                                    itemsToUse = randomCategory.items
+                                    hintsToUse = randomCategory.hints
+                                }
+
+                                if (itemsToUse.isEmpty()) {
+                                    errorMessage = "Seçilen kategoride öğe bulunamadı!"
+                                    return@Button
+                                }
+
+                                // Geçici kategori oluştur (seçilen itemlar ile)
+                                val categoryWithSelectedItems = randomCategory.copy(
+                                    items = itemsToUse,
+                                    hints = hintsToUse
+                                )
+
+                                val gamePlayers = assignRoles(players, categoryWithSelectedItems)
+                                onCategorySelected(categoryWithSelectedItems, gamePlayers)
                             } else {
-                                itemsToUse = randomCategory.items
-                                hintsToUse = randomCategory.hints
+                                // NORMAL KATEGORİLER İÇİN
+                                val itemsToUse =
+                                    if (category.hasSubcategories && selectedSubcategory != null) {
+                                        selectedSubcategory!!.items
+                                    } else {
+                                        category.items
+                                    }
+
+                                val hintsToUse =
+                                    if (category.hasSubcategories && selectedSubcategory != null) {
+                                        selectedSubcategory!!.hints
+                                    } else {
+                                        category.hints
+                                    }
+
+                                if (itemsToUse.isEmpty()) {
+                                    errorMessage = "Kategoride öğe bulunamadı!"
+                                    return@Button
+                                }
+
+                                if (category.hasSubcategories && selectedSubcategory != null) {
+                                    categoryManager.consumeSingleUseAccess(selectedSubcategory!!.id)
+                                }
+
+                                // Geçici kategori oluştur (seçilen itemlar ile)
+                                val categoryWithSelectedItems = category.copy(
+                                    items = itemsToUse,
+                                    hints = hintsToUse
+                                )
+
+                                val gamePlayers = assignRoles(players, categoryWithSelectedItems)
+                                onCategorySelected(categoryWithSelectedItems, gamePlayers)
                             }
-
-                            if (itemsToUse.isEmpty()) {
-                                errorMessage = "Seçilen kategoride öğe bulunamadı!"
-                                return@Button
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                        enabled = if (category.hasSubcategories) selectedSubcategory != null else true
+                    ) {
+                        val buttonText = if (category.isRandomCategory) {
+                            val unlockedCategories = categories.filter {
+                                !it.isLocked && !it.isRandomCategory
                             }
-
-                            // Geçici kategori oluştur (seçilen itemlar ile)
-                            val categoryWithSelectedItems = randomCategory.copy(
-                                items = itemsToUse,
-                                hints = hintsToUse
-                            )
-
-                            val gamePlayers = assignRoles(players, categoryWithSelectedItems)
-                            onCategorySelected(categoryWithSelectedItems, gamePlayers)
+                            val totalUnlockedItems = unlockedCategories.sumOf { cat ->
+                                if (cat.hasSubcategories) {
+                                    cat.subcategories.filter { it.isUnlocked }.sumOf { it.items.size }
+                                } else {
+                                    cat.items.size
+                                }
+                            }
+                            "Oyunu Başlat - Rastgele ($totalUnlockedItems öge)"
+                        } else if (category.hasSubcategories && selectedSubcategory != null) {
+                            "Oyunu Başlat - ${selectedSubcategory!!.name}"
+                        } else if (category.hasSubcategories) {
+                            "Alt Kategori Seçin"
                         } else {
-                            // NORMAL KATEGORİLER İÇİN
-                            val itemsToUse =
-                                if (category.hasSubcategories && selectedSubcategory != null) {
-                                    selectedSubcategory!!.items
-                                } else {
-                                    category.items
-                                }
-
-                            val hintsToUse =
-                                if (category.hasSubcategories && selectedSubcategory != null) {
-                                    selectedSubcategory!!.hints
-                                } else {
-                                    category.hints
-                                }
-
-                            if (itemsToUse.isEmpty()) {
-                                errorMessage = "Kategoride öğe bulunamadı!"
-                                return@Button
-                            }
-
-                            if (category.hasSubcategories && selectedSubcategory != null) {
-                                categoryManager.consumeSingleUseAccess(selectedSubcategory!!.id)
-                            }
-
-                            // Geçici kategori oluştur (seçilen itemlar ile)
-                            val categoryWithSelectedItems = category.copy(
-                                items = itemsToUse,
-                                hints = hintsToUse
-                            )
-
-                            val gamePlayers = assignRoles(players, categoryWithSelectedItems)
-                            onCategorySelected(categoryWithSelectedItems, gamePlayers)
+                            "Oyunu Başlat - ${category.name}"
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(16.dp),
-                    enabled = if (category.hasSubcategories) selectedSubcategory != null else true
-                ) {
-                    val buttonText = if (category.isRandomCategory) {
-                        val unlockedCategories = categories.filter {
-                            !it.isLocked && !it.isRandomCategory
-                        }
-                        val totalUnlockedItems = unlockedCategories.sumOf { cat ->
-                            if (cat.hasSubcategories) {
-                                cat.subcategories.filter { it.isUnlocked }.sumOf { it.items.size }
+
+                        Text(
+                            text = buttonText,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (category.hasSubcategories && selectedSubcategory == null) {
+                                Color.Gray
                             } else {
-                                cat.items.size
+                                Color(0xFFE91E63)
                             }
-                        }
-                        "Oyunu Başlat - Rastgele ($totalUnlockedItems öge)"
-                    } else if (category.hasSubcategories && selectedSubcategory != null) {
-                        "Oyunu Başlat - ${selectedSubcategory!!.name}"
-                    } else if (category.hasSubcategories) {
-                        "Alt Kategori Seçin"
-                    } else {
-                        "Oyunu Başlat - ${category.name}"
+                        )
                     }
-
-                    Text(
-                        text = buttonText,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = if (category.hasSubcategories && selectedSubcategory == null) {
-                            Color.Gray
-                        } else {
-                            Color(0xFFE91E63)
-                        }
-                    )
                 }
             }
         }
     }
-}
 
-@Composable
-fun SubcategorySelectionDialog(
-    category: Category,
-    onSubcategorySelected: (Subcategory) -> Unit,
-    onSubcategoryUnlockRequest: (Subcategory) -> Unit, // 🆕 Unlock dialog açmak için
-    onDismiss: () -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        containerColor = Color.White,
-        title = {
-            Column {
-                Text(
-                    text = category.name,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = category.color
-                )
-                Text(
-                    text = "Alt Kategori Seçin",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-        },
-        text = {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(category.subcategories) { subcategory ->
-                    SubcategoryItem(
-                        subcategory = subcategory,
-                        categoryColor = category.color,
-                        onClick = {
-                            if (subcategory.isUnlocked) {
-                                // Açıksa direkt seç
-                                onSubcategorySelected(subcategory)
-                            } else {
-                                // Kilitliyse unlock dialog aç
-                                onSubcategoryUnlockRequest(subcategory)
-                            }
-                        }
+    @Composable
+    fun SubcategorySelectionDialog(
+        category: Category,
+        onSubcategorySelected: (Subcategory) -> Unit,
+        onSubcategoryUnlockRequest: (Subcategory) -> Unit, // 🆕 Unlock dialog açmak için
+        onDismiss: () -> Unit,
+    ) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            containerColor = Color.White,
+            title = {
+                Column {
+                    Text(
+                        text = category.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = category.color
+                    )
+                    Text(
+                        text = "Alt Kategori Seçin",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        fontWeight = FontWeight.Normal
                     )
                 }
+            },
+            text = {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(category.subcategories) { subcategory ->
+                        SubcategoryItem(
+                            subcategory = subcategory,
+                            categoryColor = category.color,
+                            onClick = {
+                                if (subcategory.isUnlocked) {
+                                    // Açıksa direkt seç
+                                    onSubcategorySelected(subcategory)
+                                } else {
+                                    // Kilitliyse unlock dialog aç
+                                    onSubcategoryUnlockRequest(subcategory)
+                                }
+                            }
+                        )
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    Text("Kapat", color = category.color)
+                }
             }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Kapat", color = category.color)
-            }
-        }
-    )
-}
+        )
+    }
 
-@Composable
-fun SubcategoryItem(
-    subcategory: Subcategory,
-    categoryColor: Color,
-    onClick: () -> Unit,
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(90.dp),
-        onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = if (subcategory.isUnlocked)
-                Color.White
-            else
-                Color.LightGray.copy(alpha = 0.3f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+    @Composable
+    fun SubcategoryItem(
+        subcategory: Subcategory,
+        categoryColor: Color,
+        onClick: () -> Unit,
     ) {
-        Row(
+        Card(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .height(90.dp),
+            onClick = onClick,
+            colors = CardDefaults.cardColors(
+                containerColor = if (subcategory.isUnlocked)
+                    Color.White
+                else
+                    Color.LightGray.copy(alpha = 0.3f)
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            shape = RoundedCornerShape(12.dp)
         ) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .size(45.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (subcategory.isUnlocked)
-                            categoryColor.copy(alpha = 0.1f)
-                        else
-                            Color.Gray.copy(alpha = 0.2f)
-                    ),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = if (subcategory.isUnlocked)
-                        Icons.Default.CheckCircle
-                    else
-                        Icons.Default.Lock,
-                    contentDescription = null,
-                    tint = if (subcategory.isUnlocked)
-                        categoryColor
-                    else
-                        Color.Gray,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = subcategory.name,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (subcategory.isUnlocked)
-                        Color.Black
-                    else
-                        Color.Gray
-                )
-                Text(
-                    text = "${subcategory.items.size} kelime",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-            }
-
-            // Sağ taraf işaretçi
-            if (!subcategory.isUnlocked) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(color = categoryColor.copy(alpha = 0.1f))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                        .size(45.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (subcategory.isUnlocked)
+                                categoryColor.copy(alpha = 0.1f)
+                            else
+                                Color.Gray.copy(alpha = 0.2f)
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "Kilitli",
-                        tint = categoryColor,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = "Aç",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = categoryColor
+                        imageVector = if (subcategory.isUnlocked)
+                            Icons.Default.CheckCircle
+                        else
+                            Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = if (subcategory.isUnlocked)
+                            categoryColor
+                        else
+                            Color.Gray,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
-            } else {
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "Seç",
-                    tint = categoryColor,
-                    modifier = Modifier.size(24.dp)
-                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = subcategory.name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (subcategory.isUnlocked)
+                            Color.Black
+                        else
+                            Color.Gray
+                    )
+                    Text(
+                        text = "${subcategory.items.size} kelime",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+
+                // Sağ taraf işaretçi
+                if (!subcategory.isUnlocked) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(color = categoryColor.copy(alpha = 0.1f))
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = "Kilitli",
+                            tint = categoryColor,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "Aç",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = categoryColor
+                        )
+                    }
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = "Seç",
+                        tint = categoryColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
-}
 
-@Composable
-fun SubcategoryUnlockDialog(
-    subcategory: Subcategory,
-    categoryColor: Color,
-    onWatchAd: () -> Unit,
-    onPurchase: () -> Unit,
-    onDismiss: () -> Unit,
-    isLoadingAd: Boolean = false,
-    subcategoryPrice: String? = null
-) {
-    AlertDialog(
-        onDismissRequest = { if (!isLoadingAd) onDismiss() },
-        containerColor = Color.White,
-        title = {
-            Column( modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = null,
-                    tint = categoryColor,
-                    modifier = Modifier.size(48.dp)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = subcategory.name,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = "Bu alt kategori kilitli",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center
-                )
-            }
-        },
-        text = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // İstatistikler
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    StatCard(
-                        icon = Icons.Default.Category,
-                        value = "${subcategory.items.size}",
-                        label = "Kelime",
-                        color = categoryColor
+    @Composable
+    fun SubcategoryUnlockDialog(
+        subcategory: Subcategory,
+        categoryColor: Color,
+        onWatchAd: () -> Unit,
+        onPurchase: () -> Unit,
+        onDismiss: () -> Unit,
+        isLoadingAd: Boolean = false,
+        subcategoryPrice: String? = null
+    ) {
+        AlertDialog(
+            onDismissRequest = { if (!isLoadingAd) onDismiss() },
+            containerColor = Color.White,
+            title = {
+                Column( modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = categoryColor,
+                        modifier = Modifier.size(48.dp)
                     )
-                    StatCard(
-                        icon = Icons.Default.Lightbulb,
-                        value = "${subcategory.hints.size}",
-                        label = "İpucu",
-                        color = categoryColor
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = subcategory.name,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Bu alt kategori kilitli",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
                     )
                 }
-
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
-
-                Text(
-                    text = "Kilidi nasıl açmak istersiniz?",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
-
-                // Video izle kartı
-                Card(
+            },
+            text = {
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFFFF3E0)
-                    ),
-                    shape = RoundedCornerShape(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+                    // İstatistikler
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        StatCard(
+                            icon = Icons.Default.Category,
+                            value = "${subcategory.items.size}",
+                            label = "Kelime",
+                            color = categoryColor
+                        )
+                        StatCard(
+                            icon = Icons.Default.Lightbulb,
+                            value = "${subcategory.hints.size}",
+                            label = "İpucu",
+                            color = categoryColor
+                        )
+                    }
+
+                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+                    Text(
+                        text = "Kilidi nasıl açmak istersiniz?",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+
+                    // Video izle kartı
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFFFF3E0)
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
                         ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    tint = Color(0xFFFF9800),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "Reklam İzle",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black
+                                    )
+                                    Text(
+                                        text = "1 oyunluk ücretsiz erişim",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray
+                                    )
+                                }
+                                Text(
+                                    text = "ÜCRETSİZ",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFFF9800)
+                                )
+                            }
+                        }
+                    }
+
+                    // Satın al kartı
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = categoryColor.copy(alpha = 0.1f)
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = null,
+                                    tint = categoryColor,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "Kalıcı Erişim",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black
+                                    )
+                                    Text(
+                                        text = "Sınırsız kullanım",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray
+                                    )
+                                }
+                                Text(
+                                    text = subcategoryPrice ?: "₺9,99",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = categoryColor
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Video izle butonu
+                    Button(
+                        onClick = onWatchAd,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFF9800)
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = !isLoadingAd
+                    ) {
+                        if (isLoadingAd) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Reklam Yükleniyor...", color = Color.White)
+                        } else {
                             Icon(
                                 imageVector = Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = Color(0xFFFF9800),
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Reklam İzle",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                Text(
-                                    text = "1 oyunluk ücretsiz erişim",
-                                    fontSize = 12.sp,
-                                    color = Color.Gray
-                                )
-                            }
-                            Text(
-                                text = "ÜCRETSİZ",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFF9800)
-                            )
+                            Text("Reklam İzle", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
-                }
 
-                // Satın al kartı
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = categoryColor.copy(alpha = 0.1f)
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+                    // Satın al butonu
+                    OutlinedButton(
+                        onClick = onPurchase,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = categoryColor
+                        ),
+                        border = BorderStroke(2.dp, categoryColor),
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = !isLoadingAd
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = null,
-                                tint = categoryColor,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Kalıcı Erişim",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                Text(
-                                    text = "Sınırsız kullanım",
-                                    fontSize = 12.sp,
-                                    color = Color.Gray
-                                )
-                            }
-                            Text(
-                                text = subcategoryPrice ?: "₺9,99",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = categoryColor
-                            )
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Video izle butonu
-                Button(
-                    onClick = onWatchAd,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFF9800)
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = !isLoadingAd
-                ) {
-                    if (isLoadingAd) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Reklam Yükleniyor...", color = Color.White)
-                    } else {
                         Icon(
-                            imageVector = Icons.Default.PlayArrow,
+                            imageVector = Icons.Default.ShoppingCart,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Reklam İzle", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text("Satın Al", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    // İptal butonu - EN ALTTA
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoadingAd
+                    ) {
+                        Text(
+                            "İptal",
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
                     }
                 }
+            },
+            dismissButton = {}
+        )
+    }
 
-                // Satın al butonu
-                OutlinedButton(
-                    onClick = onPurchase,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = categoryColor
-                    ),
-                    border = BorderStroke(2.dp, categoryColor),
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = !isLoadingAd
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Satın Al", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                }
-
-                // İptal butonu - EN ALTTA
-                TextButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !isLoadingAd
-                ) {
-                    Text(
-                        "İptal",
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                }
-            }
-        },
-        dismissButton = {}
-    )
-}
-
-@Composable
-fun StatCard(
-    icon: ImageVector,
-    value: String,
-    label: String,
-    color: Color
-) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = color.copy(alpha = 0.1f)
-        ),
-        shape = RoundedCornerShape(8.dp)
+    @Composable
+    fun StatCard(
+        icon: ImageVector,
+        value: String,
+        label: String,
+        color: Color
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = color.copy(alpha = 0.1f)
+            ),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = value,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = label,
-                fontSize = 12.sp,
-                color = Color.Gray
-            )
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = value,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Text(
+                    text = label,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
         }
     }
-}

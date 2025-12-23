@@ -354,7 +354,7 @@ fun PlayerGameScreen(
 
                         // İMPOSTOR yazısı
                         Text(
-                            text = "IMPOSTOR",
+                            text = "IMPOSTER",
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.Red,

@@ -8,11 +8,11 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.oguz.spy.ads.AdIds.REWARDED_TEST
+
 
 class RewardedAdManager(
     private val context: Context,
-    private val adUnitId: String = REWARDED_TEST // Test ID
+    private val adUnitId: String = AdIds.REWARDED_PROD
 ) {
     private var rewardedAd: RewardedAd? = null
     private var isLoading = false

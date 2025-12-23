@@ -1,5 +1,6 @@
 package com.oguz.spy.datamanagment
 
+import com.oguz.spy.R
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -51,20 +52,27 @@ class CategoryDataManager(private val context: Context) {
     private val PURCHASED_SUBCATEGORIES_KEY = "purchased_subcategories"
 
     suspend fun getCategories(): List<Category> = withContext(Dispatchers.IO) {
+        android.util.Log.d("CategoryDebug", "========== getCategories BAŞLADI ==========")
+
         try {
-            val jsonString = context.assets.open("categories/categories.json")
+            // ✅ ASSETS yerine RAW RESOURCES kullan
+            val jsonString = context.resources
+                .openRawResource(R.raw.categories)
                 .bufferedReader()
                 .use { it.readText() }
 
+            android.util.Log.d("CategoryDebug", "✅ JSON OKUNDU! Boyut: ${jsonString.length}")
+
             val gson = Gson()
             val data = gson.fromJson(jsonString, CategoriesData::class.java)
+
+            android.util.Log.d("CategoryDebug", "✅ Kategori sayısı: ${data.categories.size}")
 
             val favorites = getFavoriteIds()
             val purchased = getPurchasedIds()
             val unlockedSubs = getUnlockedSubcategoryIds()
 
-            data.categories.map { json ->
-                // 🆕 Ana kategori satın alındı mı kontrol et
+            val result = data.categories.map { json ->
                 val isMainCategoryPurchased = purchased.contains(json.id)
 
                 val subcategories = json.subcategories?.map { subJson ->
@@ -74,7 +82,6 @@ class CategoryDataManager(private val context: Context) {
                         items = subJson.items,
                         hints = subJson.hints,
                         unlockedByAd = subJson.unlockedByAd,
-                        // 🆕 Ana kategori satın alındıysa VEYA alt kategori açıksa VEYA JSON'da açıksa
                         isUnlocked = isMainCategoryPurchased ||
                                 unlockedSubs.contains(subJson.id) ||
                                 subJson.isUnlocked
@@ -96,7 +103,12 @@ class CategoryDataManager(private val context: Context) {
                     isRandomCategory = json.isRandomCategory
                 )
             }
+
+            android.util.Log.d("CategoryDebug", "🎯 DÖNDÜRÜLEN: ${result.size} kategori")
+            result
+
         } catch (e: Exception) {
+            android.util.Log.e("CategoryDebug", "❌ HATA!", e)
             e.printStackTrace()
             emptyList()
         }
