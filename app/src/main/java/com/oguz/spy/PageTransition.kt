@@ -3,6 +3,7 @@ package com.oguz.spy
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,7 +21,32 @@ fun PageTransition(
     bannerAdManager: BannerAdManager,
     interstitialAdManager: InterstitialAdManager
 ) {
+
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("spy_game_prefs", android.content.Context.MODE_PRIVATE)
     val navController = rememberNavController()
+
+    val shouldShowTutorial = remember {
+        val showEvery10 = prefs.getBoolean("show_every_10", false)
+        val tutorialCount = prefs.getInt("tutorial_count", 0)
+
+        if (showEvery10) {
+            // 10 seferde bir göster
+            val counter = prefs.getInt("tutorial_counter_for_interval", 0)
+            val shouldShow = counter % 10 == 0
+
+            // Counter'ı artır
+            prefs.edit().putInt("tutorial_counter_for_interval", counter + 1).apply()
+
+            shouldShow
+        } else {
+            // İlk 15 kez göster
+            tutorialCount < 15
+        }
+    }
+
+    val startDestination = if (shouldShowTutorial) "tutorialScreen" else "setUpScreen"
+
 
     // Oyun ayarları state'leri
     var gamePlayerCount by remember { mutableStateOf(4) }
@@ -41,9 +67,13 @@ fun PageTransition(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = "setUpScreen",
+            startDestination = startDestination,
             modifier = androidx.compose.ui.Modifier.padding(paddingValues)
         ) {
+
+            composable("tutorialScreen") {
+                TutorialScreen(navController = navController)
+            }
 
             composable("setUpScreen") {
                 SetupScreen(

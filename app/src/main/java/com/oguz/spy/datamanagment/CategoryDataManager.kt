@@ -7,40 +7,44 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.Color
 import com.oguz.spy.ux.Category
 import com.oguz.spy.ux.Subcategory
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.json.Json // ✅ EKLE
 
 private const val SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY = "single_use_unlocked_subcategories"
 
+@Serializable
 data class CategoryJson(
-    @SerializedName("id") val id: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("iconName") val iconName: String,
-    @SerializedName("colorHex") val colorHex: String,
-    @SerializedName("items") val items: List<String>? = null,
-    @SerializedName("hints") val hints: List<String>? = null,
-    @SerializedName("isLocked") val isLocked: Boolean,
-    @SerializedName("priceTL") val priceTL: Double,
-    @SerializedName("hasSubcategories") val hasSubcategories: Boolean = false,
-    @SerializedName("subcategories") val subcategories: List<SubcategoryJson>? = null,
-    @SerializedName("isRandomCategory") val isRandomCategory: Boolean = false
+    @SerialName("id") val id: String,
+    @SerialName("name") val name: String,
+    @SerialName("iconName") val iconName: String,
+    @SerialName("colorHex") val colorHex: String,
+    @SerialName("items") val items: List<String>? = null,
+    @SerialName("hints") val hints: List<String>? = null,
+    @SerialName("isLocked") val isLocked: Boolean,
+    @SerialName("priceTL") val priceTL: Double,
+    @SerialName("hasSubcategories") val hasSubcategories: Boolean = false,
+    @SerialName("subcategories") val subcategories: List<SubcategoryJson>? = null,
+    @SerialName("isRandomCategory") val isRandomCategory: Boolean = false
 )
 
+@Serializable
 data class SubcategoryJson(
-    @SerializedName("id") val id: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("unlockedByAd") val unlockedByAd: Boolean,
-    @SerializedName("isUnlocked") val isUnlocked: Boolean,
-    @SerializedName("items") val items: List<String>,
-    @SerializedName("hints") val hints: List<String>
+    @SerialName("id") val id: String,
+    @SerialName("name") val name: String,
+    @SerialName("unlockedByAd") val unlockedByAd: Boolean,
+    @SerialName("isUnlocked") val isUnlocked: Boolean,
+    @SerialName("items") val items: List<String>,
+    @SerialName("hints") val hints: List<String>
 )
 
+@Serializable
 data class CategoriesData(
-    @SerializedName("version") val version: Int,
-    @SerializedName("categories") val categories: List<CategoryJson>
+    @SerialName("version") val version: Int,
+    @SerialName("categories") val categories: List<CategoryJson>
 )
 
 class CategoryDataManager(private val context: Context) {
@@ -51,11 +55,18 @@ class CategoryDataManager(private val context: Context) {
     private val UNLOCKED_SUBCATEGORIES_KEY = "unlocked_subcategories"
     private val PURCHASED_SUBCATEGORIES_KEY = "purchased_subcategories"
 
+    // ✅ JSON Parser'ı oluştur
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        coerceInputValues = true
+        encodeDefaults = true
+    }
+
     suspend fun getCategories(): List<Category> = withContext(Dispatchers.IO) {
         android.util.Log.d("CategoryDebug", "========== getCategories BAŞLADI ==========")
 
         try {
-            // ✅ ASSETS yerine RAW RESOURCES kullan
             val jsonString = context.resources
                 .openRawResource(R.raw.categories)
                 .bufferedReader()
@@ -63,8 +74,7 @@ class CategoryDataManager(private val context: Context) {
 
             android.util.Log.d("CategoryDebug", "✅ JSON OKUNDU! Boyut: ${jsonString.length}")
 
-            val gson = Gson()
-            val data = gson.fromJson(jsonString, CategoriesData::class.java)
+            val data = json.decodeFromString<CategoriesData>(jsonString)
 
             android.util.Log.d("CategoryDebug", "✅ Kategori sayısı: ${data.categories.size}")
 
@@ -108,7 +118,8 @@ class CategoryDataManager(private val context: Context) {
             result
 
         } catch (e: Exception) {
-            android.util.Log.e("CategoryDebug", "❌ HATA!", e)
+            android.util.Log.e("CategoryDebug", "❌ HATA TİPİ: ${e.javaClass.simpleName}", e)
+            android.util.Log.e("CategoryDebug", "❌ HATA MESAJI: ${e.message}", e)
             e.printStackTrace()
             emptyList()
         }
