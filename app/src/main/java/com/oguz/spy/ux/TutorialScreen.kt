@@ -18,10 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.core.content.edit
 
 @Composable
 fun TutorialScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("spy_game_prefs", android.content.Context.MODE_PRIVATE)
@@ -31,7 +32,7 @@ fun TutorialScreen(
     // Tutorial gösterilme sayısını artır
     LaunchedEffect(Unit) {
         val currentCount = prefs.getInt("tutorial_count", 0)
-        prefs.edit().putInt("tutorial_count", currentCount + 1).apply()
+        prefs.edit { putInt("tutorial_count", currentCount + 1) }
     }
 
     Box(
@@ -56,22 +57,6 @@ fun TutorialScreen(
                     .fillMaxWidth()
                     .padding(vertical = 40.dp, horizontal = 24.dp)
             ) {
-                // Atla butonu - Sol üst
-                TextButton(
-                    onClick = {
-                        navController.navigate("setUpScreen") {
-                            popUpTo("tutorialScreen") { inclusive = true }
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Text(
-                        text = "Atla →",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
 
                 // Merkez - Logo ve başlık
                 Column(
@@ -281,7 +266,7 @@ private fun TutorialSection(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     iconColor: Color,
     title: String,
-    description: String
+    description: String,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),

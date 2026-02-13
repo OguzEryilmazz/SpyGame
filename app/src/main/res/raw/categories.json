@@ -2,18 +2,6 @@
   "version": 16 ,
   "categories": [
     {
-      "id": "random_all",
-      "name": "🎲 Rastgele",
-      "iconName": "shuffle",
-      "colorHex": "#000000",
-      "items": [],
-      "hints": [],
-      "isLocked": false,
-      "priceTL": 0.0,
-      "hasSubcategories": false,
-      "isRandomCategory": true
-    },
-    {
       "id": "professions",
       "name": "Meslekler",
       "iconName": "work",

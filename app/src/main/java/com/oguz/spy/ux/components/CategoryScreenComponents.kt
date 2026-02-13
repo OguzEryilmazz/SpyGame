@@ -49,6 +49,7 @@ import com.oguz.spy.billing.BillingManager
 fun CategoryCard(
     category: Category,
     isSelected: Boolean,
+    isExpanded: Boolean = false, // 🆕 Genişletilmiş görünüm
     onClick: () -> Unit,
     onUnlockClick: () -> Unit,
     onFavoriteClick: () -> Unit,
@@ -67,14 +68,14 @@ fun CategoryCard(
             .clickable(enabled = !category.isLocked) { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
+            containerColor = if (isExpanded) {
                 Color.White.copy(alpha = 1f)
             } else {
                 Color.White.copy(alpha = 0.85f)
             }
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isSelected) 12.dp else 6.dp
+            defaultElevation = if (isExpanded) 12.dp else 6.dp
         )
     ) {
         Box {
@@ -151,28 +152,54 @@ fun CategoryCard(
                         }
                     }
 
-                    // Favori butonu
-                    IconButton(
-                        onClick = onFavoriteClick,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(
-                                if (category.isFavorite) {
-                                    category.color.copy(alpha = 0.2f)
-                                } else {
-                                    Color.Transparent
-                                }
-                            )
+                    // Sağ taraf - Favori ve Seçim işareti
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = if (category.isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
-                            contentDescription = "Favori",
-                            tint = if (category.isFavorite) category.color else Color.Gray.copy(
-                                alpha = 0.5f
-                            ),
-                            modifier = Modifier.size(24.dp)
-                        )
+                        // Favori butonu
+                        if (!category.isLocked) {
+                            IconButton(
+                                onClick = onFavoriteClick,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(
+                                        if (category.isFavorite) {
+                                            category.color.copy(alpha = 0.2f)
+                                        } else {
+                                            Color.Transparent
+                                        }
+                                    )
+                            ) {
+                                Icon(
+                                    imageVector = if (category.isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
+                                    contentDescription = "Favori",
+                                    tint = if (category.isFavorite) category.color else Color.Gray.copy(
+                                        alpha = 0.5f
+                                    ),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+
+                        // 🆕 Seçim işareti - her zaman göster
+                        if (isSelected && !category.isLocked) {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(category.color),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = "Seçili",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
                     }
                 }
 
@@ -240,8 +267,8 @@ fun CategoryCard(
                     )
                 }
 
-                // Seçili kategori için detaylar
-                if (isSelected && !category.isLocked) {
+                // 🆕 Genişletilmiş görünüm için detaylar - sadece genişletilmişse göster
+                if (isExpanded && !category.isLocked) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     if (category.id != "random_all") {
@@ -292,26 +319,6 @@ fun CategoryCard(
                             )
                         }
                     }
-                }
-            }
-
-            // Seçim göstergesi
-            if (isSelected && !category.isLocked) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(12.dp)
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(category.color),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Seçili",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
                 }
             }
         }
