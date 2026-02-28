@@ -325,38 +325,12 @@ fun CategoryCard(
     }
 }
 
-// Rolleri ata function'ı
 fun assignRoles(players: List<Player>, category: Category): List<GamePlayer> {
-    val shuffledPlayers = players.shuffled()
-    val spyIndex = shuffledPlayers.indices.random()
-
-    val chosenItem = if (category.items.isNotEmpty()) {
-        category.items.random()
-    } else {
-        "PLAYER"
-    }
-
-    return shuffledPlayers.mapIndexed { index, player ->
-        if (index == spyIndex) {
-            // Spy oyuncusu
-            GamePlayer(
-                id = player.id,
-                name = player.name,
-                color = player.selectedColor,
-                selectedCharacter = player.selectedCharacter,
-                role = "SPY",
-                hint = if (category.hints.isNotEmpty()) category.hints.random() else null
-            )
-        } else {
-            // Normal oyuncu
-            GamePlayer(
-                id = player.id,
-                name = player.name,
-                color = player.selectedColor,
-                selectedCharacter = player.selectedCharacter,
-                role = chosenItem,
-                hint = null
-            )
-        }
-    }
+    val gameEngine = com.oguz.spy.domain.GameEngine()
+    return gameEngine.assignRoles(
+        players = players,
+        items = category.items,
+        hints = category.hints,
+        showHints = true
+    )
 }

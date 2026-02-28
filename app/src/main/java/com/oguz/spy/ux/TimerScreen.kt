@@ -55,11 +55,10 @@ fun TimerScreen(
     val context = LocalContext.current
     val activity = context as? ComponentActivity
 
-    // Ekranın kapanmasını engelle
     DisposableEffect(Unit) {
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        activity?.let { com.oguz.spy.platform.ScreenHelper.keepScreenOn(it) }
         onDispose {
-            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            activity?.let { com.oguz.spy.platform.ScreenHelper.allowScreenOff(it) }
         }
     }
 
@@ -548,22 +547,5 @@ fun TimerScreen(
 
 @RequiresPermission(Manifest.permission.VIBRATE)
 private fun vibratePhone(context: Context) {
-    try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-            val vibrator = vibratorManager.defaultVibrator
-            vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 500, 200, 500, 200, 500), -1))
-        } else {
-            @Suppress("DEPRECATION")
-            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(0, 500, 200, 500, 200, 500), -1))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator.vibrate(longArrayOf(0, 500, 200, 500, 200, 500), -1)
-            }
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    com.oguz.spy.platform.VibrationHelper.vibratePattern(context)
 }

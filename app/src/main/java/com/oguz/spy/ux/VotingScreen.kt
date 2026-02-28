@@ -29,17 +29,10 @@ fun VotingScreen(
         null
     }
 
-    // Oylama sonuçlarını hesapla
     fun calculateResults() {
-        val voteCount = mutableMapOf<String, Int>()
-        votes.values.forEach { votedPlayerName ->
-            voteCount[votedPlayerName] = voteCount.getOrDefault(votedPlayerName, 0) + 1
-        }
-
-        mostVotedPlayer = voteCount.maxByOrNull { it.value }?.let { (playerName, _) ->
-            gamePlayers.find { it.name == playerName }
-        }
-
+        val gameEngine = com.oguz.spy.domain.GameEngine()
+        val result = gameEngine.calculateVotingResults(votes, gamePlayers)
+        mostVotedPlayer = result.mostVotedPlayer
         votingPhase = VotingPhase.RESULTS
     }
 

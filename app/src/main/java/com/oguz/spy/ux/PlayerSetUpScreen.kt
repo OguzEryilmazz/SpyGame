@@ -49,51 +49,18 @@ fun PlayerSetupScreen(
         Color(0xFFFF5722), Color(0xFF795548), Color(0xFF607D8B)
     )
 
-    // Oyuncular listesi (karakter seçimi için güncellenmiş)
+    val playerManager = remember { com.oguz.spy.domain.PlayerManager() }
+
     var players by remember {
         mutableStateOf(
-            if (existingPlayers.isNotEmpty() && existingPlayers.size >= playerCount) {
-                existingPlayers.take(playerCount).mapIndexed { index, existingPlayer ->
-                    existingPlayer.copy(id = index + 1)
-                }
-            } else {
-                val existingPlayersToUse = existingPlayers.take(playerCount)
-                val missingPlayersCount = playerCount - existingPlayersToUse.size
-                val allPlayers = mutableListOf<Player>()
-
-                existingPlayersToUse.forEachIndexed { index, player ->
-                    allPlayers.add(player.copy(id = index + 1))
-                }
-
-                repeat(missingPlayersCount) { index ->
-                    val playerId = existingPlayersToUse.size + index + 1
-                    val usedColors = allPlayers.map { it.selectedColor }
-                    val usedCharacters = allPlayers.mapNotNull { it.selectedCharacter }
-
-                    val availableColor = availableColors.firstOrNull {
-                        !usedColors.contains(it)
-                    } ?: availableColors[(playerId - 1) % availableColors.size]
-
-                    val availableCharacter = CharacterAvatar.values().firstOrNull {
-                        !usedCharacters.contains(it)
-                    }
-
-                    allPlayers.add(
-                        Player(
-                            id = playerId,
-                            name = "Oyuncu $playerId",
-                            selectedColor = availableColor,
-                            selectedCharacter = availableCharacter
-                        )
-                    )
-                }
-                allPlayers
-            }
+            playerManager.createDefaultPlayers(
+                count = playerCount,
+                existingPlayers = existingPlayers
+            )
         )
     }
 
-    val isFormValid = players.all { it.name.isNotBlank() } &&
-            players.map { it.selectedColor }.distinct().size == players.size
+    val isFormValid = playerManager.isPlayerSetupValid(players)
 
     Box(
         modifier = Modifier
