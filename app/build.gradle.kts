@@ -14,8 +14,8 @@ android {
         applicationId = "com.oguz.spy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 20
-        versionName = "1.0.20"
+        versionCode = 23
+        versionName = "1.0.23"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -83,6 +83,7 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+    implementation(libs.androidx.compose.bom)
     kapt("androidx.room:room-compiler:2.6.1")
 
     // Google Play Services

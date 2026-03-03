@@ -11,8 +11,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -395,7 +397,7 @@ fun CategoryScreen(
                     )
                     Text(
                         text = if (selectedCategories.isEmpty())
-                            "Açık kategorilerden istediğinizi seçin"
+                            "Açık kategorilerden istediklerinizi seçin"
                         else
                             "${selectedCategories.size} kategori seçildi",
                         fontSize = 14.sp,
@@ -1096,8 +1098,11 @@ fun SubcategoryUnlockDialog(
         containerColor = Color.White,
         title = {
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 400.dp) // maksimum yükseklik sınırı
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Lock,

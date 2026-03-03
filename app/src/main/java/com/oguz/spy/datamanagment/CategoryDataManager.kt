@@ -214,11 +214,12 @@ class CategoryDataManager(private val context: Context) {
         "place" -> Icons.Default.Place
         "pets" -> Icons.Default.Pets
         "directions_car" -> Icons.Default.DirectionsCar
-        "sports_esports" -> Icons.Default.SportsBasketball
+        "sports_esports" -> Icons.Default.SportsEsports
         "computer" -> Icons.Default.Computer
         "checkroom" -> Icons.Default.Checkroom
         "school" -> Icons.Default.School
         "book" -> Icons.Default.Book
+        "sports_basketball" -> Icons.Default.SportsBasketball
         "wb_sunny" -> Icons.Default.WbSunny
         "mood" -> Icons.Default.Mood
         "home" -> Icons.Default.Home
@@ -230,6 +231,7 @@ class CategoryDataManager(private val context: Context) {
         "movie" -> Icons.Default.Movie
         "live_tv" -> Icons.Default.LiveTv
         "play_circle" -> Icons.Default.PlayCircle
+
         else -> Icons.Default.Category
     }
 }
