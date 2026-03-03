@@ -35,7 +35,7 @@ fun PlayerCard(
     usedColors: List<Color>,
     usedCharacters: List<CharacterAvatar> = emptyList(),
     onNameChange: (String) -> Unit,
-    onColorChange: (Color) -> Unit,
+    onColorChange: (Color?) -> Unit,
     onCharacterChange: (CharacterAvatar?) -> Unit
 ) {
     Card(
@@ -58,7 +58,7 @@ fun PlayerCard(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(player.selectedColor),
+                        .background(player.selectedColor ?: Color.Gray),
                     contentAlignment = Alignment.Center
                 ) {
                     player.selectedCharacter?.let { character ->
@@ -137,9 +137,22 @@ fun PlayerCard(
                                 else Modifier
                             )
                             .clickable(enabled = isClickable) {
-                                if (isClickable) onColorChange(color)
-                            }
-                    )
+                                when {
+                                    isSelected -> onColorChange(null) // seçimi kaldır
+                                    !isUsed -> onColorChange(color)
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (isUsed && !isSelected) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -176,18 +189,17 @@ fun PlayerCard(
                             )
                             .then(
                                 if (isSelected)
-                                    Modifier.border(3.dp, player.selectedColor, CircleShape)
+                                    Modifier.border(3.dp, player.selectedColor ?: Color.Gray, CircleShape)
                                 else Modifier
                             )
                             .clickable {
                                 when {
-                                    isSelected -> onCharacterChange(null) // bırak
+                                    isSelected -> onCharacterChange(null)
                                     !isUsed -> onCharacterChange(character)
                                 }
                             },
                         contentAlignment = Alignment.Center
                     ) {
-
                         Image(
                             painter = painterResource(id = character.drawableRes),
                             contentDescription = null,
@@ -196,7 +208,6 @@ fun PlayerCard(
                                 .alpha(if (isUsed && !isSelected) 0.3f else 1f),
                             contentScale = ContentScale.Crop
                         )
-
 
                         if (isUsed && !isSelected) {
                             Icon(

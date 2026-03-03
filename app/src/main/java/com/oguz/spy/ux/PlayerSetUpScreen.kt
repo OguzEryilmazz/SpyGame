@@ -22,14 +22,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oguz.spy.ux.components.PlayerCard
-import com.oguz.spy.models.CharacterAvatar // YENİ IMPORT
+import com.oguz.spy.models.CharacterAvatar
 
-// Player data class'ını güncelleyin (selectedCharacter alanını ekleyin)
 data class Player(
     val id: Int,
     var name: String = "",
-    var selectedColor: Color = Color.Gray,
-    var selectedCharacter: CharacterAvatar? = null // YENİ ALAN
+    var selectedColor: Color? = null,
+    var selectedCharacter: CharacterAvatar? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +40,6 @@ fun PlayerSetupScreen(
     onBackClick: () -> Unit = { navController.popBackStack() },
     onStartGame: (List<Player>) -> Unit = { navController.navigate("categoryScreen") }
 ) {
-    // Mevcut renkler (aynı kalacak)
     val availableColors = listOf(
         Color(0xFFE91E63), Color(0xFF9C27B0), Color(0xFF3F51B5),
         Color(0xFF2196F3), Color(0xFF00BCD4), Color(0xFF4CAF50),
@@ -60,7 +58,8 @@ fun PlayerSetupScreen(
         )
     }
 
-    val isFormValid = playerManager.isPlayerSetupValid(players)
+    // Renk artık zorunlu değil, sadece isim zorunlu
+    val isFormValid = players.all { it.name.isNotBlank() }
 
     Box(
         modifier = Modifier
@@ -80,7 +79,6 @@ fun PlayerSetupScreen(
                 .fillMaxSize()
                 .padding(bottom = 80.dp, top = 20.dp)
         ) {
-            // Top Bar (aynı kalacak)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -110,14 +108,13 @@ fun PlayerSetupScreen(
                         color = Color.White
                     )
                     Text(
-                        text = "İsim, renk ve karakter seçin", // GÜNCELLENDİ
+                        text = "İsim, renk ve karakter seçin",
                         fontSize = 14.sp,
                         color = Color.White.copy(alpha = 0.8f)
                     )
                 }
             }
 
-            // Players List - GÜNCELLENDİ
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,7 +126,7 @@ fun PlayerSetupScreen(
                         player = player,
                         availableColors = availableColors,
                         usedColors = players.mapNotNull { if (it.id != player.id) it.selectedColor else null },
-                        usedCharacters = players.mapNotNull { if (it.id != player.id) it.selectedCharacter else null }, // YENİ
+                        usedCharacters = players.mapNotNull { if (it.id != player.id) it.selectedCharacter else null },
                         onNameChange = { newName ->
                             players = players.map {
                                 if (it.id == player.id) it.copy(name = newName) else it
@@ -140,7 +137,7 @@ fun PlayerSetupScreen(
                                 if (it.id == player.id) it.copy(selectedColor = newColor) else it
                             }
                         },
-                        onCharacterChange = { newCharacter -> // YENİ
+                        onCharacterChange = { newCharacter ->
                             players = players.map {
                                 if (it.id == player.id) it.copy(selectedCharacter = newCharacter) else it
                             }
@@ -154,7 +151,6 @@ fun PlayerSetupScreen(
             }
         }
 
-        // Button (aynı kalacak)
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
