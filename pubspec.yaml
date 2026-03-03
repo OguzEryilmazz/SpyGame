@@ -1,0 +1,67 @@
+name: spy_game_flutter
+description: "Spy Game - A social deduction party game."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.3
+
+  # Networking
+  dio: ^5.8.0
+
+  # Code Generation
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Device Features
+  vibration: ^2.0.1
+  wakelock_plus: ^1.2.10
+  shared_preferences: ^2.3.3
+
+  # Monetization
+  google_mobile_ads: ^5.3.0
+  in_app_purchase: ^3.2.0
+
+  # UI
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+  flutter_lints: ^6.0.0
+
+  # Code Generation
+  build_runner: ^2.4.14
+  freezed: ^2.5.8
+  json_serializable: ^6.9.3
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/data/categories.json
+    - assets/images/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.webp"
+  remove_alpha_ios: true # iOS için şeffaf katmanı (alpha) otomatik kaldırır
+  # Android için adaptive ikon desteği (yuvarlak/kare uyumu için)
+  # adaptive_icon_background: "#1c1b1f" # Buraya logonun arka plan rengini yaz (örn: #000000 veya #FFFFFF)
+  # adaptive_icon_foreground: "assets/images/app_icon.webp"
