@@ -8,6 +8,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  shared_preferences: ^2.3.3
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.5.1
@@ -27,3 +28,4 @@ flutter:
     - assets/characters/pic_7.png
     - assets/characters/pic_8.png
     - assets/characters/pic_9.png
+    - assets/my_imposter.png
