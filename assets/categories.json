@@ -1,0 +1,1217 @@
+{
+  "version": 16 ,
+  "categories": [
+    {
+      "id": "professions",
+      "name": "Meslekler",
+      "iconName": "work",
+      "colorHex": "#2196F3",
+      "items": [
+        "Doktor", "Öğretmen", "Mühendis", "Avukat", "Hemşire",
+        "Polis", "İtfaiyeci", "Pilot", "Şoför", "Aşçı",
+        "Berber", "Terzi", "Elektrikçi", "Teknisyen", "Satış Danışmanı",
+        "Veteriner", "Eczacı", "Diyetisyen", "Psikolog", "Fizyoterapist",
+        "Muhasebeci", "Mimar", "Gazeteci", "Fotoğrafçı", "Ressam",
+        "Müzisyen", "Oyuncu", "Dansçı", "Çiftçi", "Tamirci",
+        "Kuaför", "Güvenlik Görevlisi", "Temizlik Görevlisi", "Garson", "Barista",
+        "Grafik Tasarımcı", "Yazılımcı", "Diş Hekimi", "Ebe",
+        "İçerik Üreticisi", "Bankacı", "Emlakçı",
+        "Marangoz", "Boyacı", "Tesisatçı", "Demirci",
+        "Postacı", "Kargocu", "Kapıcı", "Bahçıvan"
+      ],
+      "hints": [
+        "Çalışma hayatı",
+        "Maaş alır",
+        "İş yeri",
+        "CV yazılır",
+        "Kariyer",
+        "Mesai saati",
+        "İşe alım"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "foods",
+      "name": "Yiyecekler",
+      "iconName": "restaurant",
+      "colorHex": "#E91E63",
+      "items": [
+        "Pizza", "Hamburger", "Makarna", "Pilav", "Çorba",
+        "Salata", "Kebap", "Döner", "Lahmacun", "Börek",
+        "Tost", "Sandviç", "Omlet", "Pancake", "Waffle",
+        "Sushi", "Ramen", "Biryani", "Falafel", "Tacos",
+        "Burrito", "Köfte", "Dolma", "Mantı", "Gözleme",
+        "Pide", "İskender", "Adana Kebap", "Şiş Kebap", "Tavuk Döner",
+        "Menemen", "Çiğ Köfte", "Mercimek Çorbası", "Tavuk Sote", "Karnıyarık",
+        "İmam Bayıldı", "Hünkar Beğendi", "Etli Ekmek", "Kuru Fasulye", "Nohut",
+        "Patates Kızartması", "Soğan Halkası", "Chicken Nugget", "Hot Dog", "Dürüm"
+      ],
+      "hints": [
+        "Açlık giderir",
+        "Tarifi var",
+        "Mutfak",
+        "Tabakta servis",
+        "Kalori içerir",
+        "Lezzetli"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "fruits",
+      "name": "Meyveler",
+      "iconName": "apple",
+      "colorHex": "#FF5722",
+      "items": [
+        "Elma", "Armut", "Muz", "Çilek", "Karpuz",
+        "Üzüm", "Portakal", "Mandalina", "Kiraz", "Ananas",
+        "Kivi", "Mango", "Nar", "İncir", "Hurma",
+        "Kavun", "Şeftali", "Erik", "Kayısı", "Avokado",
+        "Limon", "Greyfurt", "Böğürtlen", "Ahududa", "Dut",
+        "Vişne","Ayva", "Ejder Meyvesi", "Mango", "Yaban Mersini",
+        "Nektarin", "Çarkıfelek Meyvesi", "Karpuz", "Kayısı"
+      ],
+      "hints": [
+        "Ağaçta yetişir",
+        "Çiğ yenir",
+        "Vitamin deposu",
+        "Genellikle tatlı",
+        "Bahçede bulunur",
+        "Meyve suyu",
+        "Organik olabilir"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "colors",
+      "name": "Renkler",
+      "iconName": "palette",
+      "colorHex": "#9C27B0",
+      "items": [
+        "Kırmızı", "Mavi", "Yeşil", "Sarı", "Turuncu",
+        "Mor", "Pembe", "Beyaz", "Siyah", "Gri",
+        "Kahverengi", "Lacivert", "Turkuaz", "Altın", "Gümüş",
+        "Bordo", "Krem", "Bej", "Koyu Mavi", "Açık Yeşil",
+        "Eflatun", "Fuşya", "Mercan", "Zeytin Yeşili",
+        "Koyu Yeşil", "Açık Mavi"
+      ],
+      "hints": [
+        "Gözle görülür",
+        "Boyalar arasında",
+        "Sanat eserinde",
+        "Işık spektrumu",
+        "Duvarları süsler",
+        "Tasarımda önemli"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "desserts",
+      "name": "Tatlılar",
+      "iconName": "cake",
+      "colorHex": "#FF6B9D",
+      "items": [
+        "Baklava", "Künefe", "Sütlaç", "Kazandibi", "Keşkül",
+        "Profiterol", "Tiramisu", "Cheesecake", "Brownie", "Dondurma",
+        "Magnolia", "San Sebastian", "Revani", "Şöbiyet", "Lokum",
+        "Kadayıf", "Tulumba", "İrmik Helvası", "Kek", "Kurabiye",
+        "Sufle", "Panna Cotta", "Crème Brûlée", "Puding", "Muhallebi",
+        "Aşure", "Güllaç", "Trileçe", "Ekler", "Yaş Pasta"
+      ],
+      "hints": [
+        "Şeker içerir",
+        "Özel günler",
+        "Kahvaltı sonrası",
+        "Fırında pişer",
+        "Mutluluk verir"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "drinks",
+      "name": "İçecekler",
+      "iconName": "local_cafe",
+      "colorHex": "#795548",
+      "items": [
+        "Çay", "Kahve", "Su", "Süt", "Ayran",
+        "Limonata", "Portakal Suyu", "Kola", "Fanta", "Sprite",
+        "Ice Tea", "Smoothie", "Milkshake", "Soda", "Gazoz",
+        "Şalgam", "Boza", "Salep", "Nar Suyu", "Şıra",
+        "Soğuk Kahve", "Latte", "Cappuccino", "Espresso", "Americano",
+        "Mojito", "Frappuccino", "Buzlu Çay", "Kayısı Suyu", "Vişne Suyu"
+      ],
+      "hints": [
+        "Susuzluk giderir",
+        "Sıvı halde",
+        "Bardakta içilir",
+        "Serinletir",
+        "Enerji verir",
+        "Kafein var"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "brands",
+      "name": "Markalar",
+      "iconName": "store",
+      "colorHex": "#2f4721",
+      "items": [
+        "Nike", "Adidas", "Apple", "Samsung", "Coca Cola",
+        "Pepsi", "McDonald's", "Starbucks", "Amazon", "Google",
+        "Microsoft", "Sony", "LG", "BMW", "Mercedes",
+        "Toyota", "Volkswagen", "Zara", "H&M", "LC Waikiki",
+        "Puma", "New Balance", "Reebok", "Under Armour", "Tesla",
+        "Netflix", "Spotify", "Instagram", "Facebook", "WhatsApp",
+        "TikTok", "YouTube", "PlayStation", "Xbox", "Nintendo",
+        "Bershka","Louis Vuitton","Beymen"
+      ],
+      "hints": [
+        "Ticari kimlik",
+        "Logo var",
+        "Ürün üretir",
+        "Tanınır",
+        "Reklam yapar",
+        "Müşteri kitlesi"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "athletes",
+      "name": "Sporcular",
+      "iconName": "sports",
+      "colorHex": "#FF5722",
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "athletes_active_football_domestic",
+          "name": "Yerli Futbolcular",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Yunus Akgün", "Oğuz Aydın", "Kerem Aktürkoğlu", "Barış Alper Yılmaz",
+            "Kenan Yıldız", "Can Uzun", "Arda Güler", "Orkun Kökçü",
+            "İsmail Yüksek", "Hakan Çalhanoğlu", "Mert Müldür", "Abdülkerim Bardakçı",
+            "Eren Elmalı", "Ferdi Kadıoğlu", "Merih Demiral", "Uğurcan Çakır",
+            "Yusuf Akçiçek", "Zeki Çelik", "Berke Özer", "Cenk Tosun", "Ozan Tufan",
+            "Altay Bayındır" , "Mert Günok" ,"Ersin Destanoğlu" ,"Volkan Babacan",
+            "Çağlar Söyüncü" ,"Samet Akaydın" , "Rıdvan Yılmaz","Ozan Kabak","Ahmetcan Kaplan",
+            "Emirhan İlkhan" ,"Berkay Vardar" ,"Salih Özcan" ,"Okay Yokuşlu", "Taylan Antalyalı",
+            "Semih Kılıçsoy" ,"Berkan Kutlu" ,"İrfan Can Kahveci","Emre Akbaba","Emre Mor","Yusuf Yazıcı",
+            "Berat Özdemir" , "Kerem Demirbay" ,"Enes Ünal" ,"Umut Nayir" ,"Halil Dervişoğlu","Bertuğ Yıldırım",
+            "Cengiz Ünder" ,"Abdülkadir Ömür" ,"Emre Akbaba" ,"Yusuf Sarı" ,"Güven Yalçın" ,"Emrecan Uzunhan",
+            "Efe Akman" ,"Bartuğ Elmaz" ,"Emrecan Bulut"
+          ],
+          "hints": [
+            "Yerli",
+            "Para",
+            "Yetenekli"
+          ]
+        },
+        {
+          "id": "athletes_active_football_foreign",
+          "name": "Yabancı Futbolcular",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Cristiano Ronaldo", "Lionel Messi", "Kylian Mbappé", "Erling Haaland",
+            "Neymar Jr.", "Jude Bellingham", "Vinícius Júnior", "Ousmane Dembélé",
+            "Harry Kane", "Mohamed Salah", "Kevin De Bruyne", "Rodri",
+            "Robert Lewandowski", "Antoine Griezmann", "Lautaro Martínez", "Lamine Yamal",
+            "Cole Palmer", "Phil Foden", "Viktor Gyökeres", "Virgil van Dijk",
+            "Thibaut Courtois", "Gianluigi Donnarumma", "Luka Modrić", "Declan Rice",
+            "İlkay Gündoğan", "Karim Benzema", "Youssef En-Nesyri", "Ciro Immobile",
+            "Victor Osimhen", "Dries Mertens", "Fred", "Davinson Sánchez",
+            "Lucas Torreira", "Leroy Sané", "Mauro Icardi", "Ederson",
+            "Jhon Durán", "Talisca", "Sebastian Szymanski", "Rafa Silva",
+            "Tammy Abraham", "Milot Rashica", "Dušan Tadić", "Edin Džeko",
+            "Michy Batshuayi", "Enner Valencia","Pedri" ,"Gavi","Jamal Musiala","Rafael Leão",
+            "Marcus Rashford" ,"Bruno Fernandes" ,"Alejandro Garnacho" ,"João Félix" ,"Federico Chiesa",
+            "Nicolo Barella","Achraf Hakim" ,"Sandro Tonali" ,"Frankie de Jong","Kolo Muan" ,"João Cancelo",
+            "Bukayo Saka","Martin Ødegaard","Rafael Varane","Joshua Kimmich" ,"Diogo Jota-RİP","Darwin Núñez",
+            "Khvicha Kvaratskhelia" ,"André Onana" ,"Antonio Rüdiger" ,"Marquinhos" ,"Niclas Füllkrug"
+          ],
+          "hints": [
+            "Aktif",
+            "Yabancı",
+            "Ünlü"
+          ]
+        },
+        {
+          "id": "athletes_retired_football_domestic",
+          "name": "Yerli Efsaneler",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Rüştü Reçber", "Bülent Korkmaz", "Emre Belözoğlu", "Arda Turan","Metin Oktay","Can Bartu","Tanju Çolak","Tugay Kerimoğlu",
+            "Hamit Altıntop", "Burak Yılmaz", "Nihat Kahveci", "Gökhan Gönül","Tuncay Şanlı","Servet Çetin","Oğuz Çetin",
+            "Volkan Demirel", "Fatih Tekke", "Semih Şentürk", "Okan Buruk","Yattara","Ümit Davala","Hasan Şaş",
+            "Selçuk İnan", "Tümer Metin", "Rıdvan Dilmen", "Sergen Yalçın", "Serhat Akın"
+          ],
+          "hints": [
+            "Yerli",
+            "Efsane",
+            "Yorumcu"
+          ]
+        },
+        {
+          "id": "athletes_retired_football_foreign",
+          "name": "Yabancı Efsaneler",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Pelé", "Diego Maradona", "Johan Cruyff", "Ronaldo Nazário","Romário",
+            "Zinedine Zidane", "Michel Platini", "Ronaldinho", "Lev Yashin","Rivaldo",
+            "Roberto Carlos", "Gianluigi Buffon", "Thierry Henry", "Xavi Hernández",
+            "Andrés Iniesta", "Kaká", "Steven Gerrard", "Didier Drogba","Cafu","Dani Alves",
+            "Zlatan Ibrahimović", "Arjen Robben", "Wayne Rooney", "Gareth Bale","Esteban Cambiasso",
+            "Frank Lampard", "Mesut Özil", "Gerard Piqué", "Sergio Agüero","Bebeto","Juan Román Riquelme",
+            "Iker Casillas", "Wesley Sneijder", "Robin van Persie", "Gheorghe Hagi","Fernando Torres",
+            "Samuel Eto'o", "Pepe", "Alex de Souza", "Ricardo Quaresma","Zinedine Zidane","Javier Zanetti",
+            "David Villa","Carles Puyol","Raúl González","Cesc Fàbregas","Rio Ferdinand","Paul Scholes",
+            "John Terry","Ashley Cole" ,"Alan Shearer","David Beckham","Michael Owen","Peter Crouch","Ashley Cole"
+          ,"Paolo Maldini" ,"Alessandro Nesta" ,"Fabio Cannavaro" ,"Francesco Totti" ,"Alessandro Del Piero",
+            "Andrea Pirlo" ,"Marco Materazzi" ,"Filippo Inzaghi","Miroslav Klose","Bastian Schweinsteiger","Philipp Lahm",
+            "Oliver Kahn","Lothar Matthäus","Patrick Vieira","Claude Makélélé","Eric Cantona","Eusébio","Deco","Luís Figo","George Best",
+            "Pavel Nedvěd","Andriy Shevchenko","Clarence Seedorf"
+          ],
+          "hints": [
+            "Global",
+            "Ikonik",
+            "Efsane"
+          ]
+        },
+        {
+          "id": "athletes_basketball_nba",
+          "name": "NBA",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "LeBron James", "Stephen Curry", "Nikola Jokić", "Giannis Antetokounmpo",
+            "Luka Dončić", "Joel Embiid", "Jayson Tatum", "Kevin Durant",
+            "Anthony Davis", "Victor Wembanyama", "Tyrese Haliburton", "Ja Morant",
+            "Damian Lillard", "Devin Booker", "Kyrie Irving", "Kawhi Leonard",
+            "Jimmy Butler", "Paul George", "Donovan Mitchell", "Zion Williamson",
+            "Trae Young", "Alperen Şengün", "LaMelo Ball", "Draymond Green",
+            "Klay Thompson", "Karl-Anthony Towns", "James Harden", "Russell Westbrook",
+            "Chris Paul", "DeMar DeRozan", "Adem Bona","Jaylen Brown","SGA","Anthony Edwards",
+            "De’Aaron Fox","Jalen Brunson","Domantas Sabonis","Rudy Gobert","Brandon Ingram",
+            "Chet Holmgren","Scoot Henderson","Franz Wagner","Tyrese Maxey","Evan Mobley","Paolo Banchero",
+            "Alex Caruso"
+          ],
+          "hints": [
+            "Konferans",
+            "1 , 2, 3",
+            "Uzun"
+          ]
+        },
+        {
+          "id": "athletes_basketball_euroleague",
+          "name": "Euroleague",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Shane Larkin", "Ercan Osmani", "Şehmus Hazer", "Tarık Biberović",
+            "Talen-Horton Tucker", "Melih Mahmutoğlu", "Scottie Wilbekin", "Nicolò Melli",
+            "Cedi Osman", "Mario Hezonja", "Willy Hernangómez", "Jabari Parker",
+            "Nikola Mirotić", "Mike James","Pau Gasol","Hidayet Türkoğlu","Mehmet Okur",
+            "Vassilis Spanoulis","Andrei Kirilenko"
+          ],
+          "hints": [
+            "Set Oyunu",
+            "Koçlar",
+            "Savunma"
+          ]
+        },
+        {
+          "id": "athletes_basketball_legends",
+          "name": "Basketbol Efsaneleri",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Michael Jordan", "Kobe Bryant", "Magic Johnson", "Kareem Abdul-Jabbar",
+            "Bill Russell", "Shaquille O'Neal", "Larry Bird", "Wilt Chamberlain",
+            "Hakeem Olajuwon", "Julius Erving", "Allen Iverson", "Charles Barkley",
+            "Vince Carter", "Dwyane Wade", "Dirk Nowitzki", "Tim Duncan",
+            "Kevin Garnett", "Scottie Pippen", "Karl Malone", "Isiah Thomas",
+            "Jerry West", "John Stockton", "Dennis Rodman","Dikembe Mutombo","Yao Ming"
+          ],
+          "hints": [
+            "İkonik",
+            "Marka",
+            "Eski"
+          ]
+        },
+        {
+          "id": "athletes_volleyball_female",
+          "name": "Voleybolcular",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Zehra Güneş", "Eda Erdem", "Hande Baladın", "Cansu Özbay",
+            "Naz Aydemir Akyol", "Dilay Özdemir", "Derya Cebecioğlu", "Meliha İsmailoğlu",
+            "İlkin Aydın", "Aslı Kalaç", "Simge Aköz", "Gizem Örge",
+            "Ayça Aykaç", "Aylin Sarıoğlu", "Meryem Boz", "Tuğba Şenoğlu",
+            "Melissa Vargas", "Alexia Carutasu", "Ebrar Karakurt", "Paola Egonu",
+            "Myriam Sylla", "Alessia Orro", "Anna Danesi", "Monika de Gennaro",
+            "Sarah Fahr", "Ekaterina Antropova", "Gabi Guimarães", "Isabelle Haak",
+            "Arina Federovtseva", "Ana Cristina de Souza", "Helena Cazaute", "Joanna Wołosz",
+            "Magdelena Stysiak", "Andrea Drews", "Kelsey Robinson", "Jordyn Paulter",
+            "Jordan Thompson", "Haleigh Washington", "Chiaka Ogbogu", "Justine Wong-Orantes",
+            "Zhu Ting"
+          ],
+          "hints": [
+            "Türkiye",
+            "Kadın",
+            "Servis"
+          ]
+        },
+        {
+          "id": "athletes_ufc",
+          "name": "UFC",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Conor McGregor", "Khabib Nurmagomedov", "Jon Jones", "Georges St-Pierre",
+            "Sean O'Malley", "Israel Adesanya", "Ilia Topuria", "Khamzat Chimaev",
+            "Islam Makhachev", "Paddy Pimblett", "Alex Pereira", "Nate Diaz",
+            "Jorge Masvidal", "Anderson Silva", "Daniel Cormier", "Dustin Poirier",
+            "Justin Gaethje", "Alexander Volkanovski", "Max Holloway", "José Aldo",
+            "Charles Oliveira", "Stipe Miocic", "Tom Aspinall", "Kevin Holland",
+            "Magomed Ankalaev", "Merab Dvalişvili", "Jiří Procházka", "Dricus Du Plessis",
+            "Michael Chandler", "Sean Strickland", "Umar Nurmagomedov","Brandon Moreno",
+            "Aljamain Sterling","Beneil Dariush","Gilbert Burns","Yair Rodríguez","Marlon Vera",
+            "Renato Moicano","Movsar Evloev","Ciryl Gane","BJ Penn","Tito Ortiz","Lyoto Machida",
+            "Michael Bisping","Arman Tsarukyan","Mateusz Gamrot","Manel Kape"
+          ],
+          "hints": [
+            "Knock Out",
+            "Sekizgen",
+            "Dağıstan"
+          ]
+        },
+        {
+          "id": "athletes_wwe",
+          "name": "WWE",
+          "unlockedByAd": true,
+          "isUnlocked": true,
+          "items": [
+            "The Rock", "John Cena", "The Undertaker", "Roman Reigns",
+            "Triple H", "Brock Lesnar", "Rey Mysterio", "Kane",
+            "Batista", "Randy Orton", "Edge", "CM Punk",
+            "Jeff Hardy", "Big Show","Logan Paul","Shawn Michaels","Seth Rollins",
+            "AJ Styles","Kevin Owens","Finn Bálor","Dominik Mysterio",""
+          ],
+          "hints": [
+            "Aktör",
+            "Sandalye",
+            "İmza Hareket"
+          ]
+        },
+        {
+          "id": "athletes_boxing",
+          "name": "Boks",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Muhammad Ali", "Mike Tyson", "Floyd Mayweather Jr.", "Manny Pacquiao",
+            "Canelo Álvarez", "Oleksandr Usyk", "Terence Crawford", "Tyson Fury",
+            "Gervonta Davis", "Ryan García", "Jake Paul","Ryan Garcia","Joe Frazier",
+            "George Foreman","Larry Holmes","Evander Holyfield","Sugar Ray Leonard",
+            "Ray Robinson", "Gennady Golovkin (GGG)", "Devin Haney","Naoya Inoue",
+            "Artur Beterbiev","Dmitry Bivol"
+          ],
+          "hints": [
+            "Eldiven",
+            "Atlama İpi",
+            "Rocky"
+          ]
+        },
+        {
+          "id": "athletes_f1",
+          "name": "Formula 1",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Lando Norris", "Oscar Piastri", "Max Verstappen", "George Russell",
+            "Charles Leclerc", "Lewis Hamilton", "Fernando Alonso", "Sebastian Vettel",
+            "Michael Schumacer", "Andrea Antonelli", "Alexander Albon","Sergio Pérez",
+            "Carlos Sainz","Esteban Ocon","Pierre Gasly","Nico Hülkenberg","Kevin Magnussen",
+            "Nigel Mansell","Alain Prost","Jackie Stewart"
+          ],
+          "hints": [
+            "Hız",
+            "Refleks",
+            "Pit Stop"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "places",
+      "name": "Yerler",
+      "iconName": "place",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Hastane", "Okul", "Market", "Restoran", "Sinema",
+        "Park", "Kütüphane", "Müze", "Plaj", "Dağ",
+        "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı",
+        "Banka", "Postane", "Eczane", "Benzin İstasyonu", "Otobüs Durağı",
+        "Alışveriş Merkezi", "Tiyatro", "Konser Salonu", "Stadyum", "Camii"
+      ],
+      "hints": [
+        "Harita üzerinde",
+        "Adres sahibi",
+        "Ziyaret edilir",
+        "Şehir planında",
+        "GPS görür",
+        "Çalışma saati",
+        "Konum belirtir"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "vehicles",
+      "name": "Taşıtlar",
+      "iconName": "directions_car",
+      "colorHex": "#3F51B5",
+      "items": [
+        "Araba", "Otobüs", "Kamyon", "Motorsiklet", "Bisiklet",
+        "Tren", "Uçak", "Gemi", "Traktör", "Metrobüs",
+        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi",
+        "Ambulans", "İtfaiye Aracı", "Polis Arabası", "Dolmuş", "Minibüs"
+      ],
+      "hints": [
+        "Ulaşım aracı",
+        "Taşıma yapar",
+        "Motor gücü",
+        "Kara, hava, deniz",
+        "Trafik kuralları",
+        "Yakıt gerekir",
+        "Hız yapar"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "electronics",
+      "name": "Elektronik Eşyalar",
+      "iconName": "computer",
+      "colorHex": "#607D8B",
+      "items": [
+        "Telefon", "Bilgisayar", "Televizyon", "Tablet", "Laptop",
+        "Kulaklık", "Hoparlör", "Kamera", "Oyun Konsolu", "Akıllı Saat",
+        "Drone", "Robot Süpürge", "Çamaşır Makinesi", "Buzdolabı", "Fırın",
+        "Mikrodalga", "Klima", "Şarj Cihazı", "Powerbank", "Router"
+      ],
+      "hints": [
+        "Elektrik gerekir",
+        "Teknoloji ürünü",
+        "Günlük kullanım",
+        "Dijital özellik",
+        "Modern yaşam",
+        "Sürekli gelişir",
+        "Garanti vardır"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "clothing",
+      "name": "Giysiler",
+      "iconName": "checkroom",
+      "colorHex": "#E91E63",
+      "items": [
+        "Tişört", "Pantolon", "Elbise", "Ceket", "Gömlek",
+        "Kazak", "Şort", "Etek", "Çorap", "İç Çamaşırı",
+        "Ayakkabı", "Bot", "Terlik", "Sandalet", "Spor Ayakkabı",
+        "Şapka", "Bere", "Eldiven", "Atkı", "Kemer"
+      ],
+      "hints": [
+        "Vücut korur",
+        "Mevsimlik çeşit",
+        "Moda tarz",
+        "Kumaştan yapılır",
+        "Günlük ihtiyaç",
+        "Yıkanabilir",
+        "Giyilir"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "school_subjects",
+      "name": "Okul Dersleri",
+      "iconName": "school",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Matematik", "Türkçe", "İngilizce", "Fen Bilgisi", "Sosyal Bilgiler",
+        "Tarih", "Coğrafya", "Fizik", "Kimya", "Biyoloji",
+        "Edebiyat", "Felsefe", "Psikoloji", "Sanat", "Müzik",
+        "Beden Eğitimi", "Bilgisayar", "Almanca", "Fransızca", "Geometri"
+      ],
+      "hints": [
+        "Eğitim müfredatı",
+        "Bilgi öğretir",
+        "Öğretmen verir",
+        "Sınav yapılır",
+        "Yaş uyarlama",
+        "Diploma gerekli",
+        "Ders saati"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "games",
+      "name": "Oyunlar",
+      "iconName": "sports_esports",
+      "colorHex": "#009688",
+      "items": [
+        "Satranç", "Dama", "Monopoly", "Scrabble", "Uno",
+        "FIFA", "Minecraft", "PUBG", "League of Legends", "Valorant",
+        "Counter-Strike", "Fortnite", "Call of Duty", "Among Us", "Roblox",
+        "King", "Okey", "Tavla", "Saklambaç", "Körebe"
+      ],
+      "hints": [
+        "Eğlence aracı",
+        "Kuralları var",
+        "Tek çok oyuncu",
+        "Strateji şans",
+        "Dijital fiziksel",
+        "Sosyal etkileşim",
+        "Zaman geçirir"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "books",
+      "name": "Kitap Türleri",
+      "iconName": "book",
+      "colorHex": "#795548",
+      "items": [
+        "Roman", "Hikaye", "Şiir", "Biyografi", "Tarih",
+        "Bilim Kurgu", "Fantastik", "Polisiye", "Gizem", "Macera",
+        "Çocuk Kitabı", "Ders Kitabı", "Sözlük", "Ansiklopedi", "Rehber",
+        "Felsefe", "Psikoloji", "Din", "Sanat", "Yemek Kitabı"
+      ],
+      "hints": [
+        "Okuma materyali",
+        "Bilgi hikaye",
+        "Farklı konular",
+        "Kağıt dijital",
+        "Yazarı var",
+        "Kütüphanede bulunur",
+        "Sayfa sayısı"
+      ],
+      "isLocked": false,
+      "priceTL":0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "weather",
+      "name": "Hava Durumu",
+      "iconName": "wb_sunny",
+      "colorHex": "#FFC107",
+      "items": [
+        "Güneşli", "Yağmurlu", "Karlı", "Bulutlu", "Rüzgarlı",
+        "Sıcak", "Soğuk", "Nemli", "Kurak", "Sisli",
+        "Dolu", "Fırtınalı", "Kapalı", "Açık", "Puslu",
+        "Çiseleme", "Sağanak", "Tipi", "Ayaz", "Buzlu"
+      ],
+      "hints": [
+        "Atmosfer koşulu",
+        "Günlük değişir",
+        "Mevsim ilişkisi",
+        "Tahmin yapılır",
+        "Aktivite etkiler",
+        "Sıcaklık nem",
+        "Meteoroloji"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "emotions",
+      "name": "Duygular",
+      "iconName": "mood",
+      "colorHex": "#E91E63",
+      "items": [
+        "Mutluluk", "Üzüntü", "Kızgınlık", "Korku", "Şaşkınlık",
+        "Merak", "Heyecan", "Kaygı", "Hayal Kırıklığı", "Gurur",
+        "Utanç", "Suçluluk", "Sevgi", "Nefret", "Kıskançlık",
+        "Umut", "Umutsuzluk", "Rahatlık", "Stres", "Huzur"
+      ],
+      "hints": [
+        "İnsan psikolojisi",
+        "Olay tepkisi",
+        "Yüz ifadesi",
+        "Geçici kalıcı",
+        "Davranış etkiler",
+        "Herkes yaşar",
+        "Duygu durumu"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "household_items",
+      "name": "Ev Eşyaları",
+      "iconName": "home",
+      "colorHex": "#FF9800",
+      "items": [
+        "Masa", "Sandalye", "Yatak", "Dolap", "Koltuk",
+        "Televizyon", "Buzdolabı", "Fırın", "Çamaşır Makinesi", "Bulaşık Makinesi",
+        "Lamba", "Halı", "Perde", "Ayna", "Saat",
+        "Tabak", "Bardak", "Çatal", "Kaşık", "Bıçak"
+      ],
+      "hints": [
+        "Evde kullanılır",
+        "Günlük kolaylaştırır",
+        "Farklı odalarda",
+        "Fonksiyonel dekoratif",
+        "Mobilya alet",
+        "Ev konforu",
+        "Ev içi"
+      ],
+      "isLocked": false,
+      "priceTL": 0,
+      "hasSubcategories": false
+    },
+    {
+      "id": "animals",
+      "name": "Hayvanlar",
+      "iconName": "pets",
+      "colorHex": "#FF9800",
+      "items": [
+        "Kedi", "Köpek", "Kuş", "Balık", "At",
+        "İnek", "Koyun", "Tavuk", "Aslan", "Kaplan",
+        "Fil", "Maymun", "Ayı", "Kurt", "Tavşan",
+        "Kartal", "Papağan", "Köpekbalığı", "Yunus", "Penguen",
+        "Zürafa", "Hipopotam", "Kaplumbağa", "Kurbağa", "Yılan",
+        "Hamster", "Muhabbet Kuşu", "Fare", "Keçi",
+        "Ördek", "Kaz", "Eşek", "Deve", "Leopar",
+        "Çita", "Puma", "Jaguar", "Ahtapot",
+        "Kalamar", "Yengeç", "İstakoz", "Fok", "Balina",
+        "Baykuş", "Şahin", "Flamingo", "Pelikan",
+        "Serçe", "Karga", "Kertenkele", "Timsah", "İguana",
+        "Bukalemun", "Sincap", "Kirpi", "Gergedan", "Zebra",
+        "Koala", "Panda", "Kanguru", "Tilki", "Vaşak",
+        "Çakal", "Samur", "Kunduz", "Porsuk", "Gelincik",
+        "Sansar","Sırtlan", "Geyik", "Ceylan","Keklik", "Leylek","Martı", "Albatros",
+        "Pelikan", "Karabatak", "Su Samuru", "Deniz Aslanı","Orka",
+        "Ton Balığı", "Kılıç Balığı", "Vatoz",
+        "Mürekkep Balığı", "Deniz Yıldızı",
+        "Ateş Böceği", "Kelebek", "Arı", "Karınca", "Çekirge",
+        "Ağustosböceği", "Uğur Böceği", "Yusufçuk","Tırtıl",
+        "Solucan", "Sümüklüböcek", "Salyangoz", "Örümcek", "Akrep",
+        "Deve Kuşu", "Kivi", "Orangutan", "Goril", "Şempanze", "Lemur","Babun",
+        "Semender", "Kobra", "Anakonda", "Piton"
+
+      ],
+      "hints": [
+        "Canlı varlık",
+        "Doğal yaşam",
+        "Hareket eder",
+        "Beslenme ihtiyacı",
+        "Evcil veya vahşi",
+        "Çeşitli türler",
+        "Nefes alır"
+      ],
+      "isLocked": true,
+      "priceTL": 25.99,
+      "hasSubcategories": false
+    },
+    {
+      "id": "singers",
+      "name": "Şarkıcılar",
+      "iconName": "music",
+      "colorHex": "#E91E63",
+      "isLocked": true,
+      "priceTL": 39.99,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "singers_domestic_pop",
+          "name": "Yerli Pop",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Sezen Aksu", "Tarkan", "Ajda Pekkan", "Kenan Doğulu", "Sertab Erener",
+            "Mustafa Sandal", "Gülben", "Eda", "Zeynep Bastık", "Simge",
+            "Hayko Cepkin", "Serdar Ortaç", "Murat Boz", "Oğuzhan Koç", "İrem Derici",
+            "Yalın", "Yaşar", "Manifest", "Semicenk"
+          ],
+          "hints": [
+            "Yerli",
+            "Konser",
+            "Top 50"
+          ]
+        },
+        {
+          "id": "singers_domestic_rap_trap",
+          "name": "Yerli Rap/Trap",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Ceza", "Sagopa Kajmer", "Ezhel", "Uzi", "Ben Fero",
+            "Şehinşah", "Cakal", "Murda", "Norm Ender", "Gazapizm",
+            "Reckol", "Joker", "Güneş", "Khontkar", "Baneva",
+            "Mero", "Ati242", "Şam", "Blok3", "Eray067&Mansur",
+            "Jeff Red", "Organize", "Poizi","Era07capone" , "Fuat Ergin",
+            "Batuflex","Motive","Abugat","EGE!"
+          ],
+          "hints": [
+            "Hız",
+            "Flow",
+            "Lirik"
+          ]
+        },
+        {
+          "id": "singers_domestic_arabesque",
+          "name": "Yerli Arabesk",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Müslüm Gürses", "Ferdi Tayfur", "Orhan Gencebay", "İbrahim Tatlıses",
+            "Bergen", "Azer Bülbül", "Mahsun Kırmızıgül", "Ebru Gündeş",
+            "Hüsnü Şenlendirici", "Gülü"
+          ],
+          "hints": [
+            "Eski",
+            "Hüzün",
+            "Hayran"
+          ]
+        },
+        {
+          "id": "singers_domestic_rock",
+          "name": "Yerli Rock",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Barış Manço", "Cem Karaca", "Erkin Koray", "Duman",
+            "Şebnem Ferah", "Teoman", "Mor ve Ötesi", "Athena",
+            "Haluk Levent", "Manga", "Gripin", "Pinhani"
+          ],
+          "hints": [
+            "Konser",
+            "Ses"
+          ]
+        },
+        {
+          "id": "singers_domestic_alternative",
+          "name": "Yerli Alternatif",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Büyük Ev Ablukada", "Adamlar", "Melisa Şahin", "Kalben",
+            "Can Ozan", "Sena Şener", "Son Feci Bisiklet"
+          ],
+          "hints": [
+            "Farklı",
+            "Ünlü",
+            "Konser"
+          ]
+        },
+        {
+          "id": "singers_foreign_pop",
+          "name": "Yabancı Pop",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Beyoncé", "Taylor Swift", "Britney Spears", "Rihanna",
+            "Lady Gaga", "Adele", "Bruno Mars", "Justin Timberlake",
+            "Adam Levine", "Katy Perry", "Justin Bieber", "Troye Sivan",
+            "Jennifer Lopez", "Dua Lipa", "Billie Eilish", "The Weeknd",
+            "Harry Styles", "Ed Sheeran", "Miley Cyrus", "Selena Gomez",
+            "Maroon 5", "Michael Jackson", "Madonna"
+          ],
+          "hints": [
+            "Global",
+            "Grammy",
+            "HIT"
+          ]
+        },
+        {
+          "id": "singers_foreign_hiphop",
+          "name": "Yabancı Hip-Hop/Rap",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "Eminem", "Tupac", "Snoop Dogg", "Jay-Z", "Drake",
+            "Kanye West", "Kendrick Lamar", "J. Cole", "Nicki Minaj",
+            "Lil Wayne", "50 Cent", "Dr. Dre", "Cardi B",
+            "Future", "Post Malone", "XXXTentacion", "Pop Smoke",
+            "21 Savage", "Doja Cat", "Lil Baby", "Juice WRLD",
+            "Lil Uzi Vert", "Playboi Carti", "Young Thug", "Gunna", "Central Cee"
+          ],
+          "hints": [
+            "Sokak",
+            "Yabancı"
+          ]
+        },
+        {
+          "id": "singers_foreign_rock",
+          "name": "Yabancı Rock",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": [
+            "The Beatles", "Queen", "Pink Floyd", "Eagles",
+            "AC DC", "Guns N' Roses", "Metallica", "Scorpions",
+            "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys"
+          ],
+          "hints": [
+            "Konser",
+            "Siyah",
+            "Metal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "name": "Sporlar",
+      "iconName": "sports_basketball",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Futbol", "Basketbol", "Tenis", "Voleybol", "Yüzme",
+        "Koşu", "Bisiklet", "Boks", "Karate", "Judo",
+        "Golf", "Badminton", "Ping Pong", "Hentbol", "Güreş",
+        "Atletizm", "Jimnastik", "Eskrim", "Okçuluk", "Halter",
+        "Rugby", "Amerikan Futbolu", "Beyzbol", "Kriket", "Hokey",
+        "Masa Tenisi", "Ragbi", "Su Topu", "Dalış",
+        "Sörf", "Snowboard", "Kayak", "Paten", "Buz Pateni",
+        "Tekvando", "Kickboks", "Muay Thai", "Jiu Jitsu", "Aikido",
+        "Kung Fu","Sumo", "MMA","Maraton", "Parkur", "Crossfit", "Pilates",
+        "Yoga", "Yelken", "Kürek", "Kano", "Rafting", "Paraşüt",
+        "Yamaç Paraşütü","Dağcılık", "Kaya Tırmanışı", "Bungee Jumping",
+        "Paintball", "Airsoft", "Dart", "Bilardo", "Bowling",
+        "Bale", "Dans Sporları", "Ritmik Jimnastik",
+        "Artistik Jimnastik","Disk Atma", "Gülle Atma", "Cirit Atma",
+        "Uzun Atlama","Formula 1", "Ralli", "Motokros", "Motosiklet Yarışı", "At Yarışı",
+        "Binicilik","Rodeo", "BMX", "Mountain Bike"
+      ],
+      "hints": [
+        "Fiziksel aktivite",
+        "Rekabet var",
+        "Sağlık kondisyon",
+        "Takım bireysel",
+        "Antrenman gerekir",
+        "Turnuvalar var",
+        "Spor salonu"
+      ],
+      "isLocked": true,
+      "priceTL": 34.99,
+      "hasSubcategories": false
+    },
+    {
+      "id": "countries",
+      "name": "Ülkeler",
+      "iconName": "public",
+      "colorHex": "#4CAF50",
+      "items": [
+        "Türkiye", "Almanya", "Fransa", "İtalya", "İspanya",
+        "Amerika", "İngiltere", "Rusya", "Çin", "Japonya",
+        "Hindistan", "Brezilya", "Avustralya", "Kanada", "Meksika",
+        "Yunanistan", "Mısır", "İsrail", "Suudi Arabistan", "İran",
+        "Hollanda", "Belçika", "İsveç", "Norveç", "Danimarka"
+      ],
+      "hints": [
+        "Coğrafi sınır",
+        "Hükümeti var",
+        "Bayrak simge",
+        "Kültür",
+        "Başkent",
+        "Uluslararası ",
+        "Pasaport"
+      ],
+      "isLocked": true,
+      "priceTL": 69.99,
+      "hasSubcategories": false
+    },
+    {
+      "id": "clash_royale_cards",
+      "name": "Clash Royale",
+      "iconName": "sports_esports",
+      "colorHex": "#FF9800",
+      "items": [
+        "Okçular",
+        "Şövalye",
+        "Goblinler",
+        "Mızraklı Goblinler",
+        "İskeletler",
+        "Bombacı",
+        "Minyonlar",
+        "Top",
+        "Barbarlar",
+        "Elit Barbarlar",
+        "Dev",
+        "Kraliyet Devi",
+        "Kraliyet Domuzları",
+        "Domuz Binicisi",
+        "Okçu Kraliçe",
+        "Koç Binicisi",
+        "Valkür",
+        "Mini P.E.K.K.A",
+        "P.E.K.K.A",
+        "Prens",
+        "Kara Prens",
+        "Haydut",
+        "Madenci",
+        "Mega Şövalye",
+        "Altın Şövalye",
+        "İskelet Kral",
+        "Archer Queen",
+        "Küçük Prens",
+        "Keşiş",
+        "Üç Silahşör",
+        "Silahşör",
+        "Uçan Makine",
+        "Cellat",
+        "Avcı",
+        "Büyücü",
+        "Elektro Büyücü",
+        "Buz Büyücüsü",
+        "Yaşlı Cadı",
+        "Cadı",
+        "Gece Cadısı",
+        "Yavru Ejderha",
+        "Elektro Ejderha",
+        "Cehennem Ejderhası",
+        "Balon",
+        "Lav Tazısı",
+        "Anka Kuşu",
+        "Mega Minyon",
+        "Minyon Sürüsü",
+        "İskelet Ordusu",
+        "Muhafızlar",
+        "Goblin Çetesi",
+        "Goblin Devi",
+        "Goblin Fıçısı",
+        "Goblin Yıkıcı",
+        "Kıvılcım",
+        "Havan",
+        "X-Yayı",
+        "Tesla",
+        "Cehennem Kulesi",
+        "Bomba Kulesi",
+        "Goblin Kulübesi",
+        "Barbar Kulübesi",
+        "Mezar Taşı",
+        "Fırın",
+        "İksir Toplayıcı",
+        "Ayna",
+        "Oklar",
+        "Çarpma",
+        "Dev Kar Topu",
+        "Öfke",
+        "Dondurma",
+        "Kasırga",
+        "Deprem",
+        "İksir Golemi",
+        "Zehir",
+        "Alev Topu",
+        "Roket",
+        "Yıldırım",
+        "Klon",
+        "İskelet Fıçısı"
+      ],
+      "hints": [
+        "İksir",
+        "Arena ",
+        "Deste",
+        "8",
+        "Kule",
+        "Telefon",
+        "Taç"
+      ],
+      "isLocked": false,
+      "priceTL": 0.0,
+      "hasSubcategories": false
+    },
+    {
+      "id":"actors",
+      "name": "Oyuncular",
+      "iconName": "movie",
+      "colorHex": "#F44336",
+      "isLocked": true,
+      "priceTL": 49.99,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "actors_domestic_male",
+          "name": "Yerli Erkek Oyuncu",
+          "unlockedByAd": false,
+          "isUnlocked": false,
+          "items": [
+            "Kıvanç Tatlıtuğ", "Kenan İmirzalıoğlu", "Halit Ergenç", "Burak Özçivit",
+            "Çağatay Ulusoy", "Aras Bulut İynemli", "Nejat İşler", "Can Yaman",
+            "Kerem Bürsin", "Barış Arduç", "Cem Yılmaz", "Şahan Gökbakar",
+            "Ata Demirer", "Yılmaz Erdoğan", "Şafak Sezer", "Erdal Beşikçioğlu",
+            "Kemal Sunal", "Haluk Bilginer", "İlker Kaleli", "Selahattin Paşalı",
+            "Mert Ramazan Demir","Aytaç Şaşmaz","Alperen Duymaz", "Boran Kuzum",
+            "Uraz Kaygılaroğlu", "Tolga Sarıtaş","Şener Şen","Tamer Karadağlı" ,
+            "Ali Atay" , "Erkan Petekkaya", "Mehmet Günsür", "Doğu Demirkol" ,"Murat Cemcir",
+            "Metin Akpınar" ,"Zeki Alasya" , "Murat Cemcir" ,"Kubilay Aka"
+          ],
+          "hints": [
+            "Yakışıklı",
+            "Zengin",
+            "Televizyon"
+          ]
+        },
+        {
+          "id": "actors_domestic_female",
+          "name": "Yerli Kadın Oyuncu",
+          "unlockedByAd": false,
+          "isUnlocked": false,
+          "items": [
+            "Beren Saat", "Serenay Sarıkaya", "Hande Erçel", "Cansu Dere",
+            "Hazal Kaya", "Afra Saraçoğlu", "Pınar Deniz", "Ezgi Mola",
+            "Burcu Biricik", "Elçin Sangu", "Gupse Özay", "Melisa Aslı Pamuk",
+            "Tuba Büyüküstün", "Fahriye Evcen", "Nurgül Yeşilçay", "Aslı Enver",
+            "Merve Dizdar" ,"Demet Özdemir","Alina Boz","Miray Daner" ,"Dilan Çiçek Deniz" ,
+            "Hafsanur Sancaktutan" ,"Ayça Ayşin Turan" ,"Neslihan Atagül","Türkan Şoray" ,
+            "Hülya Koçyiğit" ,"Gonca Vuslateri" ,"Gülse Birsel" ,"Büşra Pekin" , "Seda Bakan" ,
+            "Pelin Akil" ,"Nilperi Şahinkaya" ,"Ecem Erkek" , "Melisa Döngel" ,"İpek Filiz Yazıcı","Cemre Baysel"
+          ],
+          "hints": [
+            "Güzel",
+            "Yetenekli",
+            "Türkiye"
+          ]
+        },
+        {
+          "id": "actors_foreign_male",
+          "name": "Yabancı Erkek Oyuncu",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Leonardo DiCaprio", "Tom Cruise", "Brad Pitt", "Johnny Depp",
+            "Will Smith", "Keanu Reeves", "Dwayne Johnson", "Robert Downey Jr.",
+            "Joaquin Phoenix", "Hugh Jackman", "Bradley Cooper", "Ryan Gosling",
+            "Tom Holland", "Chris Hemsworth", "Vin Diesel", "Jason Statham",
+            "Adam Sandler", "Ben Affleck", "Cillian Murphy", "Tom Hardy",
+            "Chris Evans", "Morgan Freeman"
+          ],
+          "hints": [
+            "Para",
+            "Yakışıklı",
+            "Jön"
+          ]
+        },
+        {
+          "id": "actors_foreign_female",
+          "name": "Yabancı Kadın Oyuncu",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Angelina Jolie", "Jennifer Aniston", "Scarlett Johansson", "Margot Robbie",
+            "Emma Stone", "Zendaya", "Anne Hathaway", "Natalie Portman",
+            "Kristen Stewart", "Emma Watson", "Gal Gadot", "Sydney Sweeney",
+            "Anya Taylor-Joy", "Millie Bobby Brown", "Elizabeth Olsen", "Ana de Armas",
+            "Dakota Johnson"
+          ],
+          "hints": [
+            "Güzel",
+            "Kadın",
+            "Ana Karakter"
+          ]
+        }
+      ]
+    },
+    {
+      "id":"streamers",
+      "name": "Yayıncılar",
+      "iconName": "live_tv",
+      "colorHex": "#9C27B0",
+      "items": [
+        "Elraenn", "Jahrein", "Wtcn", "Pqueen", "Kendine Müzisyen",
+        "Mithrain", "Unlost", "Eray", "Levo", "zeoN",
+        "PurpleBixi", "Efe Uygaç", "Miafitz", "Hazreti Yasuo", "Elwind",
+        "Hype", "Anna Deniz", "Rraenee", "Vales", "Htalks",
+        "Ataberk Doğan", "Tolunay Ören","PintiPanda","Ege Arseven" ,"ZgocBrayt"
+      ],
+      "hints": [
+        "Canlı yayın yapar",
+        "İnternet platformu",
+        "İzleyici kitlesi",
+        "Twitch YouTube",
+        "Etkileşimli içerik",
+        "Bağış alabilir",
+        "Dijital medya"
+      ],
+      "isLocked": true,
+      "priceTL": 49.99,
+      "hasSubcategories": false
+    },
+    {
+      "id": "youtubers",
+      "name": "Youtuberlar",
+      "iconName": "play_circle",
+      "colorHex": "#C75083",
+      "isLocked": true,
+      "priceTL": 49.99,
+      "hasSubcategories": true,
+      "subcategories": [
+        {
+          "id": "youtubers_male",
+          "name": "Erkek Youtuberlar",
+          "unlockedByAd": false,
+          "isUnlocked":true ,
+          "items": [
+            "Enes Batur", "Ruhi Çenet", "Orkun Işıtmak", "Deli Mi Ne?", "Kafalar", "Reynmen",
+            "Berkcan Güven", "Ali Biçim", "Mesut Can Tomay", "Enis Kirazoğlu", "Ümidi", "Doğan Kabak", "Barış Özcan", "Evrim Ağacı",
+            "Diamond Tema", "Porçay", "Alper Rende", "Fırat Sobutay", "Melih Abuaf", "Oha Diyorum", "Yapyap", "CZN Burak", "Burak Oyunda",
+            "Yusuf Kayaalp", "BARIŞ BRA", "Murat Abi GF", "Testo Taylan", "Mertcan Bahar",
+            "Amerikalı Aynasız", "Murat Soner", "Rıdvan Abi", "Röportaj Adam",
+            "SeseGel", "Noluyo Ya?","Mert Karadeniz" ,"SeeOK" ,"Furkan Arabacı"
+          ],
+          "hints": [
+            "Internet",
+            "Fenomen",
+            "Youtube"
+          ]
+        },
+        {
+          "id": "youtubers_female",
+          "name": "Kadın Youtuberlar",
+          "unlockedByAd": false,
+          "isUnlocked": true,
+          "items": ["Duygu Özaslan", "Merve Özkaynak", "Şeyda Erdoğan", "Danla Bilic", "Betül Çakmak", "Ecenaz Üçer",
+            "Meryem Can", "Eda Biçim", "Berfu Yenenler", "İdil Yazar", "Refika Birgül","Elvin Levinler"
+          ],
+          "hints": [
+            "İçerik",
+            "Kadın",
+            "Para"
+          ]
+        }
+      ]
+    }
+  ]
+}

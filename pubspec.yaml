@@ -1,0 +1,29 @@
+name: spy_app
+description: Spy - Haini Bul
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  go_router: ^14.2.7
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/categories.json
+    - assets/characters/pic_1.png
+    - assets/characters/pic_2.png
+    - assets/characters/pic_3.png
+    - assets/characters/pic_4.png
+    - assets/characters/pic_5.png
+    - assets/characters/pic_6.png
+    - assets/characters/pic_7.png
+    - assets/characters/pic_8.png
+    - assets/characters/pic_9.png
