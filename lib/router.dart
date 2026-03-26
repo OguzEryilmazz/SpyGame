@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/setup_screen.dart';
 import 'screens/player_setup_screen.dart';
 import 'screens/category_screen.dart';
+import 'screens/game_screen.dart';
 import 'screens/tutorial_screen.dart';
 
 final appRouter = GoRouter(
@@ -15,16 +16,15 @@ final appRouter = GoRouter(
     final prefs = await SharedPreferences.getInstance();
     final showEvery10 = prefs.getBool('show_every_10') ?? false;
 
-    if (!showEvery10) return null; // her seferinde göster
+    if (!showEvery10) return null;
 
-    // 10'da bir göster
     final counter = prefs.getInt('tutorial_counter_for_interval') ?? 0;
     final newCounter = counter + 1;
     await prefs.setInt('tutorial_counter_for_interval', newCounter);
 
-    if (newCounter < 10) return '/'; // tutorial'ı atla
+    if (newCounter < 10) return '/';
     await prefs.setInt('tutorial_counter_for_interval', 0);
-    return null; // tutorial'ı göster
+    return null;
   },
   routes: [
     GoRoute(
@@ -55,6 +55,10 @@ final appRouter = GoRouter(
           },
         );
       },
+    ),
+    GoRoute(
+      path: '/game',
+      builder: (context, state) => const GameScreen(),
     ),
   ],
 );

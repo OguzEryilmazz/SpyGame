@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/player.dart';
 import '../models/game_player.dart';
+import 'setup_screen.dart' show gameDurationProvider, showHintsProvider;
 
 // ---------------------------------------------------------------------------
 // DATA MODELS
@@ -132,7 +133,6 @@ class Category {
 // PROVIDERS
 // ---------------------------------------------------------------------------
 
-/// Ham kategori listesi — JSON'dan yüklenir
 final categoriesProvider =
 StateNotifierProvider<CategoriesNotifier, AsyncValue<List<Category>>>(
       (ref) => CategoriesNotifier(),
@@ -167,21 +167,15 @@ class CategoriesNotifier extends StateNotifier<AsyncValue<List<Category>>> {
   }
 }
 
-/// Seçili kategori + alt kategori çiftleri
 typedef CategorySelection = ({Category category, Subcategory? subcategory});
 
 final selectedCategoriesProvider =
 StateProvider<List<CategorySelection>>((ref) => []);
 
-/// Arama metni
 final categorySearchProvider = StateProvider<String>((ref) => '');
 
-/// Arama çubuğu görünürlüğü — searchText'ten BAĞIMSIZ
-/// DÜZELTME: Daha önce searchText boşluğa set edilerek tetikleniyordu,
-/// bu filtre bozukluğuna yol açıyordu.
 final searchBarVisibleProvider = StateProvider<bool>((ref) => false);
 
-/// Filtre
 enum CategoryFilter { all, favorites }
 
 final categoryFilterProvider =
@@ -191,23 +185,26 @@ StateProvider<CategoryFilter>((ref) => CategoryFilter.all);
 // GAME STATE PROVIDER
 // ---------------------------------------------------------------------------
 
-/// GameScreen'e taşınacak veri — GoRouter extra yerine Riverpod üzerinden
 class GameState {
   final List<GamePlayer> players;
   final Category category;
   final String word;
+  final int durationMinutes;
+  final bool showHints;
 
   const GameState({
     required this.players,
     required this.category,
     required this.word,
+    required this.durationMinutes,
+    required this.showHints,
   });
 }
 
 final gameStateProvider = StateProvider<GameState?>((ref) => null);
 
 // ---------------------------------------------------------------------------
-// ROLE ASSIGNMENT
+// ROLE ASSIGNMENT  ← DÜZELTİLDİ
 // ---------------------------------------------------------------------------
 
 List<GamePlayer> assignRoles(
@@ -223,26 +220,32 @@ List<GamePlayer> assignRoles(
 
   return List.generate(shuffled.length, (i) {
     final p = shuffled[i];
+
     if (i == spyIndex) {
+      // ✅ Spy: isSpy=true, assignedWord='SPY', hint yok
       return GamePlayer(
         id: p.id,
         name: p.name,
         color: p.selectedColor ?? const Color(0xFF9E9E9E),
         selectedCharacter: p.selectedCharacter,
-        role: chosenItem,
-        hint: null,
-        isSpy: false,
-        assignedWord: chosenItem,
+        isSpy: true,
+        assignedWord: 'SPY',
+        hint: null, role: '',
       );
     }
+
+    // ✅ Normal oyuncu: isSpy=false, assignedWord=chosenItem, hint atanıyor
+    final hint =
+    hints.isNotEmpty ? hints[rng.nextInt(hints.length)] : null;
+
     return GamePlayer(
       id: p.id,
       name: p.name,
       color: p.selectedColor ?? const Color(0xFF9E9E9E),
       selectedCharacter: p.selectedCharacter,
-      role: chosenItem,
-      hint: null,
-      isSpy: false, assignedWord: '',
+      isSpy: false,
+      assignedWord: chosenItem,
+      hint: hint, role: '',
     );
   });
 }
@@ -275,8 +278,8 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
         .any((s) => s.category.id == category.id && s.subcategory == null);
     if (exists) {
       ref.read(selectedCategoriesProvider.notifier).state = selected
-          .where((s) =>
-      !(s.category.id == category.id && s.subcategory == null))
+          .where(
+              (s) => !(s.category.id == category.id && s.subcategory == null))
           .toList();
     } else {
       ref.read(selectedCategoriesProvider.notifier).state = [
@@ -306,13 +309,20 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
     }
 
     final gamePlayers = assignRoles(widget.players, items, hints);
+
+    // ✅ word: spy olmayan ilk oyuncunun assignedWord'ü
     final word = gamePlayers.firstWhere((p) => !p.isSpy).assignedWord;
 
-    // DÜZELTME: extra yerine Riverpod provider'a yaz
+    // setup_screen provider'larından süre ve ipucu ayarları
+    final duration = ref.read(gameDurationProvider);
+    final showHints = ref.read(showHintsProvider);
+
     ref.read(gameStateProvider.notifier).state = GameState(
       players: gamePlayers,
       category: cat,
       word: word,
+      durationMinutes: duration,
+      showHints: showHints,
     );
 
     context.push('/game');
@@ -475,8 +485,6 @@ class _TopBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchText = ref.watch(categorySearchProvider);
-    // DÜZELTME: searchBarVisible artık searchText'ten bağımsız
     final searchBarVisible = ref.watch(searchBarVisibleProvider);
 
     return Padding(
@@ -521,12 +529,10 @@ class _TopBar extends ConsumerWidget {
                     : Icons.search_rounded,
                 onTap: () {
                   if (searchBarVisible) {
-                    // Arama çubuğunu kapat ve temizle
                     searchController.clear();
                     ref.read(categorySearchProvider.notifier).state = '';
                     ref.read(searchBarVisibleProvider.notifier).state = false;
                   } else {
-                    // Arama çubuğunu aç
                     ref.read(searchBarVisibleProvider.notifier).state = true;
                   }
                 },
@@ -534,7 +540,6 @@ class _TopBar extends ConsumerWidget {
               ),
             ],
           ),
-          // DÜZELTME: searchBarVisible kullanıyoruz, searchText != '' değil
           if (searchBarVisible) ...[
             const SizedBox(height: 10),
             Container(
