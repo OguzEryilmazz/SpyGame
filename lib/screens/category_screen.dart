@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/player.dart';
 import '../models/game_player.dart';
@@ -133,6 +134,8 @@ class Category {
 // PROVIDERS
 // ---------------------------------------------------------------------------
 
+const _favoritesKey = 'favorite_category_ids';
+
 final categoriesProvider =
 StateNotifierProvider<CategoriesNotifier, AsyncValue<List<Category>>>(
       (ref) => CategoriesNotifier(),
@@ -147,23 +150,40 @@ class CategoriesNotifier extends StateNotifier<AsyncValue<List<Category>>> {
 
   Future<void> _load() async {
     try {
+      // ── JSON'u yükle ──
       final raw = await rootBundle.loadString('assets/categories.json');
       final data = jsonDecode(raw) as Map<String, dynamic>;
       _categories = (data['categories'] as List)
           .map((e) => Category.fromJson(e as Map<String, dynamic>))
           .toList();
+
+      // ── Kayıtlı favorileri yükle ──
+      final prefs = await SharedPreferences.getInstance();
+      final savedIds =
+          prefs.getStringList(_favoritesKey)?.toSet() ?? <String>{};
+
+      _categories = _categories.map((c) {
+        return c.copyWith(isFavorite: savedIds.contains(c.id));
+      }).toList();
+
       state = AsyncValue.data(List.unmodifiable(_categories));
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 
-  void toggleFavorite(String id) {
+  Future<void> toggleFavorite(String id) async {
     _categories = _categories.map((c) {
       if (c.id == id) return c.copyWith(isFavorite: !c.isFavorite);
       return c;
     }).toList();
     state = AsyncValue.data(List.unmodifiable(_categories));
+
+    // ── SharedPreferences'a kaydet ──
+    final favoriteIds =
+    _categories.where((c) => c.isFavorite).map((c) => c.id).toList();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_favoritesKey, favoriteIds);
   }
 }
 
@@ -204,7 +224,7 @@ class GameState {
 final gameStateProvider = StateProvider<GameState?>((ref) => null);
 
 // ---------------------------------------------------------------------------
-// ROLE ASSIGNMENT  ← DÜZELTİLDİ
+// ROLE ASSIGNMENT
 // ---------------------------------------------------------------------------
 
 List<GamePlayer> assignRoles(
@@ -222,7 +242,6 @@ List<GamePlayer> assignRoles(
     final p = shuffled[i];
 
     if (i == spyIndex) {
-      // ✅ Spy: isSpy=true, assignedWord='SPY', hint yok
       return GamePlayer(
         id: p.id,
         name: p.name,
@@ -230,13 +249,12 @@ List<GamePlayer> assignRoles(
         selectedCharacter: p.selectedCharacter,
         isSpy: true,
         assignedWord: 'SPY',
-        hint: null, role: '',
+        hint: null,
+        role: '',
       );
     }
 
-    // ✅ Normal oyuncu: isSpy=false, assignedWord=chosenItem, hint atanıyor
-    final hint =
-    hints.isNotEmpty ? hints[rng.nextInt(hints.length)] : null;
+    final hint = hints.isNotEmpty ? hints[rng.nextInt(hints.length)] : null;
 
     return GamePlayer(
       id: p.id,
@@ -245,7 +263,8 @@ List<GamePlayer> assignRoles(
       selectedCharacter: p.selectedCharacter,
       isSpy: false,
       assignedWord: chosenItem,
-      hint: hint, role: '',
+      hint: hint,
+      role: '',
     );
   });
 }
@@ -309,11 +328,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
     }
 
     final gamePlayers = assignRoles(widget.players, items, hints);
-
-    // ✅ word: spy olmayan ilk oyuncunun assignedWord'ü
     final word = gamePlayers.firstWhere((p) => !p.isSpy).assignedWord;
-
-    // setup_screen provider'larından süre ve ipucu ayarları
     final duration = ref.read(gameDurationProvider);
     final showHints = ref.read(showHintsProvider);
 
@@ -353,7 +368,13 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
             children: [
               _TopBar(
                 selectedCount: selected.length,
-                onBack: () => context.pop(),
+                onBack: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/');
+                  }
+                },
                 searchController: _searchController,
               ),
               _FilterRow(),
@@ -704,6 +725,7 @@ class _CategoryCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
+                // ── İkon kutusu ──
                 Container(
                   width: 52,
                   height: 52,
@@ -718,6 +740,8 @@ class _CategoryCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 14),
+
+                // ── İsim + öğe sayısı ──
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -756,22 +780,29 @@ class _CategoryCard extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                // ── Favori yıldızı (büyütüldü: 22→30) + seçim tiki ──
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     GestureDetector(
                       onTap: onFavorite,
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          category.isFavorite
-                              ? Icons.star_rounded
-                              : Icons.star_border_rounded,
-                          key: ValueKey(category.isFavorite),
-                          color: category.isFavorite
-                              ? category.color
-                              : const Color(0xFFCCCCCC),
-                          size: 22,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          transitionBuilder: (child, anim) =>
+                              ScaleTransition(scale: anim, child: child),
+                          child: Icon(
+                            category.isFavorite
+                                ? Icons.star_rounded
+                                : Icons.star_border_rounded,
+                            key: ValueKey(category.isFavorite),
+                            color: category.isFavorite
+                                ? category.color
+                                : const Color(0xFFCCCCCC),
+                            size: 30, // ← 22'den 30'a
+                          ),
                         ),
                       ),
                     ),

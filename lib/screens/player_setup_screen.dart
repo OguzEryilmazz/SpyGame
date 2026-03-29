@@ -195,7 +195,7 @@ class _PlayerSetupScreenState extends ConsumerState<PlayerSetupScreen> {
                     onPressed: isFormValid
                         ? () {
                       ref.read(playersProvider.notifier).state = players;
-                      context.go('/categoryScreen');
+                      context.push('/categoryScreen');
                     }
                         : null,
                     icon: Icon(

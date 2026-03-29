@@ -13,6 +13,20 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.5.1
   go_router: ^14.2.7
+  wakelock_plus: ^1.2.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1  # ← just the version here
+
+
+# ↓ Launcher icons config goes at the TOP LEVEL, not inside dev_dependencies
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/my_real_icon.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true
@@ -30,3 +44,4 @@ flutter:
     - assets/characters/pic_9.png
     - assets/my_imposter.png
     - assets/my_real_icon.png
+    - assets/my_crew.png

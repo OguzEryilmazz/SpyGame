@@ -205,7 +205,7 @@ class SetupScreen extends ConsumerWidget {
                   height: 56,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      context.go('/playerSetup/$playerCount');
+                      context.push('/playerSetup/$playerCount');
                     },
                     icon: const Icon(
                       Icons.play_arrow,
