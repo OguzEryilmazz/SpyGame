@@ -938,7 +938,21 @@
         "Amerika", "İngiltere", "Rusya", "Çin", "Japonya",
         "Hindistan", "Brezilya", "Avustralya", "Kanada", "Meksika",
         "Yunanistan", "Mısır", "İsrail", "Suudi Arabistan", "İran",
-        "Hollanda", "Belçika", "İsveç", "Norveç", "Danimarka"
+        "Hollanda", "Belçika", "İsveç", "Norveç", "Danimarka",
+        "Finlandiya", "İsviçre", "Avusturya", "Polonya", "Portekiz",
+        "Çekya", "Macaristan", "Romanya", "Bulgaristan", "Sırbistan",
+        "Hırvatistan", "Slovenya", "Slovakya", "Ukrayna", "Belarus",
+        "Gürcistan", "Azerbaycan", "Kazakistan", "Özbekistan", "Türkmenistan",
+        "Pakistan", "Bangladeş", "Endonezya", "Malezya", "Singapur",
+        "Tayland", "Vietnam", "Filipinler", "Güney Kore", "Kuzey Kore",
+        "Moğolistan", "Nepal", "Sri Lanka", "Afganistan", "Irak",
+        "Suriye", "Ürdün", "Lübnan", "Katar", "Birleşik Arap Emirlikleri",
+        "Kuveyt", "Umman", "Yemen", "Fas", "Cezayir",
+        "Tunus", "Libya", "Sudan", "Etiyopya", "Kenya",
+        "Nijerya", "Gana", "Senegal", "Güney Afrika", "Zimbabve",
+        "Arjantin", "Şili", "Peru", "Kolombiya", "Venezuela",
+        "Bolivya", "Paraguay", "Uruguay", "Panama", "Kosta Rika",
+        "Küba", "Dominik Cumhuriyeti", "Jamaika", "Yeni Zelanda", "İzlanda"
       ],
       "hints": [
         "Coğrafi sınır",

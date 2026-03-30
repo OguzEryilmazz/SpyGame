@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'router.dart';
+import 'billing/iap_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ekle
+  await IAPService().initialize();
   runApp(
     const ProviderScope(
       child: SpyApp(),
