@@ -29,7 +29,7 @@ class IAPService {
     // Satın alma stream'ini dinle
     _subscription = _iap.purchaseStream.listen(
       _onPurchaseUpdated,
-      onError: (error) => print('IAP stream error: $error'),
+      onError: (error) {},
     );
 
     await _loadProducts();
@@ -41,7 +41,6 @@ class IAPService {
     final response = await _iap.queryProductDetails(_productIds);
 
     if (response.error != null) {
-      print('Ürün yükleme hatası: ${response.error}');
       return;
     }
 
@@ -68,7 +67,6 @@ class IAPService {
     for (final purchase in purchases) {
       switch (purchase.status) {
         case PurchaseStatus.pending:
-          print('Satın alma bekleniyor: ${purchase.productID}');
           break;
 
         case PurchaseStatus.purchased:
@@ -79,12 +77,10 @@ class IAPService {
           break;
 
         case PurchaseStatus.error:
-          print('Satın alma hatası: ${purchase.error}');
           await _iap.completePurchase(purchase);
           break;
 
         case PurchaseStatus.canceled:
-          print('Satın alma iptal edildi');
           break;
       }
     }
@@ -93,7 +89,6 @@ class IAPService {
   /// Ürünü kullanıcıya teslim et
   void _deliverProduct(PurchaseDetails purchase) async {
     await UnlockService.unlock(purchase.productID);
-    print('Ürün teslim edildi ve kaydedildi: ${purchase.productID}');
     // Provider/Riverpod/BLoC ile state güncellemesi yapabilirsiniz
   }
 

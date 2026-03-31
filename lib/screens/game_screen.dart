@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/game_player.dart';
-import '../models/character_avatar.dart';
+import '../ads/ad_providers.dart';
 import 'category_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -85,7 +85,10 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       },
       onStartTimer: () {
         _startTimer();
-        context.push('/timer');
+        final interstitial = ref.read(interstitialAdProvider);
+        interstitial.showAdWithFrequencyControl(
+          onAdDismissed: () => context.push('/timer'),
+        );
       },
     );
   }

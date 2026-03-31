@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../ads/ad_providers.dart';
 import '../models/game_player.dart';
 import 'category_screen.dart'; // gameStateProvider
 
@@ -92,8 +93,16 @@ class _VotingScreenState extends ConsumerState<VotingScreen> {
         impostor: impostor,
         mostVotedPlayer: _mostVotedPlayer,
         voteCounts: _voteCounts,
-        onPlayAgain: () => context.go('/'),
-        onMainMenu: () => context.go('/'),
+        onPlayAgain: () {
+          ref.read(interstitialAdProvider).showAdWithFrequencyControl(
+            onAdDismissed: () => context.go('/'),
+          );
+        },
+        onMainMenu: () {
+          ref.read(interstitialAdProvider).showAdWithFrequencyControl(
+            onAdDismissed: () => context.go('/'),
+          );
+        },
       );
     }
 

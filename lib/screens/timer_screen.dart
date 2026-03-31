@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import '../ads/ad_providers.dart';
 import 'category_screen.dart'; // gameStateProvider
 
 class TimerScreen extends ConsumerStatefulWidget {
@@ -229,7 +230,11 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                     if (_isFinished)
                       _FinishedControls(
                         onVoting: () => context.push('/voting'),
-                        onHome: () => context.go('/'),
+                        onHome: () {
+                          ref.read(interstitialAdProvider).showAdWithFrequencyControl(
+                            onAdDismissed: () => context.go('/'),
+                          );
+                        },
                       )
                     else
                       _RunningControls(

@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../ads/ad_providers.dart';
+import '../ads/rewarded_ad_manager.dart';
 import '../billing/iap_service.dart';
 import '../models/player.dart';
 import '../models/game_player.dart';
@@ -435,6 +437,10 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   }
 
   void _showSubPurchaseSheet(Category category, Subcategory sub) {
+    if (sub.unlockedByAd) {
+      _watchAdForSubcategory(category, sub);
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -456,6 +462,36 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
           }
         },
       ),
+    );
+  }
+
+  void _watchAdForSubcategory(Category category, Subcategory sub) {
+    final RewardedAdManager rewardedAd = ref.read(rewardedAdProvider);
+
+    if (!rewardedAd.isAdReady) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reklam yükleniyor, lütfen bekleyin...')),
+      );
+      rewardedAd.loadAd(
+        onAdLoaded: () {
+          if (!mounted) return;
+          _watchAdForSubcategory(category, sub);
+        },
+      );
+      return;
+    }
+
+    rewardedAd.showAd(
+      onUserEarnedReward: (amount, type) async {
+        await ref.read(categoriesProvider.notifier).unlockSubcategory(sub.id);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${sub.name} açıldı!'),
+            backgroundColor: category.color,
+          ),
+        );
+      },
     );
   }
 
