@@ -45,7 +45,7 @@ fun PageTransition(
         }
     }
 
-    val startDestination = if (shouldShowTutorial) "tutorialScreen" else "setUpScreen"
+    val startDestination = "splashScreen"
 
 
     // Oyun ayarları state'leri
@@ -70,6 +70,9 @@ fun PageTransition(
             startDestination = startDestination,
             modifier = androidx.compose.ui.Modifier.padding(paddingValues)
         ) {
+            composable("splashScreen") {
+                SplashScreen(navController = navController)
+            }
 
             composable("tutorialScreen") {
                 TutorialScreen(navController = navController)

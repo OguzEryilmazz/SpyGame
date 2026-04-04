@@ -234,4 +234,13 @@ class CategoryDataManager(private val context: Context) {
 
         else -> Icons.Default.Category
     }
+
+    fun resetAllPurchases() {
+        prefs.edit()
+            .remove(PURCHASED_KEY)
+            .remove(PURCHASED_SUBCATEGORIES_KEY)
+            .remove(UNLOCKED_SUBCATEGORIES_KEY)
+            .remove(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY)
+            .apply()
+    }
 }

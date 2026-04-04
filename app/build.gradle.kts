@@ -14,8 +14,8 @@ android {
         applicationId = "com.oguz.spy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 23
-        versionName = "1.0.23"
+        versionCode = 26
+        versionName = "1.0.26"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -98,7 +98,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     // Billing & Other
-    implementation("com.android.billingclient:billing-ktx:6.1.0")
+    implementation("com.android.billingclient:billing-ktx:7.0.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 

@@ -1,55 +1,33 @@
 package com.oguz.spy.ux.components
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.oguz.spy.ux.Category
 import com.oguz.spy.ux.GamePlayer
 import com.oguz.spy.ux.Player
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextOverflow
-import com.oguz.spy.billing.BillingManager
-
 
 @Composable
 fun CategoryCard(
     category: Category,
     isSelected: Boolean,
-    isExpanded: Boolean = false, // 🆕 Genişletilmiş görünüm
+    isExpanded: Boolean = false,
     onClick: () -> Unit,
     onUnlockClick: () -> Unit,
     onFavoriteClick: () -> Unit,
@@ -68,11 +46,10 @@ fun CategoryCard(
             .clickable(enabled = !category.isLocked) { onClick() },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isExpanded) {
+            containerColor = if (isExpanded)
                 Color.White.copy(alpha = 1f)
-            } else {
+            else
                 Color.White.copy(alpha = 0.85f)
-            }
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = if (isExpanded) 12.dp else 6.dp
@@ -89,7 +66,7 @@ fun CategoryCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Icon ve başlık
+                    // İkon ve başlık
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.weight(1f)
@@ -99,11 +76,10 @@ fun CategoryCard(
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(
-                                    color = if (category.isLocked) {
+                                    color = if (category.isLocked)
                                         Color.Gray.copy(alpha = 0.2f)
-                                    } else {
+                                    else
                                         category.color.copy(alpha = 0.2f)
-                                    }
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
@@ -127,9 +103,7 @@ fun CategoryCard(
                                 overflow = TextOverflow.Ellipsis
                             )
 
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     imageVector = Icons.Default.Category,
                                     contentDescription = null,
@@ -142,7 +116,8 @@ fun CategoryCard(
                                     text = if (category.hasSubcategories) {
                                         "${category.subcategories.size} alt kategori"
                                     } else {
-                                        if (category.id != "random_all") "${category.items.size} öğe" else "Akışına bırak."
+                                        if (category.id != "random_all") "${category.items.size} öğe"
+                                        else "Akışına bırak."
                                     },
                                     fontSize = 14.sp,
                                     color = if (category.isLocked) Color.Gray.copy(alpha = 0.6f)
@@ -152,12 +127,11 @@ fun CategoryCard(
                         }
                     }
 
-                    // Sağ taraf - Favori ve Seçim işareti
+                    // Sağ taraf — favori ve seçim işareti
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Favori butonu
                         if (!category.isLocked) {
                             IconButton(
                                 onClick = onFavoriteClick,
@@ -165,25 +139,21 @@ fun CategoryCard(
                                     .size(40.dp)
                                     .clip(RoundedCornerShape(12.dp))
                                     .background(
-                                        if (category.isFavorite) {
-                                            category.color.copy(alpha = 0.2f)
-                                        } else {
-                                            Color.Transparent
-                                        }
+                                        if (category.isFavorite) category.color.copy(alpha = 0.2f)
+                                        else Color.Transparent
                                     )
                             ) {
                                 Icon(
-                                    imageVector = if (category.isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
+                                    imageVector = if (category.isFavorite) Icons.Default.Star
+                                    else Icons.Default.StarBorder,
                                     contentDescription = "Favori",
-                                    tint = if (category.isFavorite) category.color else Color.Gray.copy(
-                                        alpha = 0.5f
-                                    ),
+                                    tint = if (category.isFavorite) category.color
+                                    else Color.Gray.copy(alpha = 0.5f),
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
                         }
 
-                        // 🆕 Seçim işareti - her zaman göster
                         if (isSelected && !category.isLocked) {
                             Box(
                                 modifier = Modifier
@@ -203,7 +173,7 @@ fun CategoryCard(
                     }
                 }
 
-                // Kilitli kategori için satın alma butonu
+                // Kilitli kategori — satın alma butonu
                 if (category.isLocked) {
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -244,11 +214,10 @@ fun CategoryCard(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = if (productPrice != null) {
+                                    text = if (productPrice != null)
                                         "Kilidi Aç - $productPrice"
-                                    } else {
-                                        "Kilidi Aç - ${String.format("%.2f", category.priceTL)} TL"
-                                    },
+                                    else
+                                        "Kilidi Aç - ${String.format("%.2f", category.priceTL)} TL",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -267,57 +236,54 @@ fun CategoryCard(
                     )
                 }
 
-                // 🆕 Genişletilmiş görünüm için detaylar - sadece genişletilmişse göster
-                if (isExpanded && !category.isLocked) {
+                // Genişletilmiş görünüm — ipuçları
+                if (isExpanded && !category.isLocked && category.id != "random_all") {
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (category.id != "random_all") {
-                        Divider(
-                            color = category.color.copy(alpha = 0.3f),
-                            thickness = 1.dp
-                        )
+                    HorizontalDivider(
+                        color = category.color.copy(alpha = 0.3f),
+                        thickness = 1.dp
+                    )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                        // İpuçları
-                        Text(
-                            text = "İpuçları",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = category.color
-                        )
+                    Text(
+                        text = "İpuçları",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = category.color
+                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        category.hints.take(3).forEach { hint ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(vertical = 4.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .clip(RoundedCornerShape(3.dp))
-                                        .background(category.color.copy(alpha = 0.5f))
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = hint,
-                                    fontSize = 13.sp,
-                                    color = Color.Black.copy(alpha = 0.7f)
-                                )
-                            }
-                        }
-
-                        if (category.hints.size > 3) {
-                            Spacer(modifier = Modifier.height(4.dp))
+                    category.hints.take(3).forEach { hint ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(category.color.copy(alpha = 0.5f))
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "+ ${category.hints.size - 3} ipucu daha",
-                                fontSize = 12.sp,
-                                color = category.color.copy(alpha = 0.7f),
-                                fontWeight = FontWeight.Medium
+                                text = hint,
+                                fontSize = 13.sp,
+                                color = Color.Black.copy(alpha = 0.7f)
                             )
                         }
+                    }
+
+                    if (category.hints.size > 3) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "+ ${category.hints.size - 3} ipucu daha",
+                            fontSize = 12.sp,
+                            color = category.color.copy(alpha = 0.7f),
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                 }
             }
@@ -329,11 +295,10 @@ fun assignRoles(players: List<Player>, category: Category): List<GamePlayer> {
     val shuffledPlayers = players.shuffled()
     val spyIndex = shuffledPlayers.indices.random()
 
-    val chosenItem = if (category.items.isNotEmpty()) {
+    val chosenItem = if (category.items.isNotEmpty())
         category.items.random()
-    } else {
+    else
         "PLAYER"
-    }
 
     return shuffledPlayers.mapIndexed { index, player ->
         if (index == spyIndex) {

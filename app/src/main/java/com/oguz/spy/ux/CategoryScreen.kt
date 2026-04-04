@@ -1,6 +1,5 @@
 package com.oguz.spy.ux
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.billing.BillingManager
+import com.oguz.spy.billing.PromoCodeManager
 import com.oguz.spy.datamanagment.CategoryDataManager
 import com.oguz.spy.models.CharacterAvatar
 import com.oguz.spy.ux.components.CategoryCard
@@ -41,7 +41,6 @@ import com.oguz.spy.ux.components.EmptyFavoritesComponent
 import com.oguz.spy.ux.components.assignRoles
 import kotlinx.coroutines.launch
 
-// Kategori data class'ı
 data class Subcategory(
     val id: String,
     val name: String,
@@ -66,14 +65,13 @@ data class Category(
     val isRandomCategory: Boolean = false,
 )
 
-// Oyuncu ve rol data class'ları
 data class GamePlayer(
     val id: Int,
     val name: String,
     val color: Color,
     val selectedCharacter: CharacterAvatar? = null,
     val role: String,
-    val hint: String? = null, // sadece spy için
+    val hint: String? = null,
 )
 
 enum class FilterType {
@@ -95,20 +93,14 @@ fun CategoryScreen(
     val categoryManager = remember { CategoryDataManager(context) }
     val coroutineScope = rememberCoroutineScope()
 
-    val billingManager = remember {
-        BillingManager(context, coroutineScope)
-    }
+    val billingManager = remember { BillingManager(context, coroutineScope) }
 
     var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var isRefreshing by remember { mutableStateOf(false) }
 
-    // 🆕 ÇOK SEÇİMLİ: List olarak değiştirdik
     var selectedCategories by remember { mutableStateOf<List<Pair<Category, Subcategory?>>>(emptyList()) }
-
-    // 🆕 GENIŞLETME: Hangi kategorinin detayı açık
     var expandedCategoryId by remember { mutableStateOf<String?>(null) }
-
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var purchasingCategoryId by remember { mutableStateOf<String?>(null) }
 
@@ -120,10 +112,14 @@ fun CategoryScreen(
 
     var isWatchingAdForSubcategory by remember { mutableStateOf<String?>(null) }
     var adLoadingMessage by remember { mutableStateOf<String?>(null) }
-
     var showSubcategoryUnlockDialog by remember { mutableStateOf(false) }
     var subcategoryToUnlock by remember { mutableStateOf<Subcategory?>(null) }
     var isLoadingAdForUnlock by remember { mutableStateOf(false) }
+
+    // Promo açık kategorileri — Flow olarak dinle
+    val promoUnlocked by PromoCodeManager
+        .getPromoUnlockedCategories(context)
+        .collectAsState(initial = emptySet())
 
     fun loadCategories() {
         coroutineScope.launch {
@@ -147,7 +143,7 @@ fun CategoryScreen(
 
         rewardedAdManager.showAd(
             activity = activity,
-            onUserEarnedReward = { amount, type ->
+            onUserEarnedReward = { _, _ ->
                 categoryManager.grantSingleUseAccess(subcategoryId)
                 loadCategories()
 
@@ -180,21 +176,17 @@ fun CategoryScreen(
     }
 
     fun watchAdForSubcategory(subcategoryId: String) {
-        if (activity == null) {
-            errorMessage = "Activity bulunamadı!"
-            return
-        }
+        if (activity == null) { errorMessage = "Activity bulunamadı!"; return }
 
         if (!rewardedAdManager.isAdReady()) {
             isLoadingAdForUnlock = true
             adLoadingMessage = "Reklam yükleniyor, lütfen bekleyin..."
-
             rewardedAdManager.loadAd(
                 onAdLoaded = {
                     adLoadingMessage = null
                     showRewardedAdForSubcategory(activity, subcategoryId)
                 },
-                onAdFailedToLoad = { error ->
+                onAdFailedToLoad = { _ ->
                     adLoadingMessage = null
                     isLoadingAdForUnlock = false
                     errorMessage = "Reklam yüklenemedi. Lütfen internet bağlantınızı kontrol edin."
@@ -210,11 +202,10 @@ fun CategoryScreen(
             try {
                 categoryManager.toggleFavorite(categoryId)
                 categories = categories.map { category ->
-                    if (category.id == categoryId) {
+                    if (category.id == categoryId)
                         category.copy(isFavorite = !category.isFavorite)
-                    } else {
+                    else
                         category
-                    }
                 }
             } catch (e: Exception) {
                 errorMessage = "Favori güncelleme hatası: ${e.message}"
@@ -222,17 +213,10 @@ fun CategoryScreen(
         }
     }
 
-    fun purchaseSubcategory(subcategoryId: String) {
-        if (activity == null) {
-            errorMessage = "Activity bulunamadı!"
-            return
-        }
-
-        purchasingCategoryId = subcategoryId
-        billingManager.launchPurchaseFlow(
-            activity = activity,
-            productId = subcategoryId
-        )
+    fun purchaseCategory(categoryId: String) {
+        if (activity == null) { errorMessage = "Activity bulunamadı!"; return }
+        purchasingCategoryId = categoryId
+        billingManager.launchPurchaseFlow(activity = activity, productId = categoryId)
     }
 
     LaunchedEffect(Unit) {
@@ -240,48 +224,48 @@ fun CategoryScreen(
             when (state) {
                 is BillingManager.PurchaseState.Success -> {
                     val productId = state.categoryId
-
-                    val isSubcategory = categories.any { category ->
-                        category.subcategories.any { it.id == productId }
+                    val isSubcategory = categories.any { cat ->
+                        cat.subcategories.any { it.id == productId }
                     }
-
                     if (isSubcategory) {
                         categoryManager.markSubcategoryAsPurchased(productId)
                         showSubcategoryUnlockDialog = false
                     } else {
                         categoryManager.markAsPurchased(productId)
                     }
-
                     categories = categoryManager.getCategories()
                     purchasingCategoryId = null
-
                     selectedCategoryForSubcategories?.let { category ->
                         coroutineScope.launch {
-                            val updatedCategories = categoryManager.getCategories()
-                            selectedCategoryForSubcategories =
-                                updatedCategories.find { it.id == category.id }
+                            val updated = categoryManager.getCategories()
+                            selectedCategoryForSubcategories = updated.find { it.id == category.id }
                         }
                     }
                 }
-
                 is BillingManager.PurchaseState.Error -> {
                     purchasingCategoryId = null
                     errorMessage = state.message
-
                     kotlinx.coroutines.delay(3000)
                     errorMessage = null
                 }
-
                 is BillingManager.PurchaseState.Loading -> {}
-                is BillingManager.PurchaseState.Idle -> {
-                    purchasingCategoryId = null
-                }
+                is BillingManager.PurchaseState.Idle -> { purchasingCategoryId = null }
             }
         }
     }
 
-    val filteredCategories = remember(categories, searchText, currentFilter) {
+    // ✅ DÜZELTME: promoUnlocked dependency'e eklendi, artık Flow değişince güncellenir
+    val filteredCategories = remember(categories, searchText, currentFilter, promoUnlocked) {
         var filtered = categories
+
+        // Promo ile açılan kategorilerin kilidini kaldır
+        filtered = filtered.map { category ->
+            if (promoUnlocked.contains(category.id) && category.isLocked) {
+                category.copy(isLocked = false)
+            } else {
+                category
+            }
+        }
 
         if (searchText.text.isNotBlank()) {
             filtered = filtered.filter {
@@ -298,17 +282,10 @@ fun CategoryScreen(
         filtered
     }
 
-    LaunchedEffect(Unit) {
-        loadCategories()
-    }
+    LaunchedEffect(Unit) { loadCategories() }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            billingManager.destroy()
-        }
-    }
+    DisposableEffect(Unit) { onDispose { billingManager.destroy() } }
 
-    // Error message auto-clear
     errorMessage?.let { error ->
         LaunchedEffect(error) {
             kotlinx.coroutines.delay(3000)
@@ -316,7 +293,6 @@ fun CategoryScreen(
         }
     }
 
-    // Ad loading message auto-clear
     adLoadingMessage?.let { msg ->
         LaunchedEffect(msg) {
             kotlinx.coroutines.delay(5000)
@@ -324,7 +300,6 @@ fun CategoryScreen(
         }
     }
 
-    // Loading State
     if (isLoading) {
         Box(
             modifier = Modifier
@@ -333,16 +308,9 @@ fun CategoryScreen(
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    modifier = Modifier.size(48.dp)
-                )
+                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(48.dp))
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Kategoriler yükleniyor...",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+                Text("Kategoriler yükleniyor...", color = Color.White, fontSize = 16.sp)
             }
         }
         return
@@ -379,11 +347,7 @@ fun CategoryScreen(
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.2f))
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Geri",
-                        tint = Color.White
-                    )
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Color.White)
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -414,11 +378,7 @@ fun CategoryScreen(
                             else Color.White.copy(alpha = 0.2f)
                         )
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Ara",
-                        tint = Color.White
-                    )
+                    Icon(Icons.Default.Search, contentDescription = "Ara", tint = Color.White)
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -436,16 +396,12 @@ fun CategoryScreen(
                             strokeWidth = 2.dp
                         )
                     } else {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Yenile",
-                            tint = Color.White
-                        )
+                        Icon(Icons.Default.Refresh, contentDescription = "Yenile", tint = Color.White)
                     }
                 }
             }
 
-            // Error/Success Message
+            // Error / Success Message
             errorMessage?.let { error ->
                 Card(
                     modifier = Modifier
@@ -459,12 +415,7 @@ fun CategoryScreen(
                             Color.Red.copy(alpha = 0.9f)
                     )
                 ) {
-                    Text(
-                        text = error,
-                        color = Color.White,
-                        modifier = Modifier.padding(12.dp),
-                        fontSize = 14.sp
-                    )
+                    Text(error, color = Color.White, modifier = Modifier.padding(12.dp), fontSize = 14.sp)
                 }
             }
 
@@ -479,21 +430,14 @@ fun CategoryScreen(
                         containerColor = Color(0xFF2196F3).copy(alpha = 0.9f)
                     )
                 ) {
-                    Row(
-                        modifier = Modifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp),
                             color = Color.White,
                             strokeWidth = 2.dp
                         )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = msg,
-                            color = Color.White,
-                            fontSize = 14.sp
-                        )
+                        Text(msg, color = Color.White, fontSize = 14.sp)
                     }
                 }
             }
@@ -503,27 +447,14 @@ fun CategoryScreen(
                 OutlinedTextField(
                     value = searchText,
                     onValueChange = { searchText = it },
-                    placeholder = {
-                        Text(
-                            "Kategori ara...",
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                    },
+                    placeholder = { Text("Kategori ara...", color = Color.White.copy(alpha = 0.7f)) },
                     leadingIcon = {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.7f)
-                        )
+                        Icon(Icons.Default.Search, null, tint = Color.White.copy(alpha = 0.7f))
                     },
                     trailingIcon = {
                         if (searchText.text.isNotEmpty()) {
                             IconButton(onClick = { searchText = TextFieldValue() }) {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = "Temizle",
-                                    tint = Color.White.copy(alpha = 0.7f)
-                                )
+                                Icon(Icons.Default.Close, "Temizle", tint = Color.White.copy(alpha = 0.7f))
                             }
                         }
                     },
@@ -567,11 +498,7 @@ fun CategoryScreen(
                         onClick = { currentFilter = FilterType.FAVORITES },
                         label = { Text("Favoriler ($favoriteCount)") },
                         leadingIcon = {
-                            Icon(
-                                Icons.Default.Star,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
-                            )
+                            Icon(Icons.Default.Star, null, modifier = Modifier.size(16.dp))
                         },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Color.White.copy(alpha = 0.3f),
@@ -581,7 +508,8 @@ fun CategoryScreen(
                         )
                     )
 
-                    val unlockedCount = categories.count { !it.isLocked }
+                    // ✅ DÜZELTME: Açık sayısı artık promoUnlocked'ı da hesaba katıyor
+                    val unlockedCount = filteredCategories.count { !it.isLocked }
                     FilterChip(
                         selected = currentFilter == FilterType.UNLOCKED,
                         onClick = { currentFilter = FilterType.UNLOCKED },
@@ -596,7 +524,7 @@ fun CategoryScreen(
                 }
             }
 
-            // Categories Grid
+            // Categories
             if (filteredCategories.isEmpty() && currentFilter == FilterType.FAVORITES) {
                 EmptyFavoritesComponent(
                     onAddFavoriteClick = {
@@ -605,10 +533,7 @@ fun CategoryScreen(
                     }
                 )
             } else if (filteredCategories.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = if (searchText.text.isNotBlank())
                             "Arama kriterlerinize uygun kategori bulunamadı"
@@ -630,10 +555,7 @@ fun CategoryScreen(
                     items(filteredCategories) { category ->
                         val productPrice = billingManager.getProductPrice(category.id)
                         val isLoadingPurchase = purchasingCategoryId == category.id
-
-                        // 🆕 Kategori seçili mi kontrol et
                         val isSelected = selectedCategories.any { it.first.id == category.id }
-                        // 🆕 Kategori genişletilmiş mi kontrol et
                         val isExpanded = expandedCategoryId == category.id
 
                         CategoryCard(
@@ -646,30 +568,25 @@ fun CategoryScreen(
                                         selectedCategoryForSubcategories = category
                                         showSubcategoryDialog = true
                                     } else {
-                                        // Normal kategori için toggle
                                         if (isSelected) {
-                                            selectedCategories = selectedCategories.filter { it.first.id != category.id }
+                                            selectedCategories = selectedCategories
+                                                .filter { it.first.id != category.id }
                                         } else {
                                             selectedCategories = selectedCategories + (category to null)
                                         }
-                                        // Seçildiğinde genişlet
-                                        expandedCategoryId = if (expandedCategoryId == category.id) null else category.id
+                                        expandedCategoryId =
+                                            if (expandedCategoryId == category.id) null
+                                            else category.id
                                     }
                                 }
                             },
                             onUnlockClick = {
                                 if (activity != null && category.isLocked) {
-                                    purchasingCategoryId = category.id
-                                    billingManager.launchPurchaseFlow(
-                                        activity = activity,
-                                        productId = category.id
-                                    )
+                                    purchaseCategory(category.id)
                                 }
                             },
                             onFavoriteClick = {
-                                if (!category.isRandomCategory) {
-                                    toggleFavorite(category.id)
-                                }
+                                if (!category.isRandomCategory) toggleFavorite(category.id)
                             },
                             productPrice = productPrice,
                             isLoading = isLoadingPurchase
@@ -684,12 +601,8 @@ fun CategoryScreen(
             SubcategoryUnlockDialog(
                 subcategory = subcategoryToUnlock!!,
                 categoryColor = selectedCategoryForSubcategories!!.color,
-                onWatchAd = {
-                    watchAdForSubcategory(subcategoryToUnlock!!.id)
-                },
-                onPurchase = {
-                    purchaseSubcategory(subcategoryToUnlock!!.id)
-                },
+                onWatchAd = { watchAdForSubcategory(subcategoryToUnlock!!.id) },
+                onPurchase = { purchaseCategory(subcategoryToUnlock!!.id) },
                 onDismiss = {
                     showSubcategoryUnlockDialog = false
                     subcategoryToUnlock = null
@@ -702,7 +615,6 @@ fun CategoryScreen(
 
         // Subcategory Dialog
         if (showSubcategoryDialog && selectedCategoryForSubcategories != null) {
-            // 🆕 Bu kategoriden seçili alt kategorileri bul
             val selectedSubIds = selectedCategories
                 .filter { it.first.id == selectedCategoryForSubcategories!!.id }
                 .mapNotNull { it.second?.id }
@@ -711,18 +623,14 @@ fun CategoryScreen(
                 category = selectedCategoryForSubcategories!!,
                 selectedSubcategories = selectedSubIds,
                 onSubcategorySelected = { subcategory ->
-                    // 🆕 Alt kategori seçildiğinde listeye ekle/çıkar
-                    val categoryPair = selectedCategoryForSubcategories!! to subcategory
                     val existing = selectedCategories.find {
-                        it.first.id == selectedCategoryForSubcategories!!.id && it.second?.id == subcategory.id
+                        it.first.id == selectedCategoryForSubcategories!!.id &&
+                                it.second?.id == subcategory.id
                     }
-
-                    if (existing != null) {
-                        // Zaten seçiliyse kaldır
-                        selectedCategories = selectedCategories.filter { it != existing }
+                    selectedCategories = if (existing != null) {
+                        selectedCategories.filter { it != existing }
                     } else {
-                        // Seçili değilse ekle
-                        selectedCategories = selectedCategories + categoryPair
+                        selectedCategories + (selectedCategoryForSubcategories!! to subcategory)
                     }
                 },
                 onSubcategoryUnlockRequest = { subcategory ->
@@ -747,21 +655,13 @@ fun CategoryScreen(
             ) {
                 Button(
                     onClick = {
-                        // 🆕 Seçili kategorilerden rastgele birini kullan
                         val randomSelection = selectedCategories.random()
                         val (category, subcategory) = randomSelection
 
-                        val itemsToUse = if (category.hasSubcategories && subcategory != null) {
-                            subcategory.items
-                        } else {
-                            category.items
-                        }
-
-                        val hintsToUse = if (category.hasSubcategories && subcategory != null) {
-                            subcategory.hints
-                        } else {
-                            category.hints
-                        }
+                        val itemsToUse = if (category.hasSubcategories && subcategory != null)
+                            subcategory.items else category.items
+                        val hintsToUse = if (category.hasSubcategories && subcategory != null)
+                            subcategory.hints else category.hints
 
                         if (itemsToUse.isEmpty()) {
                             errorMessage = "Kategoride öğe bulunamadı!"
@@ -776,28 +676,21 @@ fun CategoryScreen(
                             items = itemsToUse,
                             hints = hintsToUse
                         )
-
                         val gamePlayers = assignRoles(players, categoryWithSelectedItems)
                         onCategorySelected(categoryWithSelectedItems, gamePlayers)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White
-                    ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     val totalItems = selectedCategories.sumOf { (cat, sub) ->
-                        if (sub != null) {
-                            sub.items.size
-                        } else if (cat.hasSubcategories) {
+                        if (sub != null) sub.items.size
+                        else if (cat.hasSubcategories)
                             cat.subcategories.filter { it.isUnlocked }.sumOf { it.items.size }
-                        } else {
-                            cat.items.size
-                        }
+                        else cat.items.size
                     }
-
                     Text(
                         text = "Oyunu Başlat (${selectedCategories.size} kategori, $totalItems öğe)",
                         fontSize = 16.sp,
@@ -809,6 +702,7 @@ fun CategoryScreen(
         }
     }
 }
+
 
 @Composable
 fun SubcategorySelectionDialog(
