@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:spy_app/billing/iap_products.dart';
 import 'package:spy_app/billing/unlock_service.dart';
 
 class IAPService {
@@ -9,10 +10,7 @@ class IAPService {
 
   final InAppPurchase _iap = InAppPurchase.instance;
 
-  // Ürün ID'lerini buraya ekle
-  static const Set<String> _productIds = {
-    'com.yourapp.premium',
-  };
+  static final Set<String> _productIds = IAPProducts.all;
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   List<ProductDetails> products = [];

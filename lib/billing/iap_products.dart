@@ -1,25 +1,25 @@
 class IAPProducts {
   // Ana kategoriler
-  static const String animals   = 'com.yourapp.category.animals';
-  static const String sports    = 'com.yourapp.category.sports';
-  static const String countries = 'com.yourapp.category.countries';
-  static const String singers   = 'com.yourapp.category.singers';
-  static const String actors    = 'com.yourapp.category.actors';
-  static const String streamers = 'com.yourapp.category.streamers';
-  static const String youtubers = 'com.yourapp.category.youtubers';
+  static const String animals   = 'com.oguz.spygame.category.animals';
+  static const String sports    = 'com.oguz.spygame.category.sports';
+  static const String countries = 'com.oguz.spygame.category.countries';
+  static const String singers   = 'com.oguz.spygame.category.singers';
+  static const String actors    = 'com.oguz.spygame.category.actors';
+  static const String streamers = 'com.oguz.spygame.category.streamers';
+  static const String youtubers = 'com.oguz.spygame.category.youtubers';
 
   // Sporcular alt kategorileri (₺10)
-  static const String athletesFootballDomestic = 'com.yourapp.sub.athletes_active_football_domestic';
-  static const String athletesFootballForeign  = 'com.yourapp.sub.athletes_active_football_foreign';
-  static const String athletesLegendsDomestic  = 'com.yourapp.sub.athletes_retired_football_domestic';
-  static const String athletesLegendsForeign   = 'com.yourapp.sub.athletes_retired_football_foreign';
-  static const String athletesNba              = 'com.yourapp.sub.athletes_basketball_nba';
-  static const String athletesEuroleague       = 'com.yourapp.sub.athletes_basketball_euroleague';
-  static const String athletesBasketballLeg    = 'com.yourapp.sub.athletes_basketball_legends';
-  static const String athletesVolleyball       = 'com.yourapp.sub.athletes_volleyball_female';
-  static const String athletesUfc             = 'com.yourapp.sub.athletes_ufc';
-  static const String athletesBoxing          = 'com.yourapp.sub.athletes_boxing';
-  static const String athletesF1              = 'com.yourapp.sub.athletes_f1';
+  static const String athletesFootballDomestic = 'com.oguz.spygame.sub.athletes_active_football_domestic';
+  static const String athletesFootballForeign  = 'com.oguz.spygame.sub.athletes_active_football_foreign';
+  static const String athletesLegendsDomestic  = 'com.oguz.spygame.sub.athletes_retired_football_domestic';
+  static const String athletesLegendsForeign   = 'com.oguz.spygame.sub.athletes_retired_football_foreign';
+  static const String athletesNba              = 'com.oguz.spygame.sub.athletes_basketball_nba';
+  static const String athletesEuroleague       = 'com.oguz.spygame.sub.athletes_basketball_euroleague';
+  static const String athletesBasketballLeg    = 'com.oguz.spygame.sub.athletes_basketball_legends';
+  static const String athletesVolleyball       = 'com.oguz.spygame.sub.athletes_volleyball_female';
+  static const String athletesUfc             = 'com.oguz.spygame.sub.athletes_ufc';
+  static const String athletesBoxing          = 'com.oguz.spygame.sub.athletes_boxing';
+  static const String athletesF1              = 'com.oguz.spygame.sub.athletes_f1';
 
   // Tüm product ID'leri (queryProductDetails için)
   static Set<String> get all => {

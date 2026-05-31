@@ -437,10 +437,6 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   }
 
   void _showSubPurchaseSheet(Category category, Subcategory sub) {
-    if (sub.unlockedByAd) {
-      _watchAdForSubcategory(category, sub);
-      return;
-    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -461,6 +457,9 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
             );
           }
         },
+        onWatchAd: sub.unlockedByAd
+            ? () => _watchAdForSubcategory(category, sub)
+            : null,
       ),
     );
   }
@@ -967,7 +966,12 @@ class _CategoryCard extends StatelessWidget {
                                 color: category.color.withOpacity(0.7)),
                             const SizedBox(width: 4),
                             Text(
-                              '₺${category.priceTL.toStringAsFixed(2)}',
+                              () {
+                                final pid = IAPProducts.productIdForCategory(category.id);
+                                if (pid == null) return '...';
+                                final p = IAPService().products.where((p) => p.id == pid).firstOrNull;
+                                return p?.price ?? '...';
+                              }(),
                               style: TextStyle(
                                 fontSize: 12,
                                 color: category.color,
@@ -1093,6 +1097,17 @@ class _PurchaseSheet extends StatefulWidget {
 
 class _PurchaseSheetState extends State<_PurchaseSheet> {
   bool _isLoading = false;
+  String _price = '...';
+
+  @override
+  void initState() {
+    super.initState();
+    final productId = IAPProducts.productIdForCategory(widget.category.id);
+    if (productId != null) {
+      final product = IAPService().products.where((p) => p.id == productId).firstOrNull;
+      if (product != null) _price = product.price;
+    }
+  }
 
   Future<void> _purchase() async {
     final productId = IAPProducts.productIdForCategory(widget.category.id);
@@ -1217,7 +1232,7 @@ class _PurchaseSheetState extends State<_PurchaseSheet> {
                   ),
                 ),
                 Text(
-                  '₺${cat.priceTL.toStringAsFixed(2)}',
+                  _price,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -1250,7 +1265,7 @@ class _PurchaseSheetState extends State<_PurchaseSheet> {
                     color: Colors.white, strokeWidth: 2.5),
               )
                   : Text(
-                '₺${cat.priceTL.toStringAsFixed(2)} — Satın Al',
+                '$_price — Satın Al',
                 style: const TextStyle(
                     fontSize: 16, fontWeight: FontWeight.w700),
               ),
@@ -1283,11 +1298,13 @@ class _SubPurchaseSheet extends StatefulWidget {
   final Category category;
   final Subcategory subcategory;
   final VoidCallback onPurchaseSuccess;
+  final VoidCallback? onWatchAd;
 
   const _SubPurchaseSheet({
     required this.category,
     required this.subcategory,
     required this.onPurchaseSuccess,
+    this.onWatchAd,
   });
 
   @override
@@ -1296,6 +1313,17 @@ class _SubPurchaseSheet extends StatefulWidget {
 
 class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
   bool _isLoading = false;
+  String _price = '...';
+
+  @override
+  void initState() {
+    super.initState();
+    final productId = IAPProducts.productIdForSubcategory(widget.subcategory.id);
+    if (productId != null) {
+      final product = IAPService().products.where((p) => p.id == productId).firstOrNull;
+      if (product != null) _price = product.price;
+    }
+  }
 
   Future<void> _purchase() async {
     final productId =
@@ -1410,7 +1438,7 @@ class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
                   ),
                 ),
                 Text(
-                  '₺10,00',
+                  _price,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -1421,6 +1449,32 @@ class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
             ),
           ),
           const SizedBox(height: 20),
+
+          if (widget.onWatchAd != null) ...[
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: OutlinedButton.icon(
+                onPressed: _isLoading ? null : () {
+                  Navigator.pop(context);
+                  widget.onWatchAd!();
+                },
+                icon: const Icon(Icons.play_circle_outline_rounded),
+                label: const Text(
+                  'Reklam İzle — Ücretsiz Aç',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: cat.color,
+                  side: BorderSide(color: cat.color, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
 
           SizedBox(
             width: double.infinity,
@@ -1442,9 +1496,9 @@ class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
                 child: CircularProgressIndicator(
                     color: Colors.white, strokeWidth: 2.5),
               )
-                  : const Text(
-                '₺10,00 — Satın Al',
-                style: TextStyle(
+                  : Text(
+                '$_price — Satın Al',
+                style: const TextStyle(
                     fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
@@ -1654,6 +1708,13 @@ class _SubcategoryItem extends StatelessWidget {
     required this.onTap,
   });
 
+  String get _price {
+    final productId = IAPProducts.productIdForSubcategory(subcategory.id);
+    if (productId == null) return '...';
+    final product = IAPService().products.where((p) => p.id == productId).firstOrNull;
+    return product?.price ?? '...';
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -1736,7 +1797,7 @@ class _SubcategoryItem extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         isLocked
-                            ? '₺10,00 · Kilidi Aç'
+                            ? '$_price · Kilidi Aç'
                             : '${subcategory.items.length} kelime · ${subcategory.hints.length} ipucu',
                         style: TextStyle(
                           fontSize: 12,
@@ -1761,9 +1822,9 @@ class _SubcategoryItem extends StatelessWidget {
                       color: categoryColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
-                      '₺10',
-                      style: TextStyle(
+                    child: Text(
+                      _price,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
