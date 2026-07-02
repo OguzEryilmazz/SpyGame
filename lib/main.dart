@@ -26,9 +26,11 @@ class SpyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       builder: (context, child) {
-        return Scaffold(
-          body: child ?? const SizedBox.shrink(),
-          bottomNavigationBar: const BannerAdWidget(),
+        return Column(
+          children: [
+            Expanded(child: child ?? const SizedBox.shrink()),
+            // const BannerAdWidget(),
+          ],
         );
       },
     );

@@ -60,6 +60,7 @@ class _PlayerSetupScreenState extends ConsumerState<PlayerSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -76,7 +77,7 @@ class _PlayerSetupScreenState extends ConsumerState<PlayerSetupScreen> {
           children: [
             Column(
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).padding.top + 12),
                 // Header
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

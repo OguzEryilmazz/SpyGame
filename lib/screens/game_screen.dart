@@ -194,6 +194,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
     final playerColor = p.selectedColor ?? const Color(0xFF9E9E9E);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: GestureDetector(
         onDoubleTap: () {
           if (!widget.isLastPlayer) widget.onNext();

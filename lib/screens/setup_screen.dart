@@ -19,6 +19,7 @@ class SetupScreen extends ConsumerWidget {
     final showHints = ref.watch(showHintsProvider);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

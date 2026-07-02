@@ -218,6 +218,7 @@ class _VotingInterfaceState extends State<_VotingInterface>
     widget.players.where((pl) => pl.name != p.name).toList();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: GestureDetector(
         onLongPress: widget.onPrevious,
         onVerticalDragStart: (_) => setState(() => _isDragging = true),
