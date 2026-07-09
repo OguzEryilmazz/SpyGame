@@ -11,11 +11,7 @@ void main() async {
 
   await IAPService().initialize();
 
-  runApp(
-    const ProviderScope(
-      child: SpyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: SpyApp()));
 }
 
 Future<void> requestTrackingAndInitAds() async {
@@ -41,7 +37,8 @@ Future<void> _initConsent() async {
       if (await ConsentInformation.instance.isConsentFormAvailable()) {
         final innerCompleter = Completer<void>();
         ConsentForm.loadAndShowConsentFormIfRequired(
-            (_) => innerCompleter.complete());
+          (_) => innerCompleter.complete(),
+        );
         await innerCompleter.future;
       }
       completer.complete();
