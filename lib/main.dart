@@ -5,6 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'router.dart';
 import 'billing/iap_service.dart';
+import 'ads/banner_ad_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +76,7 @@ class _SpyAppState extends ConsumerState<SpyApp> {
         return Column(
           children: [
             Expanded(child: child ?? const SizedBox.shrink()),
-            // const BannerAdWidget(),
+             const BannerAdWidget(),
           ],
         );
       },

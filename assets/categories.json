@@ -1079,7 +1079,7 @@
         {
           "id": "actors_domestic_male",
           "name": "Yerli Erkek Oyuncu",
-          "unlockedByAd": false,
+          "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
             "Kıvanç Tatlıtuğ", "Kenan İmirzalıoğlu", "Halit Ergenç", "Burak Özçivit",
@@ -1101,7 +1101,7 @@
         {
           "id": "actors_domestic_female",
           "name": "Yerli Kadın Oyuncu",
-          "unlockedByAd": false,
+          "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
             "Beren Saat", "Serenay Sarıkaya", "Hande Erçel", "Cansu Dere",
