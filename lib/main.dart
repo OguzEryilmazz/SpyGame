@@ -57,12 +57,15 @@ class SpyApp extends ConsumerStatefulWidget {
 }
 
 class _SpyAppState extends ConsumerState<SpyApp> {
+  bool _adsReady = false;
+
   @override
   void initState() {
     super.initState();
     // Widget ağacı tamamen çizildikten sonra ATT + AdMob'u başlat.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      requestTrackingAndInitAds();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await requestTrackingAndInitAds();
+      if (mounted) setState(() => _adsReady = true);
     });
   }
 
@@ -76,7 +79,7 @@ class _SpyAppState extends ConsumerState<SpyApp> {
         return Column(
           children: [
             Expanded(child: child ?? const SizedBox.shrink()),
-             const BannerAdWidget(),
+            if (_adsReady) const BannerAdWidget(),
           ],
         );
       },
