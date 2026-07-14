@@ -444,22 +444,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
       builder: (_) => _SubPurchaseSheet(
         category: category,
         subcategory: sub,
-        onPurchaseSuccess: () async {
-          await ref
-              .read(categoriesProvider.notifier)
-              .unlockSubcategory(sub.id);
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${sub.name} açıldı!'),
-                backgroundColor: category.color,
-              ),
-            );
-          }
-        },
-        onWatchAd: sub.unlockedByAd
-            ? () => _watchAdForSubcategory(category, sub)
-            : null,
+        onWatchAd: () => _watchAdForSubcategory(category, sub),
       ),
     );
   }
@@ -1291,74 +1276,24 @@ class _PurchaseSheetState extends State<_PurchaseSheet> {
 }
 
 // ---------------------------------------------------------------------------
-// SUB PURCHASE SHEET — Alt kategori satın alma (₺10)
+// SUB PURCHASE SHEET — Alt kategori reklamla açma
 // ---------------------------------------------------------------------------
 
-class _SubPurchaseSheet extends StatefulWidget {
+class _SubPurchaseSheet extends StatelessWidget {
   final Category category;
   final Subcategory subcategory;
-  final VoidCallback onPurchaseSuccess;
-  final VoidCallback? onWatchAd;
+  final VoidCallback onWatchAd;
 
   const _SubPurchaseSheet({
     required this.category,
     required this.subcategory,
-    required this.onPurchaseSuccess,
-    this.onWatchAd,
+    required this.onWatchAd,
   });
 
   @override
-  State<_SubPurchaseSheet> createState() => _SubPurchaseSheetState();
-}
-
-class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
-  bool _isLoading = false;
-  String _price = '...';
-
-  @override
-  void initState() {
-    super.initState();
-    final productId = IAPProducts.productIdForSubcategory(widget.subcategory.id);
-    if (productId != null) {
-      final product = IAPService().products.where((p) => p.id == productId).firstOrNull;
-      if (product != null) _price = product.price;
-    }
-  }
-
-  Future<void> _purchase() async {
-    final productId =
-    IAPProducts.productIdForSubcategory(widget.subcategory.id);
-    if (productId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ürün bulunamadı.')),
-      );
-      return;
-    }
-
-    setState(() => _isLoading = true);
-    try {
-      final iap = IAPService();
-      final product =
-          iap.products.where((p) => p.id == productId).firstOrNull;
-      if (product == null) throw Exception('Ürün App Store\'dan yüklenemedi.');
-      await iap.buyProduct(product);
-      if (mounted) Navigator.pop(context);
-      widget.onPurchaseSuccess();
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Satın alma hatası: $e')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final cat = widget.category;
-    final sub = widget.subcategory;
+    final cat = category;
+    final sub = subcategory;
 
     return Container(
       padding: EdgeInsets.only(
@@ -1427,22 +1362,17 @@ class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
               border: Border.all(color: cat.color.withOpacity(0.2)),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Tek seferlik satın alma',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A2E),
-                  ),
-                ),
-                Text(
-                  _price,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: cat.color,
+                Icon(Icons.play_circle_outline_rounded, color: cat.color),
+                const SizedBox(width: 10),
+                const Expanded(
+                  child: Text(
+                    'Kısa bir reklam izleyerek bu alt kategoriyi ücretsiz açabilirsin',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1A1A2E),
+                    ),
                   ),
                 ),
               ],
@@ -1450,37 +1380,15 @@ class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
           ),
           const SizedBox(height: 20),
 
-          if (widget.onWatchAd != null) ...[
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: OutlinedButton.icon(
-                onPressed: _isLoading ? null : () {
-                  Navigator.pop(context);
-                  widget.onWatchAd!();
-                },
-                icon: const Icon(Icons.play_circle_outline_rounded),
-                label: const Text(
-                  'Reklam İzle — Ücretsiz Aç',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: cat.color,
-                  side: BorderSide(color: cat.color, width: 1.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
-
           SizedBox(
             width: double.infinity,
             height: 52,
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : _purchase,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                onWatchAd();
+              },
+              icon: const Icon(Icons.play_circle_outline_rounded),
               style: ElevatedButton.styleFrom(
                 backgroundColor: cat.color,
                 foregroundColor: Colors.white,
@@ -1489,17 +1397,9 @@ class _SubPurchaseSheetState extends State<_SubPurchaseSheet> {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: _isLoading
-                  ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                    color: Colors.white, strokeWidth: 2.5),
-              )
-                  : Text(
-                '$_price — Satın Al',
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w700),
+              label: const Text(
+                'Reklam İzle — Ücretsiz Aç',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
           ),
@@ -1708,13 +1608,6 @@ class _SubcategoryItem extends StatelessWidget {
     required this.onTap,
   });
 
-  String get _price {
-    final productId = IAPProducts.productIdForSubcategory(subcategory.id);
-    if (productId == null) return '...';
-    final product = IAPService().products.where((p) => p.id == productId).firstOrNull;
-    return product?.price ?? '...';
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -1797,7 +1690,7 @@ class _SubcategoryItem extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         isLocked
-                            ? '$_price · Kilidi Aç'
+                            ? 'Reklamla Aç'
                             : '${subcategory.items.length} kelime · ${subcategory.hints.length} ipucu',
                         style: TextStyle(
                           fontSize: 12,
@@ -1822,13 +1715,10 @@ class _SubcategoryItem extends StatelessWidget {
                       color: categoryColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
-                      _price,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: const Icon(
+                      Icons.play_circle_outline_rounded,
+                      color: Colors.white,
+                      size: 16,
                     ),
                   )
                 else if (isSelected)

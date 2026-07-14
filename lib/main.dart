@@ -5,17 +5,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'router.dart';
 import 'billing/iap_service.dart';
+import 'ads/banner_ad_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await IAPService().initialize();
 
-  runApp(
-    const ProviderScope(
-      child: SpyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: SpyApp()));
 }
 
 Future<void> requestTrackingAndInitAds() async {
@@ -41,7 +38,8 @@ Future<void> _initConsent() async {
       if (await ConsentInformation.instance.isConsentFormAvailable()) {
         final innerCompleter = Completer<void>();
         ConsentForm.loadAndShowConsentFormIfRequired(
-            (_) => innerCompleter.complete());
+          (_) => innerCompleter.complete(),
+        );
         await innerCompleter.future;
       }
       completer.complete();
@@ -59,12 +57,15 @@ class SpyApp extends ConsumerStatefulWidget {
 }
 
 class _SpyAppState extends ConsumerState<SpyApp> {
+  bool _adsReady = false;
+
   @override
   void initState() {
     super.initState();
     // Widget ağacı tamamen çizildikten sonra ATT + AdMob'u başlat.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      requestTrackingAndInitAds();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await requestTrackingAndInitAds();
+      if (mounted) setState(() => _adsReady = true);
     });
   }
 
@@ -78,7 +79,7 @@ class _SpyAppState extends ConsumerState<SpyApp> {
         return Column(
           children: [
             Expanded(child: child ?? const SizedBox.shrink()),
-            // const BannerAdWidget(),
+            if (_adsReady) const BannerAdWidget(),
           ],
         );
       },
