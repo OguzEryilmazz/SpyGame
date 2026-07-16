@@ -32,14 +32,22 @@ class _VotingScreenState extends ConsumerState<VotingScreen> {
 
   void _submitVote(List<GamePlayer> players, String votedName) {
     final voter = players[_currentVoterIndex];
-    setState(() {
-      _votes[voter.name] = votedName;
-      if (_currentVoterIndex < players.length - 1) {
-        _currentVoterIndex++;
-      } else {
-        _calculateResults(players);
-      }
-    });
+    _votes[voter.name] = votedName;
+
+    if (_currentVoterIndex < players.length - 1) {
+      setState(() => _currentVoterIndex++);
+    } else {
+      _calculateResults(players);
+      // Sonuçları hemen göstermeden önce, ara sıra (her seferinde değil)
+      // kısa bir "rewarded interstitial" reklamı gösteriyoruz. Reklam
+      // gösterilmese de mutlaka sonuç ekranına geçilir.
+      ref.read(rewardedInterstitialAdProvider).maybeShowBeforeReveal(
+        context: context,
+        onComplete: () {
+          if (mounted) setState(() => _phase = _VotingPhase.results);
+        },
+      );
+    }
   }
 
   void _goToPrevious(List<GamePlayer> players) {
@@ -60,7 +68,6 @@ class _VotingScreenState extends ConsumerState<VotingScreen> {
     final topName =
         voteCount.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
     _mostVotedPlayer = players.firstWhere((p) => p.name == topName);
-    _phase = _VotingPhase.results;
   }
 
   Map<String, int> get _voteCounts {
@@ -242,7 +249,7 @@ class _VotingInterfaceState extends State<_VotingInterface>
                         totalVoters: widget.totalVoters,
                         onBack: widget.onBack,
                         onPrevious:
-                            widget.voterIndex > 0 ? widget.onPrevious : null,
+                        widget.voterIndex > 0 ? widget.onPrevious : null,
                       ),
                       Expanded(
                         child: _VoterInfo(

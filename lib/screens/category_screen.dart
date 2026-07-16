@@ -451,16 +451,16 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   }
 
   Future<void> _watchAdForSubcategory(Category category, Subcategory sub) async {
-    // Günlük reklam izleme limiti kontrolü (AdMob'da geçersiz trafik
-    // riskini azaltmak için).
-    final canWatch = await AdWatchLimiter.instance.canWatch();
-    if (!canWatch) {
+    // İki reklam izleme arasında minimum bekleme (cooldown) kontrolü
+    // (AdMob'da geçersiz/spam trafik riskini azaltmak için).
+    final remainingCooldown = await AdWatchLimiter.instance.remainingCooldown();
+    if (remainingCooldown > Duration.zero) {
       if (!mounted) return;
+      final seconds = remainingCooldown.inSeconds + 1;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Bugünlük reklam izleme hakkın doldu (${AdWatchLimiter.dailyLimit}/gün). '
-            'Yarın tekrar deneyebilirsin.',
+            'Yeni bir reklam izlemek için $seconds saniye bekle.',
           ),
         ),
       );
@@ -970,7 +970,7 @@ class _CategoryCard extends StatelessWidget {
                                 color: category.color.withOpacity(0.7)),
                             const SizedBox(width: 4),
                             Text(
-                              () {
+                                  () {
                                 final pid = IAPProducts.productIdForCategory(category.id);
                                 if (pid == null) return '...';
                                 final p = IAPService().products.where((p) => p.id == pid).firstOrNull;
@@ -1423,18 +1423,19 @@ class _SubPurchaseSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          FutureBuilder<int>(
-            future: AdWatchLimiter.instance.remaining(),
+          FutureBuilder<Duration>(
+            future: AdWatchLimiter.instance.remainingCooldown(),
             builder: (context, snapshot) {
               final remaining = snapshot.data;
               if (remaining == null) return const SizedBox.shrink();
+              final canWatchNow = remaining <= Duration.zero;
               return Text(
-                remaining > 0
-                    ? 'Bugün kalan hakkın: $remaining/${AdWatchLimiter.dailyLimit}'
-                    : 'Bugünlük reklam izleme hakkın doldu, yarın tekrar dene.',
+                canWatchNow
+                    ? 'Hemen reklam izleyip açabilirsin'
+                    : '${remaining.inSeconds + 1} saniye sonra tekrar reklam izleyebilirsin',
                 style: TextStyle(
                   fontSize: 12,
-                  color: remaining > 0
+                  color: canWatchNow
                       ? const Color(0xFF9E9E9E)
                       : Colors.redAccent,
                 ),
@@ -1451,7 +1452,7 @@ class _SubPurchaseSheet extends StatelessWidget {
 // SUBCATEGORY BOTTOM SHEET
 // ---------------------------------------------------------------------------
 
-class _SubcategorySheet extends StatefulWidget {
+class _SubcategorySheet extends ConsumerStatefulWidget {
   final Category category;
   final void Function(Subcategory) onSelect;
   final Set<String> selectedSubIds;
@@ -1465,10 +1466,10 @@ class _SubcategorySheet extends StatefulWidget {
   });
 
   @override
-  State<_SubcategorySheet> createState() => _SubcategorySheetState();
+  ConsumerState<_SubcategorySheet> createState() => _SubcategorySheetState();
 }
 
-class _SubcategorySheetState extends State<_SubcategorySheet> {
+class _SubcategorySheetState extends ConsumerState<_SubcategorySheet> {
   late Set<String> _selected;
 
   @override
@@ -1479,7 +1480,19 @@ class _SubcategorySheetState extends State<_SubcategorySheet> {
 
   @override
   Widget build(BuildContext context) {
-    final cat = widget.category;
+    // Reklam izlenip bir alt kategori açıldığında (unlockSubcategory)
+    // categoriesProvider güncellenir. Burada provider'ı dinleyip en güncel
+    // kategori verisini kullanıyoruz; böylece bu sheet açıkken reklam
+    // ödülü kazanılır kazanılmaz kilit anında kalkar — sayfada ileri-geri
+    // gitmeye ya da sheet'i kapatıp açmaya gerek kalmaz.
+    final categoriesAsync = ref.watch(categoriesProvider);
+    final cat = categoriesAsync.maybeWhen(
+      data: (categories) => categories.firstWhere(
+            (c) => c.id == widget.category.id,
+        orElse: () => widget.category,
+      ),
+      orElse: () => widget.category,
+    );
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
 
     return Container(

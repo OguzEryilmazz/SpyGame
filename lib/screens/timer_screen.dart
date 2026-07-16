@@ -123,6 +123,63 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     _vibrate();
   }
 
+  Future<void> _confirmExit() async {
+    // Süre zaten bittiyse direkt çık, onay isteme.
+    if (_isFinished) {
+      ref.read(interstitialAdProvider).showAdWithFrequencyControl(
+        onAdDismissed: () => context.go('/'),
+      );
+      return;
+    }
+
+    final wasRunning = _isRunning;
+    if (wasRunning) {
+      _timer?.cancel();
+      setState(() => _isRunning = false);
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1a1625),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text(
+          'Oyundan çık',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'Süre hâlâ devam ediyor. Ana menüye dönmek istediğine emin misin?',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Vazgeç', style: TextStyle(color: Colors.white70)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Çık', style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (confirmed == true) {
+      _timer?.cancel();
+      ref.read(interstitialAdProvider).showAdWithFrequencyControl(
+        onAdDismissed: () => context.go('/'),
+      );
+    } else if (wasRunning) {
+      // Kullanıcı vazgeçtiyse ve sayaç çalışıyorduysa kaldığı yerden devam et.
+      _startTimer();
+      setState(() => _isRunning = true);
+    }
+  }
+
   Future<void> _vibrate() async {
     try {
       HapticFeedback.heavyImpact();
@@ -198,10 +255,18 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
             // ── Ana içerik ──
             SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(left: 24, right: 24, top: 48, bottom: 16),
+                padding: const EdgeInsets.only(left: 24, right: 24, top: 12, bottom: 16),
                 child: Column(
                   children: [
-                    const SizedBox(height: 24),
+                    // Üst bar: çıkış butonu + süre rozeti + oyuncu sayısı
+                    _TimerHeader(
+                      totalMinutes: (_totalSeconds / 60).ceil(),
+                      playerCount: playerCount,
+                      primaryColor: _primaryColor,
+                      onExit: _confirmExit,
+                    ),
+
+                    const SizedBox(height: 20),
 
                     // Durum kartı
                     _StatusCard(
@@ -249,17 +314,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                 ),
               ),
             ),
-
-            // ── Oyuncu sayısı (sağ üst) ──
-            if (!_isFinished)
-              Positioned(
-                top: MediaQuery.of(context).padding.top +16,
-                right: 16,
-                child: _PlayerCountBadge(
-                  count: playerCount,
-                  color: _primaryColor,
-                ),
-              ),
           ],
         ),
       ),
@@ -668,6 +722,71 @@ class _FinishedControls extends StatelessWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// TIMER HEADER (çıkış + kategori adı + oyuncu sayısı)
+// ---------------------------------------------------------------------------
+
+class _TimerHeader extends StatelessWidget {
+  final int totalMinutes;
+  final int playerCount;
+  final Color primaryColor;
+  final VoidCallback onExit;
+
+  const _TimerHeader({
+    required this.totalMinutes,
+    required this.playerCount,
+    required this.primaryColor,
+    required this.onExit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: onExit,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.4),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.close_rounded,
+                color: Colors.white, size: 20),
+          ),
+        ),
+        const Spacer(),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.hourglass_bottom_rounded,
+                  color: primaryColor, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                '$totalMinutes dk',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        _PlayerCountBadge(count: playerCount, color: primaryColor),
       ],
     );
   }

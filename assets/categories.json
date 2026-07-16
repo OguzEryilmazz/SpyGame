@@ -1,5 +1,5 @@
 {
-  "version": 16 ,
+  "version": 19,
   "categories": [
     {
       "id": "professions",
@@ -17,16 +17,18 @@
         "Grafik Tasarımcı", "Yazılımcı", "Diş Hekimi", "Ebe",
         "İçerik Üreticisi", "Bankacı", "Emlakçı",
         "Marangoz", "Boyacı", "Tesisatçı", "Demirci",
-        "Postacı", "Kargocu", "Kapıcı", "Bahçıvan"
+        "Postacı", "Kargocu", "Kapıcı", "Bahçıvan",
+        "Savcı", "Kasiyer", "Hostes", "Tercüman", "Spiker",
+        "Cankurtaran", "Cerrah", "Kaptan"
       ],
       "hints": [
-        "Çalışma hayatı",
-        "Maaş alır",
-        "İş yeri",
-        "CV yazılır",
         "Kariyer",
-        "Mesai saati",
-        "İşe alım"
+        "Maaş",
+        "İş Yeri",
+        "Uzmanlık",
+        "Mesai",
+        "Üniforma",
+        "Unvan"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -40,21 +42,23 @@
       "items": [
         "Pizza", "Hamburger", "Makarna", "Pilav", "Çorba",
         "Salata", "Kebap", "Döner", "Lahmacun", "Börek",
-        "Tost", "Sandviç", "Omlet", "Pancake", "Waffle",
-        "Sushi", "Ramen", "Biryani", "Falafel", "Tacos",
-        "Burrito", "Köfte", "Dolma", "Mantı", "Gözleme",
-        "Pide", "İskender", "Adana Kebap", "Şiş Kebap", "Tavuk Döner",
-        "Menemen", "Çiğ Köfte", "Mercimek Çorbası", "Tavuk Sote", "Karnıyarık",
-        "İmam Bayıldı", "Hünkar Beğendi", "Etli Ekmek", "Kuru Fasulye", "Nohut",
-        "Patates Kızartması", "Soğan Halkası", "Chicken Nugget", "Hot Dog", "Dürüm"
+        "Tost", "Sandviç", "Omlet", "Karnıyarık", "İmam Bayıldı",
+        "Köfte", "Dolma", "Mantı", "Gözleme", "Pide",
+        "İskender", "Adana Kebap", "Şiş Kebap", "Tavuk Döner", "Menemen",
+        "Çiğ Köfte", "Mercimek Çorbası", "Tavuk Sote", "Kuru Fasulye", "Nohut",
+        "Patates Kızartması", "Soğan Halkası", "Kokoreç", "Kumpir", "Çiğ Börek",
+        "Sarma", "Su Böreği", "Midye Dolma", "Boyoz", "Pastırma", "Sucuk", "Simit", "Poğaça",
+        "Tacos", "Burrito", "Hot Dog", "Chicken Nugget", "Tantuni",
+        "İçli Köfte", "Kısır", "Lazanya", "Sushi"
       ],
       "hints": [
-        "Açlık giderir",
-        "Tarifi var",
+        "Açlık",
+        "Öğün",
         "Mutfak",
-        "Tabakta servis",
-        "Kalori içerir",
-        "Lezzetli"
+        "Lezzet",
+        "Tarif",
+        "Porsiyon",
+        "Sipariş"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -70,18 +74,18 @@
         "Üzüm", "Portakal", "Mandalina", "Kiraz", "Ananas",
         "Kivi", "Mango", "Nar", "İncir", "Hurma",
         "Kavun", "Şeftali", "Erik", "Kayısı", "Avokado",
-        "Limon", "Greyfurt", "Böğürtlen", "Ahududa", "Dut",
-        "Vişne","Ayva", "Ejder Meyvesi", "Mango", "Yaban Mersini",
-        "Nektarin", "Çarkıfelek Meyvesi", "Karpuz", "Kayısı"
+        "Limon", "Greyfurt", "Böğürtlen", "Ahududu", "Dut",
+        "Vişne", "Ayva", "Karadut", "Kızılcık", "Kestane",
+        "Yeni Dünya", "Yaban Mersini", "Nektarin", "Hindistan Cevizi"
       ],
       "hints": [
-        "Ağaçta yetişir",
-        "Çiğ yenir",
-        "Vitamin deposu",
-        "Genellikle tatlı",
-        "Bahçede bulunur",
-        "Meyve suyu",
-        "Organik olabilir"
+        "Vitamin",
+        "Ağaç",
+        "Tatlı",
+        "Çekirdek",
+        "Doğal",
+        "Tropikal",
+        "Kabuk"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -97,16 +101,16 @@
         "Mor", "Pembe", "Beyaz", "Siyah", "Gri",
         "Kahverengi", "Lacivert", "Turkuaz", "Altın", "Gümüş",
         "Bordo", "Krem", "Bej", "Koyu Mavi", "Açık Yeşil",
-        "Eflatun", "Fuşya", "Mercan", "Zeytin Yeşili",
-        "Koyu Yeşil", "Açık Mavi"
+        "Koyu Yeşil", "Açık Mavi", "Lila", "Haki", "Zümrüt Yeşili"
       ],
       "hints": [
-        "Gözle görülür",
-        "Boyalar arasında",
-        "Sanat eserinde",
-        "Işık spektrumu",
-        "Duvarları süsler",
-        "Tasarımda önemli"
+        "Göz",
+        "Boya",
+        "Ton",
+        "Işık",
+        "Görünüm",
+        "Fırça",
+        "Spektrum"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -120,17 +124,21 @@
       "items": [
         "Baklava", "Künefe", "Sütlaç", "Kazandibi", "Keşkül",
         "Profiterol", "Tiramisu", "Cheesecake", "Brownie", "Dondurma",
-        "Magnolia", "San Sebastian", "Revani", "Şöbiyet", "Lokum",
-        "Kadayıf", "Tulumba", "İrmik Helvası", "Kek", "Kurabiye",
-        "Sufle", "Panna Cotta", "Crème Brûlée", "Puding", "Muhallebi",
-        "Aşure", "Güllaç", "Trileçe", "Ekler", "Yaş Pasta"
+        "Revani", "Şöbiyet", "Lokum", "Kadayıf", "Tulumba",
+        "İrmik Helvası", "Kek", "Kurabiye", "Sufle", "Puding",
+        "Muhallebi", "Aşure", "Güllaç", "Trileçe", "Ekler",
+        "Yaş Pasta", "Şekerpare", "Kemalpaşa", "Höşmerim", "Tavuk Göğsü",
+        "Supangle", "Zerde", "Pişmaniye", "Helva", "Crème Brûlée",
+        "Magnolia", "San Sebastian", "Makaron", "Waffle", "Churros", "Donut"
       ],
       "hints": [
-        "Şeker içerir",
-        "Özel günler",
-        "Kahvaltı sonrası",
-        "Fırında pişer",
-        "Mutluluk verir"
+        "Şeker",
+        "Kriz",
+        "Çay Yanı",
+        "Mutluluk",
+        "Kutlama",
+        "Fırın",
+        "Krema"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -144,18 +152,20 @@
       "items": [
         "Çay", "Kahve", "Su", "Süt", "Ayran",
         "Limonata", "Portakal Suyu", "Kola", "Fanta", "Sprite",
-        "Ice Tea", "Smoothie", "Milkshake", "Soda", "Gazoz",
-        "Şalgam", "Boza", "Salep", "Nar Suyu", "Şıra",
-        "Soğuk Kahve", "Latte", "Cappuccino", "Espresso", "Americano",
-        "Mojito", "Frappuccino", "Buzlu Çay", "Kayısı Suyu", "Vişne Suyu"
+        "Ice Tea", "Milkshake", "Soda", "Gazoz", "Şalgam",
+        "Boza", "Salep", "Nar Suyu", "Soğuk Kahve", "Latte",
+        "Cappuccino", "Espresso", "Buzlu Çay", "Kayısı Suyu", "Vişne Suyu",
+        "Maden Suyu", "Kefir", "Şerbet", "Türk Kahvesi", "Mojito",
+        "Americano", "Sıcak Çikolata", "Macchiato", "Churchill", "Smoothie"
       ],
       "hints": [
-        "Susuzluk giderir",
-        "Sıvı halde",
-        "Bardakta içilir",
-        "Serinletir",
-        "Enerji verir",
-        "Kafein var"
+        "Sıvı",
+        "Susuzluk",
+        "Bardak",
+        "Yudum",
+        "Sıcak/Soğuk",
+        "Kafein",
+        "Ferahlık"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -171,18 +181,28 @@
         "Pepsi", "McDonald's", "Starbucks", "Amazon", "Google",
         "Microsoft", "Sony", "LG", "BMW", "Mercedes",
         "Toyota", "Volkswagen", "Zara", "H&M", "LC Waikiki",
-        "Puma", "New Balance", "Reebok", "Under Armour", "Tesla",
-        "Netflix", "Spotify", "Instagram", "Facebook", "WhatsApp",
-        "TikTok", "YouTube", "PlayStation", "Xbox", "Nintendo",
-        "Bershka","Louis Vuitton","Beymen"
+        "Puma", "New Balance", "Reebok", "Tesla", "Netflix",
+        "Spotify", "Instagram", "Facebook", "WhatsApp", "TikTok",
+        "YouTube", "PlayStation", "Xbox", "Nintendo", "Ülker",
+        "Eti", "Torku", "BİM", "A101", "Şok", "Trendyol",
+        "Yemeksepeti", "Getir", "Arçelik", "Vestel", "Beko",
+        "Louis Vuitton", "Gucci", "Prada", "Chanel", "Dior",
+        "Balenciaga", "Beymen", "Vakko", "Rolex", "Ray-Ban",
+        "Bershka", "Pull&Bear", "Mango", "Koton", "Mavi",
+        "Colin's", "DeFacto", "Xiaomi", "Dyson", "Asus",
+        "Lenovo", "Huawei", "Audi", "Honda", "Ford",
+        "Porsche", "Ferrari", "Togg", "Sephora", "L'Oréal",
+        "Nivea", "Gillette", "Gratis", "Watsons", "Yves Rocher",
+        "Hepsiburada", "Sahibinden"
       ],
       "hints": [
-        "Ticari kimlik",
-        "Logo var",
-        "Ürün üretir",
-        "Tanınır",
-        "Reklam yapar",
-        "Müşteri kitlesi"
+        "Logo",
+        "Şirket",
+        "Reklam",
+        "Ürün",
+        "Etiket",
+        "Mağaza",
+        "Sponsor"
       ],
       "isLocked": false,
       "priceTL": 0.0,
@@ -203,23 +223,20 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Yunus Akgün", "Oğuz Aydın", "Kerem Aktürkoğlu", "Barış Alper Yılmaz",
-            "Kenan Yıldız", "Can Uzun", "Arda Güler", "Orkun Kökçü",
-            "İsmail Yüksek", "Hakan Çalhanoğlu", "Mert Müldür", "Abdülkerim Bardakçı",
-            "Eren Elmalı", "Ferdi Kadıoğlu", "Merih Demiral", "Uğurcan Çakır",
-            "Yusuf Akçiçek", "Zeki Çelik", "Berke Özer", "Cenk Tosun", "Ozan Tufan",
-            "Altay Bayındır" , "Mert Günok" ,"Ersin Destanoğlu" ,"Volkan Babacan",
-            "Çağlar Söyüncü" ,"Samet Akaydın" , "Rıdvan Yılmaz","Ozan Kabak","Ahmetcan Kaplan",
-            "Emirhan İlkhan" ,"Berkay Vardar" ,"Salih Özcan" ,"Okay Yokuşlu", "Taylan Antalyalı",
-            "Semih Kılıçsoy" ,"Berkan Kutlu" ,"İrfan Can Kahveci","Emre Akbaba","Emre Mor","Yusuf Yazıcı",
-            "Berat Özdemir" , "Kerem Demirbay" ,"Enes Ünal" ,"Umut Nayir" ,"Halil Dervişoğlu","Bertuğ Yıldırım",
-            "Cengiz Ünder" ,"Abdülkadir Ömür" ,"Emre Akbaba" ,"Yusuf Sarı" ,"Güven Yalçın" ,"Emrecan Uzunhan",
-            "Efe Akman" ,"Bartuğ Elmaz" ,"Emrecan Bulut"
+            "Arda Güler", "Kenan Yıldız", "Hakan Çalhanoğlu", "Kerem Aktürkoğlu",
+            "Barış Alper Yılmaz", "Ferdi Kadıoğlu", "Orkun Kökçü", "İsmail Yüksek",
+            "Uğurcan Çakır", "Mert Günok", "Altay Bayındır", "Çağlar Söyüncü",
+            "Merih Demiral", "Ozan Kabak", "Abdülkerim Bardakçı", "Mert Müldür",
+            "Zeki Çelik", "Eren Elmalı", "Cenk Tosun", "Ozan Tufan", "Yunus Akgün",
+            "Salih Uçan", "Taylan Antalyalı", "İrfan Can Kahveci", "Semih Kılıçsoy",
+            "Enes Ünal", "Umut Nayir", "Yusuf Yazıcı", "Cengiz Ünder", "Abdülkadir Ömür",
+            "Doğan Alemdar", "Berkan Kutlu", "Salih Özcan", "Ahmetcan Kaplan"
           ],
           "hints": [
-            "Yerli",
-            "Para",
-            "Yetenekli"
+            "Türk",
+            "Krampon",
+            "Süper Lig",
+            "Milli Takım"
           ]
         },
         {
@@ -229,26 +246,20 @@
           "isUnlocked": false,
           "items": [
             "Cristiano Ronaldo", "Lionel Messi", "Kylian Mbappé", "Erling Haaland",
-            "Neymar Jr.", "Jude Bellingham", "Vinícius Júnior", "Ousmane Dembélé",
-            "Harry Kane", "Mohamed Salah", "Kevin De Bruyne", "Rodri",
-            "Robert Lewandowski", "Antoine Griezmann", "Lautaro Martínez", "Lamine Yamal",
-            "Cole Palmer", "Phil Foden", "Viktor Gyökeres", "Virgil van Dijk",
-            "Thibaut Courtois", "Gianluigi Donnarumma", "Luka Modrić", "Declan Rice",
-            "İlkay Gündoğan", "Karim Benzema", "Youssef En-Nesyri", "Ciro Immobile",
-            "Victor Osimhen", "Dries Mertens", "Fred", "Davinson Sánchez",
-            "Lucas Torreira", "Leroy Sané", "Mauro Icardi", "Ederson",
-            "Jhon Durán", "Talisca", "Sebastian Szymanski", "Rafa Silva",
-            "Tammy Abraham", "Milot Rashica", "Dušan Tadić", "Edin Džeko",
-            "Michy Batshuayi", "Enner Valencia","Pedri" ,"Gavi","Jamal Musiala","Rafael Leão",
-            "Marcus Rashford" ,"Bruno Fernandes" ,"Alejandro Garnacho" ,"João Félix" ,"Federico Chiesa",
-            "Nicolo Barella","Achraf Hakim" ,"Sandro Tonali" ,"Frankie de Jong","Kolo Muan" ,"João Cancelo",
-            "Bukayo Saka","Martin Ødegaard","Rafael Varane","Joshua Kimmich" ,"Diogo Jota-RİP","Darwin Núñez",
-            "Khvicha Kvaratskhelia" ,"André Onana" ,"Antonio Rüdiger" ,"Marquinhos" ,"Niclas Füllkrug"
+            "Neymar Jr.", "Jude Bellingham", "Vinícius Júnior", "Kevin De Bruyne",
+            "Mohamed Salah", "Harry Kane", "Robert Lewandowski", "Lamine Yamal",
+            "Mauro Icardi", "Edin Džeko", "Dušan Tadić", "Victor Osimhen",
+            "Dries Mertens", "Lucas Torreira", "Fred", "Sebastian Szymanski",
+            "Rafa Silva", "Ciro Immobile", "Fernando Muslera", "Dominik Livaković",
+            "Allan Saint-Maximin", "Gedson Fernandes", "Davinson Sánchez", "Michy Batshuayi",
+            "Antoine Griezmann", "Virgil van Dijk", "Thibaut Courtois", "Luka Modrić",
+            "Jamal Musiala", "Marcus Rashford", "Bruno Fernandes", "Bukayo Saka"
           ],
           "hints": [
-            "Aktif",
-            "Yabancı",
-            "Ünlü"
+            "Global",
+            "Yıldız",
+            "Şampiyonlar Ligi",
+            "Krampon"
           ]
         },
         {
@@ -257,15 +268,18 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Rüştü Reçber", "Bülent Korkmaz", "Emre Belözoğlu", "Arda Turan","Metin Oktay","Can Bartu","Tanju Çolak","Tugay Kerimoğlu",
-            "Hamit Altıntop", "Burak Yılmaz", "Nihat Kahveci", "Gökhan Gönül","Tuncay Şanlı","Servet Çetin","Oğuz Çetin",
-            "Volkan Demirel", "Fatih Tekke", "Semih Şentürk", "Okan Buruk","Yattara","Ümit Davala","Hasan Şaş",
-            "Selçuk İnan", "Tümer Metin", "Rıdvan Dilmen", "Sergen Yalçın", "Serhat Akın"
+            "Sergen Yalçın", "Hakan Şükür", "Rüştü Reçber", "Emre Belözoğlu",
+            "Arda Turan", "Metin Oktay", "Can Bartu", "Lefter Küçükandonyadis",
+            "Tanju Çolak", "Tugay Kerimoğlu", "Bülent Korkmaz", "Burak Yılmaz",
+            "Nihat Kahveci", "Gökhan Gönül", "Volkan Demirel", "Okan Buruk",
+            "Tuncay Şanlı", "İlhan Mansız", "Sabri Sarıoğlu", "Selçuk İnan",
+            "Tümer Metin", "Rıdvan Dilmen", "Hasan Şaş", "Ümit Davala"
           ],
           "hints": [
-            "Yerli",
-            "Efsane",
-            "Yorumcu"
+            "Emekli",
+            "Nostalji",
+            "Türk",
+            "İkon"
           ]
         },
         {
@@ -274,25 +288,19 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Pelé", "Diego Maradona", "Johan Cruyff", "Ronaldo Nazário","Romário",
-            "Zinedine Zidane", "Michel Platini", "Ronaldinho", "Lev Yashin","Rivaldo",
-            "Roberto Carlos", "Gianluigi Buffon", "Thierry Henry", "Xavi Hernández",
-            "Andrés Iniesta", "Kaká", "Steven Gerrard", "Didier Drogba","Cafu","Dani Alves",
-            "Zlatan Ibrahimović", "Arjen Robben", "Wayne Rooney", "Gareth Bale","Esteban Cambiasso",
-            "Frank Lampard", "Mesut Özil", "Gerard Piqué", "Sergio Agüero","Bebeto","Juan Román Riquelme",
-            "Iker Casillas", "Wesley Sneijder", "Robin van Persie", "Gheorghe Hagi","Fernando Torres",
-            "Samuel Eto'o", "Pepe", "Alex de Souza", "Ricardo Quaresma","Zinedine Zidane","Javier Zanetti",
-            "David Villa","Carles Puyol","Raúl González","Cesc Fàbregas","Rio Ferdinand","Paul Scholes",
-            "John Terry","Ashley Cole" ,"Alan Shearer","David Beckham","Michael Owen","Peter Crouch","Ashley Cole"
-          ,"Paolo Maldini" ,"Alessandro Nesta" ,"Fabio Cannavaro" ,"Francesco Totti" ,"Alessandro Del Piero",
-            "Andrea Pirlo" ,"Marco Materazzi" ,"Filippo Inzaghi","Miroslav Klose","Bastian Schweinsteiger","Philipp Lahm",
-            "Oliver Kahn","Lothar Matthäus","Patrick Vieira","Claude Makélélé","Eric Cantona","Eusébio","Deco","Luís Figo","George Best",
-            "Pavel Nedvěd","Andriy Shevchenko","Clarence Seedorf"
+            "Pelé", "Diego Maradona", "Johan Cruyff", "Ronaldo Nazário", "Ronaldinho",
+            "Zinedine Zidane", "Roberto Carlos", "Thierry Henry", "Xavi Hernández",
+            "Andrés Iniesta", "Kaká", "Steven Gerrard", "Didier Drogba", "Zlatan Ibrahimović",
+            "Gheorghe Hagi", "Alex de Souza", "Ricardo Quaresma", "Wesley Sneijder",
+            "Mario Gomez", "Guti", "Nicolas Anelka", "Cláudio Taffarel", "Faryd Mondragón",
+            "Paolo Maldini", "Gianluigi Buffon", "Iker Casillas", "David Beckham",
+            "Wayne Rooney", "Frank Lampard", "Mesut Özil", "Sergio Agüero", "Carles Puyol"
           ],
           "hints": [
+            "Emekli",
             "Global",
-            "Ikonik",
-            "Efsane"
+            "İkon",
+            "Tarihi"
           ]
         },
         {
@@ -303,20 +311,21 @@
           "items": [
             "LeBron James", "Stephen Curry", "Nikola Jokić", "Giannis Antetokounmpo",
             "Luka Dončić", "Joel Embiid", "Jayson Tatum", "Kevin Durant",
-            "Anthony Davis", "Victor Wembanyama", "Tyrese Haliburton", "Ja Morant",
+            "Anthony Davis", "Victor Wembanyama", "Ja Morant",
             "Damian Lillard", "Devin Booker", "Kyrie Irving", "Kawhi Leonard",
             "Jimmy Butler", "Paul George", "Donovan Mitchell", "Zion Williamson",
             "Trae Young", "Alperen Şengün", "LaMelo Ball", "Draymond Green",
             "Klay Thompson", "Karl-Anthony Towns", "James Harden", "Russell Westbrook",
-            "Chris Paul", "DeMar DeRozan", "Adem Bona","Jaylen Brown","SGA","Anthony Edwards",
-            "De’Aaron Fox","Jalen Brunson","Domantas Sabonis","Rudy Gobert","Brandon Ingram",
-            "Chet Holmgren","Scoot Henderson","Franz Wagner","Tyrese Maxey","Evan Mobley","Paolo Banchero",
-            "Alex Caruso"
+            "Chris Paul", "DeMar DeRozan", "Jaylen Brown", "SGA", "Anthony Edwards",
+            "De’Aaron Fox", "Jalen Brunson", "Domantas Sabonis", "Rudy Gobert", "Brandon Ingram",
+            "Chet Holmgren", "Tyrese Maxey", "Evan Mobley", "Paolo Banchero",
+            "Alex Caruso", "Cedi Osman", "Furkan Korkmaz", "Ömer Faruk Yurtseven"
           ],
           "hints": [
-            "Konferans",
-            "1 , 2, 3",
-            "Uzun"
+            "Amerika",
+            "Parke",
+            "Smaç",
+            "All-Star"
           ]
         },
         {
@@ -326,15 +335,16 @@
           "isUnlocked": false,
           "items": [
             "Shane Larkin", "Ercan Osmani", "Şehmus Hazer", "Tarık Biberović",
-            "Talen-Horton Tucker", "Melih Mahmutoğlu", "Scottie Wilbekin", "Nicolò Melli",
-            "Cedi Osman", "Mario Hezonja", "Willy Hernangómez", "Jabari Parker",
-            "Nikola Mirotić", "Mike James","Pau Gasol","Hidayet Türkoğlu","Mehmet Okur",
-            "Vassilis Spanoulis","Andrei Kirilenko"
+            "Melih Mahmutoğlu", "Scottie Wilbekin", "Nicolò Melli",
+            "Mario Hezonja", "Willy Hernangómez", "Jabari Parker",
+            "Nikola Mirotić", "Mike James", "Pau Gasol", "Hidayet Türkoğlu", "Mehmet Okur",
+            "Vassilis Spanoulis", "Andrei Kirilenko", "Kostas Sloukas", "Bogdan Bogdanović", "Jan Veselý"
           ],
           "hints": [
+            "Avrupa",
+            "Parke",
             "Set Oyunu",
-            "Koçlar",
-            "Savunma"
+            "Kupa"
           ]
         },
         {
@@ -348,12 +358,13 @@
             "Hakeem Olajuwon", "Julius Erving", "Allen Iverson", "Charles Barkley",
             "Vince Carter", "Dwyane Wade", "Dirk Nowitzki", "Tim Duncan",
             "Kevin Garnett", "Scottie Pippen", "Karl Malone", "Isiah Thomas",
-            "Jerry West", "John Stockton", "Dennis Rodman","Dikembe Mutombo","Yao Ming"
+            "Jerry West", "John Stockton", "Dennis Rodman", "Dikembe Mutombo", "Yao Ming"
           ],
           "hints": [
-            "İkonik",
-            "Marka",
-            "Eski"
+            "Emekli",
+            "Hall of Fame",
+            "Parke",
+            "İkon"
           ]
         },
         {
@@ -370,14 +381,14 @@
             "Myriam Sylla", "Alessia Orro", "Anna Danesi", "Monika de Gennaro",
             "Sarah Fahr", "Ekaterina Antropova", "Gabi Guimarães", "Isabelle Haak",
             "Arina Federovtseva", "Ana Cristina de Souza", "Helena Cazaute", "Joanna Wołosz",
-            "Magdelena Stysiak", "Andrea Drews", "Kelsey Robinson", "Jordyn Paulter",
-            "Jordan Thompson", "Haleigh Washington", "Chiaka Ogbogu", "Justine Wong-Orantes",
-            "Zhu Ting"
+            "Magdelena Stysiak", "Andrea Drews", "Kelsey Robinson",
+            "Jordan Thompson", "Haleigh Washington", "Chiaka Ogbogu", "Zhu Ting"
           ],
           "hints": [
-            "Türkiye",
-            "Kadın",
-            "Servis"
+            "File",
+            "Smaç",
+            "Kadın Sporcu",
+            "Milli Gurur"
           ]
         },
         {
@@ -393,15 +404,16 @@
             "Justin Gaethje", "Alexander Volkanovski", "Max Holloway", "José Aldo",
             "Charles Oliveira", "Stipe Miocic", "Tom Aspinall", "Kevin Holland",
             "Magomed Ankalaev", "Merab Dvalişvili", "Jiří Procházka", "Dricus Du Plessis",
-            "Michael Chandler", "Sean Strickland", "Umar Nurmagomedov","Brandon Moreno",
-            "Aljamain Sterling","Beneil Dariush","Gilbert Burns","Yair Rodríguez","Marlon Vera",
-            "Renato Moicano","Movsar Evloev","Ciryl Gane","BJ Penn","Tito Ortiz","Lyoto Machida",
-            "Michael Bisping","Arman Tsarukyan","Mateusz Gamrot","Manel Kape"
+            "Michael Chandler", "Sean Strickland", "Umar Nurmagomedov", "Brandon Moreno",
+            "Aljamain Sterling", "Beneil Dariush", "Gilbert Burns", "Yair Rodríguez", "Marlon Vera",
+            "Movsar Evloev", "Ciryl Gane", "BJ Penn", "Tito Ortiz", "Lyoto Machida",
+            "Michael Bisping", "Arman Tsarukyan", "Mateusz Gamrot"
           ],
           "hints": [
-            "Knock Out",
-            "Sekizgen",
-            "Dağıstan"
+            "Kafes",
+            "MMA",
+            "Nakavt",
+            "Dövüş"
           ]
         },
         {
@@ -413,13 +425,14 @@
             "The Rock", "John Cena", "The Undertaker", "Roman Reigns",
             "Triple H", "Brock Lesnar", "Rey Mysterio", "Kane",
             "Batista", "Randy Orton", "Edge", "CM Punk",
-            "Jeff Hardy", "Big Show","Logan Paul","Shawn Michaels","Seth Rollins",
-            "AJ Styles","Kevin Owens","Finn Bálor","Dominik Mysterio",""
+            "Jeff Hardy", "Big Show", "Logan Paul", "Shawn Michaels", "Seth Rollins",
+            "AJ Styles", "Kevin Owens", "Finn Bálor"
           ],
           "hints": [
-            "Aktör",
-            "Sandalye",
-            "İmza Hareket"
+            "Ring",
+            "Senaryo",
+            "Şov",
+            "Eğlence"
           ]
         },
         {
@@ -428,17 +441,17 @@
           "unlockedByAd": true,
           "isUnlocked": false,
           "items": [
-            "Muhammad Ali", "Mike Tyson", "Floyd Mayweather Jr.", "Manny Pacquiao",
-            "Canelo Álvarez", "Oleksandr Usyk", "Terence Crawford", "Tyson Fury",
-            "Gervonta Davis", "Ryan García", "Jake Paul","Ryan Garcia","Joe Frazier",
-            "George Foreman","Larry Holmes","Evander Holyfield","Sugar Ray Leonard",
-            "Ray Robinson", "Gennady Golovkin (GGG)", "Devin Haney","Naoya Inoue",
-            "Artur Beterbiev","Dmitry Bivol"
+            "Muhammad Ali", "Mike Tyson", "Floyd Mayweather", "Manny Pacquiao",
+            "Canelo Álvarez", "Oleksandr Usyk", "Tyson Fury", "Anthony Joshua",
+            "Deontay Wilder", "Ryan Garcia", "Gervonta Davis", "Jake Paul",
+            "Evander Holyfield", "George Foreman", "Joe Frazier", "Rocky Marciano",
+            "Lennox Lewis", "Sugar Ray Leonard", "Gennady Golovkin"
           ],
           "hints": [
+            "Ring",
             "Eldiven",
-            "Atlama İpi",
-            "Rocky"
+            "Raunt",
+            "Nakavt"
           ]
         },
         {
@@ -449,14 +462,31 @@
           "items": [
             "Lando Norris", "Oscar Piastri", "Max Verstappen", "George Russell",
             "Charles Leclerc", "Lewis Hamilton", "Fernando Alonso", "Sebastian Vettel",
-            "Michael Schumacer", "Andrea Antonelli", "Alexander Albon","Sergio Pérez",
-            "Carlos Sainz","Esteban Ocon","Pierre Gasly","Nico Hülkenberg","Kevin Magnussen",
-            "Nigel Mansell","Alain Prost","Jackie Stewart"
+            "Michael Schumacer", "Alexander Albon", "Sergio Pérez",
+            "Carlos Sainz", "Esteban Ocon", "Pierre Gasly", "Nico Hülkenberg", "Kevin Magnussen",
+            "Nigel Mansell", "Alain Prost", "Jackie Stewart"
           ],
           "hints": [
             "Hız",
-            "Refleks",
-            "Pit Stop"
+            "Pit Stop",
+            "Pist",
+            "Motor"
+          ]
+        },
+        {
+          "id": "athletes_tennis",
+          "name": "Tenisçiler",
+          "unlockedByAd": true,
+          "isUnlocked": false,
+          "items": [
+            "Roger Federer", "Rafael Nadal", "Novak Djokovic", "Serena Williams",
+            "Carlos Alcaraz", "Andy Murray"
+          ],
+          "hints": [
+            "Kort",
+            "Raket",
+            "Grand Slam",
+            "File"
           ]
         }
       ]
@@ -471,16 +501,18 @@
         "Park", "Kütüphane", "Müze", "Plaj", "Dağ",
         "Cafe", "Spor Salonu", "Kuaför", "Otopark", "Havaalanı",
         "Banka", "Postane", "Eczane", "Benzin İstasyonu", "Otobüs Durağı",
-        "Alışveriş Merkezi", "Tiyatro", "Konser Salonu", "Stadyum", "Camii"
+        "Alışveriş Merkezi", "Tiyatro", "Konser Salonu", "Stadyum", "Camii",
+        "Lunapark", "Hamam", "Pazar", "Orman", "Türbe", "Çadır", "Köy", "Kasaba",
+        "Adliye", "Otogar", "İskele", "Karakol", "Sağlık Ocağı", "Şantiye"
       ],
       "hints": [
-        "Harita üzerinde",
-        "Adres sahibi",
-        "Ziyaret edilir",
-        "Şehir planında",
-        "GPS görür",
-        "Çalışma saati",
-        "Konum belirtir"
+        "Konum",
+        "Adres",
+        "Ziyaret",
+        "Bina",
+        "Harita",
+        "Tesis",
+        "Mekan"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -494,17 +526,19 @@
       "items": [
         "Araba", "Otobüs", "Kamyon", "Motorsiklet", "Bisiklet",
         "Tren", "Uçak", "Gemi", "Traktör", "Metrobüs",
-        "Tramvay", "Helikopter", "Scooter", "Kamyonet", "Taksi",
-        "Ambulans", "İtfaiye Aracı", "Polis Arabası", "Dolmuş", "Minibüs"
+        "Tramvay", "Helikopter", "Kamyonet", "Taksi",
+        "Ambulans", "İtfaiye Aracı", "Polis Arabası", "Dolmuş", "Minibüs",
+        "Fayton", "Teleferik", "Karavan", "Yat", "Vapur", "Zeplin", "Denizaltı",
+        "ATV", "Jetski"
       ],
       "hints": [
-        "Ulaşım aracı",
-        "Taşıma yapar",
-        "Motor gücü",
-        "Kara, hava, deniz",
-        "Trafik kuralları",
-        "Yakıt gerekir",
-        "Hız yapar"
+        "Ulaşım",
+        "Tekerlek",
+        "Motor",
+        "Yolcu",
+        "Trafik",
+        "Araç",
+        "Bilet"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -519,16 +553,17 @@
         "Telefon", "Bilgisayar", "Televizyon", "Tablet", "Laptop",
         "Kulaklık", "Hoparlör", "Kamera", "Oyun Konsolu", "Akıllı Saat",
         "Drone", "Robot Süpürge", "Çamaşır Makinesi", "Buzdolabı", "Fırın",
-        "Mikrodalga", "Klima", "Şarj Cihazı", "Powerbank", "Router"
+        "Mikrodalga", "Klima", "Şarj Cihazı", "Powerbank",
+        "Modem", "Ütü", "Vantilatör", "Süpürge", "Matkap", "Tost Makinesi", "Saç Kurutma Makinesi"
       ],
       "hints": [
-        "Elektrik gerekir",
-        "Teknoloji ürünü",
-        "Günlük kullanım",
-        "Dijital özellik",
-        "Modern yaşam",
-        "Sürekli gelişir",
-        "Garanti vardır"
+        "Elektrik",
+        "Teknoloji",
+        "Cihaz",
+        "Batarya",
+        "Fiş",
+        "Ekran",
+        "Şarj"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -543,16 +578,18 @@
         "Tişört", "Pantolon", "Elbise", "Ceket", "Gömlek",
         "Kazak", "Şort", "Etek", "Çorap", "İç Çamaşırı",
         "Ayakkabı", "Bot", "Terlik", "Sandalet", "Spor Ayakkabı",
-        "Şapka", "Bere", "Eldiven", "Atkı", "Kemer"
+        "Şapka", "Bere", "Eldiven", "Atkı", "Kemer",
+        "Mont", "Kaban", "Bikini", "Mayo", "Pijama", "Kravat", "Papyon", "Atlet",
+        "Hırka", "Tayt", "Süveter", "Şal", "Yağmurluk"
       ],
       "hints": [
-        "Vücut korur",
-        "Mevsimlik çeşit",
-        "Moda tarz",
-        "Kumaştan yapılır",
-        "Günlük ihtiyaç",
-        "Yıkanabilir",
-        "Giyilir"
+        "Kumaş",
+        "Giyim",
+        "Moda",
+        "Mevsim",
+        "Dolap",
+        "Kombin",
+        "Beden"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -570,13 +607,13 @@
         "Beden Eğitimi", "Bilgisayar", "Almanca", "Fransızca", "Geometri"
       ],
       "hints": [
-        "Eğitim müfredatı",
-        "Bilgi öğretir",
-        "Öğretmen verir",
-        "Sınav yapılır",
-        "Yaş uyarlama",
-        "Diploma gerekli",
-        "Ders saati"
+        "Müfredat",
+        "Sınav",
+        "Öğretmen",
+        "Karne",
+        "Sınıf",
+        "Not",
+        "Kitap"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -591,16 +628,18 @@
         "Satranç", "Dama", "Monopoly", "Scrabble", "Uno",
         "FIFA", "Minecraft", "PUBG", "League of Legends", "Valorant",
         "Counter-Strike", "Fortnite", "Call of Duty", "Among Us", "Roblox",
-        "King", "Okey", "Tavla", "Saklambaç", "Körebe"
+        "Okey", "Tavla", "Saklambaç", "Körebe", "Batak", "Pişti",
+        "Seksek", "Yakan Top", "İstop", "Uzun Eşek", "Birdirbir", "Beş Taş",
+        "Tabu", "Jenga", "Sessiz Sinema", "Mangala", "Kızma Birader", "İsim Şehir"
       ],
       "hints": [
-        "Eğlence aracı",
-        "Kuralları var",
-        "Tek çok oyuncu",
-        "Strateji şans",
-        "Dijital fiziksel",
-        "Sosyal etkileşim",
-        "Zaman geçirir"
+        "Eğlence",
+        "Kural",
+        "Kazanmak",
+        "Skor",
+        "Oyuncu",
+        "Zar",
+        "Rekabet"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -615,19 +654,21 @@
         "Roman", "Hikaye", "Şiir", "Biyografi", "Tarih",
         "Bilim Kurgu", "Fantastik", "Polisiye", "Gizem", "Macera",
         "Çocuk Kitabı", "Ders Kitabı", "Sözlük", "Ansiklopedi", "Rehber",
-        "Felsefe", "Psikoloji", "Din", "Sanat", "Yemek Kitabı"
+        "Felsefe", "Psikoloji", "Din", "Sanat", "Yemek Kitabı",
+        "Çizgi Roman", "Masal", "Destan", "Fıkra", "Günlük",
+        "Manga", "Fabl", "Deneme", "Makale", "Otobiyografi"
       ],
       "hints": [
-        "Okuma materyali",
-        "Bilgi hikaye",
-        "Farklı konular",
-        "Kağıt dijital",
-        "Yazarı var",
-        "Kütüphanede bulunur",
-        "Sayfa sayısı"
+        "Sayfa",
+        "Yazar",
+        "Okumak",
+        "Kütüphane",
+        "Kapak",
+        "Bölüm",
+        "Yayın"
       ],
       "isLocked": false,
-      "priceTL":0,
+      "priceTL": 0,
       "hasSubcategories": false
     },
     {
@@ -639,16 +680,18 @@
         "Güneşli", "Yağmurlu", "Karlı", "Bulutlu", "Rüzgarlı",
         "Sıcak", "Soğuk", "Nemli", "Kurak", "Sisli",
         "Dolu", "Fırtınalı", "Kapalı", "Açık", "Puslu",
-        "Çiseleme", "Sağanak", "Tipi", "Ayaz", "Buzlu"
+        "Çiseleme", "Sağanak", "Tipi", "Ayaz", "Buzlu",
+        "Lodos", "Poyraz", "Gökkuşağı", "Çiğ", "Hortum",
+        "Kasırga", "Çığ"
       ],
       "hints": [
-        "Atmosfer koşulu",
-        "Günlük değişir",
-        "Mevsim ilişkisi",
-        "Tahmin yapılır",
-        "Aktivite etkiler",
-        "Sıcaklık nem",
-        "Meteoroloji"
+        "Gökyüzü",
+        "Derece",
+        "Mevsim",
+        "Tahmin",
+        "Meteoroloji",
+        "İklim",
+        "Doğa Olayı"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -663,16 +706,18 @@
         "Mutluluk", "Üzüntü", "Kızgınlık", "Korku", "Şaşkınlık",
         "Merak", "Heyecan", "Kaygı", "Hayal Kırıklığı", "Gurur",
         "Utanç", "Suçluluk", "Sevgi", "Nefret", "Kıskançlık",
-        "Umut", "Umutsuzluk", "Rahatlık", "Stres", "Huzur"
+        "Umut", "Umutsuzluk", "Rahatlık", "Stres", "Huzur",
+        "Özlem", "Coşku", "Keder", "Sevinç", "Panik", "Şüphe",
+        "Şefkat", "İğrenme", "Minnet", "Özgüven", "Sempati"
       ],
       "hints": [
-        "İnsan psikolojisi",
-        "Olay tepkisi",
-        "Yüz ifadesi",
-        "Geçici kalıcı",
-        "Davranış etkiler",
-        "Herkes yaşar",
-        "Duygu durumu"
+        "His",
+        "Psikoloji",
+        "Ruh Hali",
+        "Tepki",
+        "İfade",
+        "İçsel",
+        "Tavır"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -687,16 +732,19 @@
         "Masa", "Sandalye", "Yatak", "Dolap", "Koltuk",
         "Televizyon", "Buzdolabı", "Fırın", "Çamaşır Makinesi", "Bulaşık Makinesi",
         "Lamba", "Halı", "Perde", "Ayna", "Saat",
-        "Tabak", "Bardak", "Çatal", "Kaşık", "Bıçak"
+        "Tabak", "Bardak", "Çatal", "Kaşık", "Bıçak",
+        "Tencere", "Tava", "Çaydanlık", "Rende", "Kanepe", "Paspas",
+        "Yastık", "Yorgan", "Battaniye", "Çarşaf", "Süpürge",
+        "Avize", "Sehpa", "Vestiyer", "Abajur", "Kitaplık"
       ],
       "hints": [
-        "Evde kullanılır",
-        "Günlük kolaylaştırır",
-        "Farklı odalarda",
-        "Fonksiyonel dekoratif",
-        "Mobilya alet",
-        "Ev konforu",
-        "Ev içi"
+        "Mobilya",
+        "Dekor",
+        "Oda",
+        "Kullanım",
+        "Ev İçi",
+        "Düzen",
+        "Eşya"
       ],
       "isLocked": false,
       "priceTL": 0,
@@ -722,25 +770,26 @@
         "Bukalemun", "Sincap", "Kirpi", "Gergedan", "Zebra",
         "Koala", "Panda", "Kanguru", "Tilki", "Vaşak",
         "Çakal", "Samur", "Kunduz", "Porsuk", "Gelincik",
-        "Sansar","Sırtlan", "Geyik", "Ceylan","Keklik", "Leylek","Martı", "Albatros",
-        "Pelikan", "Karabatak", "Su Samuru", "Deniz Aslanı","Orka",
+        "Sansar", "Sırtlan", "Geyik", "Ceylan", "Keklik", "Leylek", "Martı",
+        "Pelikan", "Karabatak", "Su Samuru", "Deniz Aslanı",
         "Ton Balığı", "Kılıç Balığı", "Vatoz",
         "Mürekkep Balığı", "Deniz Yıldızı",
         "Ateş Böceği", "Kelebek", "Arı", "Karınca", "Çekirge",
-        "Ağustosböceği", "Uğur Böceği", "Yusufçuk","Tırtıl",
+        "Ağustosböceği", "Uğur Böceği", "Yusufçuk", "Tırtıl",
         "Solucan", "Sümüklüböcek", "Salyangoz", "Örümcek", "Akrep",
-        "Deve Kuşu", "Kivi", "Orangutan", "Goril", "Şempanze", "Lemur","Babun",
-        "Semender", "Kobra", "Anakonda", "Piton"
-
+        "Deve Kuşu", "Kivi", "Orangutan", "Goril", "Şempanze", "Lemur", "Babun",
+        "Kobra", "Anakonda", "Piton",
+        "Köstebek", "Yarasa", "Sinek", "Sivrisinek", "Kene", "Bit", "Pire", "Hamamböceği",
+        "Lama", "Tembel Hayvan", "Rakun", "Karınca Yiyen"
       ],
       "hints": [
-        "Canlı varlık",
-        "Doğal yaşam",
-        "Hareket eder",
-        "Beslenme ihtiyacı",
-        "Evcil veya vahşi",
-        "Çeşitli türler",
-        "Nefes alır"
+        "Canlı",
+        "Doğa",
+        "İçgüdü",
+        "Tür",
+        "Vahşi/Evcil",
+        "Belgesel",
+        "Kuyruk"
       ],
       "isLocked": true,
       "priceTL": 25.99,
@@ -762,14 +811,16 @@
           "isUnlocked": true,
           "items": [
             "Sezen Aksu", "Tarkan", "Ajda Pekkan", "Kenan Doğulu", "Sertab Erener",
-            "Mustafa Sandal", "Gülben", "Eda", "Zeynep Bastık", "Simge",
-            "Hayko Cepkin", "Serdar Ortaç", "Murat Boz", "Oğuzhan Koç", "İrem Derici",
-            "Yalın", "Yaşar", "Manifest", "Semicenk"
+            "Mustafa Sandal", "Gülben Ergen", "Zeynep Bastık", "Simge", "Serdar Ortaç",
+            "Murat Boz", "Oğuzhan Koç", "İrem Derici", "Yalın", "Yaşar", "Semicenk",
+            "Hadise", "Aleyna Tilki", "Edis", "Sefo", "Hande Yener", "Demet Akalın",
+            "Gülşen", "Nilüfer", "Mabel Matiz", "Emir Can İğrek", "Buray"
           ],
           "hints": [
-            "Yerli",
-            "Konser",
-            "Top 50"
+            "Türkçe",
+            "Hareketli",
+            "Hit",
+            "Radyo"
           ]
         },
         {
@@ -781,14 +832,14 @@
             "Ceza", "Sagopa Kajmer", "Ezhel", "Uzi", "Ben Fero",
             "Şehinşah", "Cakal", "Murda", "Norm Ender", "Gazapizm",
             "Reckol", "Joker", "Güneş", "Khontkar", "Baneva",
-            "Mero", "Ati242", "Şam", "Blok3", "Eray067&Mansur",
-            "Jeff Red", "Organize", "Poizi","Era07capone" , "Fuat Ergin",
-            "Batuflex","Motive","Abugat","EGE!"
+            "Mero", "Ati242", "Şam", "Blok3", "Fuat Ergin",
+            "Batuflex", "Motive", "Patron", "Killa Hakan", "Massaka"
           ],
           "hints": [
-            "Hız",
-            "Flow",
-            "Lirik"
+            "Kafiye",
+            "Beat",
+            "Sokak",
+            "Hız"
           ]
         },
         {
@@ -798,13 +849,15 @@
           "isUnlocked": true,
           "items": [
             "Müslüm Gürses", "Ferdi Tayfur", "Orhan Gencebay", "İbrahim Tatlıses",
-            "Bergen", "Azer Bülbül", "Mahsun Kırmızıgül", "Ebru Gündeş",
-            "Hüsnü Şenlendirici", "Gülü"
+            "Bergen", "Azer Bülbül", "Mahsun Kırmızıgül", "Ebru Gündeş", "Bülent Ersoy",
+            "Hüsnü Şenlendirici", "Güllü", "Yıldız Tilbe", "Sibel Can", "Cengiz Kurtoğlu",
+            "Ümit Besen", "Hakan Taşıyan", "Alişan", "Özcan Deniz", "Ceylan"
           ],
           "hints": [
-            "Eski",
+            "Damar",
             "Hüzün",
-            "Hayran"
+            "Efkar",
+            "Yanık Ses"
           ]
         },
         {
@@ -815,11 +868,13 @@
           "items": [
             "Barış Manço", "Cem Karaca", "Erkin Koray", "Duman",
             "Şebnem Ferah", "Teoman", "Mor ve Ötesi", "Athena",
-            "Haluk Levent", "Manga", "Gripin", "Pinhani"
+            "Haluk Levent", "Manga", "Gripin", "Pinhani", "Hayko Cepkin", "Kıraç"
           ],
           "hints": [
-            "Konser",
-            "Ses"
+            "Gitar",
+            "Bateri",
+            "Sert",
+            "Grup"
           ]
         },
         {
@@ -828,13 +883,14 @@
           "unlockedByAd": false,
           "isUnlocked": true,
           "items": [
-            "Büyük Ev Ablukada", "Adamlar", "Melisa Şahin", "Kalben",
-            "Can Ozan", "Sena Şener", "Son Feci Bisiklet"
+            "Büyük Ev Ablukada", "Adamlar", "Kalben", "Madrigal", "Dolu Kadehi Ters Tut",
+            "Can Ozan", "Sena Şener", "Son Feci Bisiklet", "Kaan Tangöze", "Yüzyüzeyken Konuşuruz"
           ],
           "hints": [
+            "Bağımsız",
             "Farklı",
-            "Ünlü",
-            "Konser"
+            "Festival",
+            "Özgün"
           ]
         },
         {
@@ -845,15 +901,16 @@
           "items": [
             "Beyoncé", "Taylor Swift", "Britney Spears", "Rihanna",
             "Lady Gaga", "Adele", "Bruno Mars", "Justin Timberlake",
-            "Adam Levine", "Katy Perry", "Justin Bieber", "Troye Sivan",
+            "Adam Levine", "Katy Perry", "Justin Bieber", "Ariana Grande",
             "Jennifer Lopez", "Dua Lipa", "Billie Eilish", "The Weeknd",
             "Harry Styles", "Ed Sheeran", "Miley Cyrus", "Selena Gomez",
-            "Maroon 5", "Michael Jackson", "Madonna"
+            "Maroon 5", "Michael Jackson", "Madonna", "Shakira"
           ],
           "hints": [
             "Global",
+            "İngilizce",
             "Grammy",
-            "HIT"
+            "Hit"
           ]
         },
         {
@@ -864,14 +921,15 @@
           "items": [
             "Eminem", "Tupac", "Snoop Dogg", "Jay-Z", "Drake",
             "Kanye West", "Kendrick Lamar", "J. Cole", "Nicki Minaj",
-            "Lil Wayne", "50 Cent", "Dr. Dre", "Cardi B",
+            "Lil Wayne", "50 Cent", "Dr. Dre", "Cardi B", "Travis Scott",
             "Future", "Post Malone", "XXXTentacion", "Pop Smoke",
-            "21 Savage", "Doja Cat", "Lil Baby", "Juice WRLD",
-            "Lil Uzi Vert", "Playboi Carti", "Young Thug", "Gunna", "Central Cee"
+            "21 Savage", "Doja Cat", "Lil Baby", "Juice WRLD", "Ice Cube"
           ],
           "hints": [
+            "Global",
+            "Beat",
             "Sokak",
-            "Yabancı"
+            "Kafiye"
           ]
         },
         {
@@ -880,14 +938,15 @@
           "unlockedByAd": false,
           "isUnlocked": true,
           "items": [
-            "The Beatles", "Queen", "Pink Floyd", "Eagles",
-            "AC DC", "Guns N' Roses", "Metallica", "Scorpions",
-            "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys"
+            "The Beatles", "Queen", "Pink Floyd", "Eagles", "Nirvana", "Linkin Park",
+            "AC DC", "Guns N' Roses", "Metallica", "Scorpions", "Bon Jovi",
+            "Iron Maiden", "Red Hot Chili Peppers", "Coldplay", "Arctic Monkeys", "U2"
           ],
           "hints": [
-            "Konser",
-            "Siyah",
-            "Metal"
+            "Efsane",
+            "Gitar",
+            "Metal",
+            "Konser"
           ]
         }
       ]
@@ -906,23 +965,21 @@
         "Masa Tenisi", "Ragbi", "Su Topu", "Dalış",
         "Sörf", "Snowboard", "Kayak", "Paten", "Buz Pateni",
         "Tekvando", "Kickboks", "Muay Thai", "Jiu Jitsu", "Aikido",
-        "Kung Fu","Sumo", "MMA","Maraton", "Parkur", "Crossfit", "Pilates",
+        "Kung Fu", "Sumo", "MMA", "Maraton", "Parkur", "Crossfit", "Pilates",
         "Yoga", "Yelken", "Kürek", "Kano", "Rafting", "Paraşüt",
-        "Yamaç Paraşütü","Dağcılık", "Kaya Tırmanışı", "Bungee Jumping",
+        "Yamaç Paraşütü", "Dağcılık", "Kaya Tırmanışı", "Bungee Jumping",
         "Paintball", "Airsoft", "Dart", "Bilardo", "Bowling",
         "Bale", "Dans Sporları", "Ritmik Jimnastik",
-        "Artistik Jimnastik","Disk Atma", "Gülle Atma", "Cirit Atma",
-        "Uzun Atlama","Formula 1", "Ralli", "Motokros", "Motosiklet Yarışı", "At Yarışı",
-        "Binicilik","Rodeo", "BMX", "Mountain Bike"
+        "Artistik Jimnastik", "Disk Atma", "Gülle Atma", "Cirit Atma",
+        "Uzun Atlama", "Formula 1", "Ralli", "Motokros", "Motosiklet Yarışı", "At Yarışı",
+        "Binicilik", "Rodeo", "BMX", "Mountain Bike", "Bilek Güreşi", "Su Kayağı"
       ],
       "hints": [
-        "Fiziksel aktivite",
-        "Rekabet var",
-        "Sağlık kondisyon",
-        "Takım bireysel",
-        "Antrenman gerekir",
-        "Turnuvalar var",
-        "Spor salonu"
+        "Fiziksel",
+        "Rekabet",
+        "Antrenman",
+        "Kondisyon",
+        "Turnuva"
       ],
       "isLocked": true,
       "priceTL": 34.99,
@@ -952,15 +1009,14 @@
         "Nijerya", "Gana", "Senegal", "Güney Afrika", "Zimbabve",
         "Arjantin", "Şili", "Peru", "Kolombiya", "Venezuela",
         "Bolivya", "Paraguay", "Uruguay", "Panama", "Kosta Rika",
-        "Küba", "Dominik Cumhuriyeti", "Jamaika", "Yeni Zelanda", "İzlanda"
+        "Küba", "Dominik Cumhuriyeti", "Jamaika", "Yeni Zelanda", "İzlanda",
+        "Kıbrıs", "Bosna Hersek"
       ],
       "hints": [
-        "Coğrafi sınır",
-        "Hükümeti var",
-        "Bayrak simge",
-        "Kültür",
+        "Sınır",
+        "Bayrak",
         "Başkent",
-        "Uluslararası ",
+        "Harita",
         "Pasaport"
       ],
       "isLocked": true,
@@ -973,102 +1029,38 @@
       "iconName": "sports_esports",
       "colorHex": "#FF9800",
       "items": [
-        "Okçular",
-        "Şövalye",
-        "Goblinler",
-        "Mızraklı Goblinler",
-        "İskeletler",
-        "Bombacı",
-        "Minyonlar",
-        "Top",
-        "Barbarlar",
-        "Elit Barbarlar",
-        "Dev",
-        "Kraliyet Devi",
-        "Kraliyet Domuzları",
-        "Domuz Binicisi",
-        "Okçu Kraliçe",
-        "Koç Binicisi",
-        "Valkür",
-        "Mini P.E.K.K.A",
-        "P.E.K.K.A",
-        "Prens",
-        "Kara Prens",
-        "Haydut",
-        "Madenci",
-        "Mega Şövalye",
-        "Altın Şövalye",
-        "İskelet Kral",
-        "Archer Queen",
-        "Küçük Prens",
-        "Keşiş",
-        "Üç Silahşör",
-        "Silahşör",
-        "Uçan Makine",
-        "Cellat",
-        "Avcı",
-        "Büyücü",
-        "Elektro Büyücü",
-        "Buz Büyücüsü",
-        "Yaşlı Cadı",
-        "Cadı",
-        "Gece Cadısı",
-        "Yavru Ejderha",
-        "Elektro Ejderha",
-        "Cehennem Ejderhası",
-        "Balon",
-        "Lav Tazısı",
-        "Anka Kuşu",
-        "Mega Minyon",
-        "Minyon Sürüsü",
-        "İskelet Ordusu",
-        "Muhafızlar",
-        "Goblin Çetesi",
-        "Goblin Devi",
-        "Goblin Fıçısı",
-        "Goblin Yıkıcı",
-        "Kıvılcım",
-        "Havan",
-        "X-Yayı",
-        "Tesla",
-        "Cehennem Kulesi",
-        "Bomba Kulesi",
-        "Goblin Kulübesi",
-        "Barbar Kulübesi",
-        "Mezar Taşı",
-        "Fırın",
-        "İksir Toplayıcı",
-        "Ayna",
-        "Oklar",
-        "Çarpma",
-        "Dev Kar Topu",
-        "Öfke",
-        "Dondurma",
-        "Kasırga",
-        "Deprem",
-        "İksir Golemi",
-        "Zehir",
-        "Alev Topu",
-        "Roket",
-        "Yıldırım",
-        "Klon",
-        "İskelet Fıçısı"
+        "Okçular", "Şövalye", "Goblinler", "Mızraklı Goblinler", "İskeletler",
+        "Bombacı", "Minyonlar", "Top", "Barbarlar", "Elit Barbarlar",
+        "Dev", "Kraliyet Devi", "Kraliyet Domuzları", "Domuz Binicisi", "Okçu Kraliçe",
+        "Koç Binicisi", "Valkür", "Mini P.E.K.K.A", "P.E.K.K.A", "Prens",
+        "Kara Prens", "Haydut", "Madenci", "Mega Şövalye", "Altın Şövalye",
+        "İskelet Kral", "Archer Queen", "Küçük Prens", "Keşiş", "Üç Silahşör",
+        "Silahşör", "Uçan Makine", "Cellat", "Avcı", "Büyücü",
+        "Elektro Büyücü", "Buz Büyücüsü", "Yaşlı Cadı", "Cadı", "Gece Cadısı",
+        "Yavru Ejderha", "Elektro Ejderha", "Cehennem Ejderhası", "Balon", "Lav Tazısı",
+        "Anka Kuşu", "Mega Minyon", "Minyon Sürüsü", "İskelet Ordusu", "Muhafızlar",
+        "Goblin Çetesi", "Goblin Devi", "Goblin Fıçısı", "Goblin Yıkıcı", "Kıvılcım",
+        "Havan", "X-Yayı", "Tesla", "Cehennem Kulesi", "Bomba Kulesi",
+        "Goblin Kulübesi", "Barbar Kulübesi", "Mezar Taşı", "Fırın", "İksir Toplayıcı",
+        "Ayna", "Oklar", "Çarpma", "Dev Kar Topu", "Öfke",
+        "Dondurma", "Kasırga", "Deprem", "İksir Golemi", "Zehir",
+        "Alev Topu", "Roket", "Yıldırım", "Klon", "İskelet Fıçısı"
       ],
       "hints": [
         "İksir",
-        "Arena ",
+        "Arena",
         "Deste",
-        "8",
         "Kule",
-        "Telefon",
-        "Taç"
+        "Supercell",
+        "Kart",
+        "Sandık"
       ],
       "isLocked": false,
       "priceTL": 0.0,
       "hasSubcategories": false
     },
     {
-      "id":"actors",
+      "id": "actors",
       "name": "Oyuncular",
       "iconName": "movie",
       "colorHex": "#F44336",
@@ -1087,15 +1079,16 @@
             "Kerem Bürsin", "Barış Arduç", "Cem Yılmaz", "Şahan Gökbakar",
             "Ata Demirer", "Yılmaz Erdoğan", "Şafak Sezer", "Erdal Beşikçioğlu",
             "Kemal Sunal", "Haluk Bilginer", "İlker Kaleli", "Selahattin Paşalı",
-            "Mert Ramazan Demir","Aytaç Şaşmaz","Alperen Duymaz", "Boran Kuzum",
-            "Uraz Kaygılaroğlu", "Tolga Sarıtaş","Şener Şen","Tamer Karadağlı" ,
-            "Ali Atay" , "Erkan Petekkaya", "Mehmet Günsür", "Doğu Demirkol" ,"Murat Cemcir",
-            "Metin Akpınar" ,"Zeki Alasya" , "Murat Cemcir" ,"Kubilay Aka"
+            "Mert Ramazan Demir", "Aytaç Şaşmaz", "Alperen Duymaz", "Boran Kuzum",
+            "Uraz Kaygılaroğlu", "Tolga Sarıtaş", "Şener Şen", "Tamer Karadağlı",
+            "Ali Atay", "Erkan Petekkaya", "Mehmet Günsür", "Doğu Demirkol", "Murat Cemcir",
+            "Metin Akpınar", "Zeki Alasya", "Kubilay Aka"
           ],
           "hints": [
-            "Yakışıklı",
-            "Zengin",
-            "Televizyon"
+            "Türk",
+            "Jön",
+            "Kamera",
+            "Başrol"
           ]
         },
         {
@@ -1108,15 +1101,16 @@
             "Hazal Kaya", "Afra Saraçoğlu", "Pınar Deniz", "Ezgi Mola",
             "Burcu Biricik", "Elçin Sangu", "Gupse Özay", "Melisa Aslı Pamuk",
             "Tuba Büyüküstün", "Fahriye Evcen", "Nurgül Yeşilçay", "Aslı Enver",
-            "Merve Dizdar" ,"Demet Özdemir","Alina Boz","Miray Daner" ,"Dilan Çiçek Deniz" ,
-            "Hafsanur Sancaktutan" ,"Ayça Ayşin Turan" ,"Neslihan Atagül","Türkan Şoray" ,
-            "Hülya Koçyiğit" ,"Gonca Vuslateri" ,"Gülse Birsel" ,"Büşra Pekin" , "Seda Bakan" ,
-            "Pelin Akil" ,"Nilperi Şahinkaya" ,"Ecem Erkek" , "Melisa Döngel" ,"İpek Filiz Yazıcı","Cemre Baysel"
+            "Merve Dizdar", "Demet Özdemir", "Alina Boz", "Miray Daner", "Dilan Çiçek Deniz",
+            "Hafsanur Sancaktutan", "Ayça Ayşin Turan", "Neslihan Atagül", "Türkan Şoray",
+            "Hülya Koçyiğit", "Gonca Vuslateri", "Gülse Birsel", "Büşra Pekin", "Seda Bakan",
+            "Pelin Akil", "Nilperi Şahinkaya", "Ecem Erkek", "Melisa Döngel", "İpek Filiz Yazıcı", "Cemre Baysel"
           ],
           "hints": [
-            "Güzel",
-            "Yetenekli",
-            "Türkiye"
+            "Türk",
+            "Aktris",
+            "Kamera",
+            "Başrol"
           ]
         },
         {
@@ -1133,9 +1127,10 @@
             "Chris Evans", "Morgan Freeman"
           ],
           "hints": [
-            "Para",
-            "Yakışıklı",
-            "Jön"
+            "Hollywood",
+            "Jön",
+            "Oscar",
+            "Global"
           ]
         },
         {
@@ -1151,15 +1146,16 @@
             "Dakota Johnson"
           ],
           "hints": [
-            "Güzel",
-            "Kadın",
-            "Ana Karakter"
+            "Hollywood",
+            "Aktris",
+            "Kırmızı Halı",
+            "Global"
           ]
         }
       ]
     },
     {
-      "id":"streamers",
+      "id": "streamers",
       "name": "Yayıncılar",
       "iconName": "live_tv",
       "colorHex": "#9C27B0",
@@ -1168,16 +1164,16 @@
         "Mithrain", "Unlost", "Eray", "Levo", "zeoN",
         "PurpleBixi", "Efe Uygaç", "Miafitz", "Hazreti Yasuo", "Elwind",
         "Hype", "Anna Deniz", "Rraenee", "Vales", "Htalks",
-        "Ataberk Doğan", "Tolunay Ören","PintiPanda","Ege Arseven" ,"ZgocBrayt"
+        "Ataberk Doğan", "Tolunay Ören", "PintiPanda", "Ege Arseven", "EasterGamersTv"
       ],
       "hints": [
-        "Canlı yayın yapar",
-        "İnternet platformu",
-        "İzleyici kitlesi",
-        "Twitch YouTube",
-        "Etkileşimli içerik",
-        "Bağış alabilir",
-        "Dijital medya"
+        "Twitch",
+        "Canlı",
+        "Chat",
+        "Bağış",
+        "Oyun",
+        "İzleyici",
+        "Kamera"
       ],
       "isLocked": true,
       "priceTL": 49.99,
@@ -1196,19 +1192,24 @@
           "id": "youtubers_male",
           "name": "Erkek Youtuberlar",
           "unlockedByAd": false,
-          "isUnlocked":true ,
+          "isUnlocked": true,
           "items": [
             "Enes Batur", "Ruhi Çenet", "Orkun Işıtmak", "Deli Mi Ne?", "Kafalar", "Reynmen",
             "Berkcan Güven", "Ali Biçim", "Mesut Can Tomay", "Enis Kirazoğlu", "Ümidi", "Doğan Kabak", "Barış Özcan", "Evrim Ağacı",
             "Diamond Tema", "Porçay", "Alper Rende", "Fırat Sobutay", "Melih Abuaf", "Oha Diyorum", "Yapyap", "CZN Burak", "Burak Oyunda",
             "Yusuf Kayaalp", "BARIŞ BRA", "Murat Abi GF", "Testo Taylan", "Mertcan Bahar",
-            "Amerikalı Aynasız", "Murat Soner", "Rıdvan Abi", "Röportaj Adam",
-            "SeseGel", "Noluyo Ya?","Mert Karadeniz" ,"SeeOK" ,"Furkan Arabacı"
+            "Amerikalı Aynasız", "Murat Soner", "Röportaj Adam",
+            "SeseGel", "Noluyo Ya?", "Mert Karadeniz", "Oğuzhan Uğur", "Hasan Can Kaya",
+            "MrBeast", "IShowSpeed", "Kai Cenat", "PewDiePie"
           ],
           "hints": [
-            "Internet",
+            "Video",
+            "Kanal",
             "Fenomen",
-            "Youtube"
+            "Vlog",
+            "Abone",
+            "İzlenme",
+            "İçerik"
           ]
         },
         {
@@ -1216,13 +1217,18 @@
           "name": "Kadın Youtuberlar",
           "unlockedByAd": false,
           "isUnlocked": true,
-          "items": ["Duygu Özaslan", "Merve Özkaynak", "Şeyda Erdoğan", "Danla Bilic", "Betül Çakmak", "Ecenaz Üçer",
-            "Meryem Can", "Eda Biçim", "Berfu Yenenler", "İdil Yazar", "Refika Birgül","Elvin Levinler"
+          "items": [
+            "Duygu Özaslan", "Merve Özkaynak", "Şeyda Erdoğan", "Danla Bilic", "Betül Çakmak", "Ecenaz Üçer",
+            "Meryem Can", "Berfu Yenenler", "İdil Yazar", "Refika Birgül", "Elvin Levinler"
           ],
           "hints": [
-            "İçerik",
-            "Kadın",
-            "Para"
+            "Video",
+            "Kanal",
+            "Makyaj",
+            "Vlog",
+            "Abone",
+            "İzlenme",
+            "İçerik"
           ]
         }
       ]

@@ -47,10 +47,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   }
 
   String get _timeString {
-    final prefix = _isTimerRunning ? '▶' : '⏸';
     final m = (_timeLeft ~/ 60).toString().padLeft(2, '0');
     final s = (_timeLeft % 60).toString().padLeft(2, '0');
-    return '$prefix $m:$s';
+    return '$m:$s';
   }
 
   @override
@@ -362,13 +361,10 @@ class _Header extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.timer_rounded,
-                    color: Colors.white, size: 16),
-                const SizedBox(width: 4),
                 Text(
                   timeString,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
