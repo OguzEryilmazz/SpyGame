@@ -222,28 +222,40 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
                       _Header(
                         timeString: widget.timeString,
                         onBack: widget.onBack,
+                        onPrevious:
+                            widget.playerIndex > 0 ? widget.onPrevious : null,
                       ),
                       Expanded(
-                        child: _PlayerInfo(
-                          player: p,
-                          playerIndex: widget.playerIndex,
-                          totalPlayers: widget.totalPlayers,
-                          isLastPlayer: widget.isLastPlayer,
-                          arrowAnim: _arrowAnim,
-                          // reveal açıldıkça ok'u gizle (opsiyonel)
-                          revealProgress:
-                          revealHeight / _maxPullUp,
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: _PlayerInfo(
+                                player: p,
+                                playerIndex: widget.playerIndex,
+                                totalPlayers: widget.totalPlayers,
+                                isLastPlayer: widget.isLastPlayer,
+                                arrowAnim: _arrowAnim,
+                                // reveal açıldıkça ok'u gizle (opsiyonel)
+                                revealProgress: revealHeight / _maxPullUp,
+                              ),
+                            ),
+                            // Son oyuncu butonu — üste biner, alttaki
+                            // oyuncu bilgisi alanını asla küçültmez.
+                            if (widget.isLastPlayer && revealHeight < 40)
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 32,
+                                child: Center(
+                                  child: _StartTimerButton(
+                                    playerColor: playerColor,
+                                    onPressed: widget.onStartTimer,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
-                      // Son oyuncu butonu
-                      if (widget.isLastPlayer && revealHeight < 40)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 32),
-                          child: _StartTimerButton(
-                            playerColor: playerColor,
-                            onPressed: widget.onStartTimer,
-                          ),
-                        ),
                     ],
                   ),
                 ),
@@ -296,8 +308,13 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
 class _Header extends StatelessWidget {
   final String timeString;
   final VoidCallback onBack;
+  final VoidCallback? onPrevious;
 
-  const _Header({required this.timeString, required this.onBack});
+  const _Header({
+    required this.timeString,
+    required this.onBack,
+    this.onPrevious,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -318,6 +335,22 @@ class _Header extends StatelessWidget {
                   color: Colors.white, size: 18),
             ),
           ),
+          if (onPrevious != null) ...[
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: onPrevious,
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.skip_previous_rounded,
+                    color: Colors.white, size: 22),
+              ),
+            ),
+          ],
           const Spacer(),
           Container(
             padding:

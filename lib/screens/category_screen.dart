@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../ads/ad_providers.dart';
 import '../ads/rewarded_ad_manager.dart';
+import '../ads/ad_watch_limiter.dart';
 import '../billing/iap_service.dart';
 import '../models/player.dart';
 import '../models/game_player.dart';
@@ -449,7 +450,24 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
     );
   }
 
-  void _watchAdForSubcategory(Category category, Subcategory sub) {
+  Future<void> _watchAdForSubcategory(Category category, Subcategory sub) async {
+    // Günlük reklam izleme limiti kontrolü (AdMob'da geçersiz trafik
+    // riskini azaltmak için).
+    final canWatch = await AdWatchLimiter.instance.canWatch();
+    if (!canWatch) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Bugünlük reklam izleme hakkın doldu (${AdWatchLimiter.dailyLimit}/gün). '
+            'Yarın tekrar deneyebilirsin.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
     final RewardedAdManager rewardedAd = ref.read(rewardedAdProvider);
 
     if (!rewardedAd.isAdReady) {
@@ -467,6 +485,7 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
 
     rewardedAd.showAd(
       onUserEarnedReward: (amount, type) async {
+        await AdWatchLimiter.instance.registerWatch();
         await ref.read(categoriesProvider.notifier).unlockSubcategory(sub.id);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1402,6 +1421,25 @@ class _SubPurchaseSheet extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
+          ),
+          const SizedBox(height: 10),
+          FutureBuilder<int>(
+            future: AdWatchLimiter.instance.remaining(),
+            builder: (context, snapshot) {
+              final remaining = snapshot.data;
+              if (remaining == null) return const SizedBox.shrink();
+              return Text(
+                remaining > 0
+                    ? 'Bugün kalan hakkın: $remaining/${AdWatchLimiter.dailyLimit}'
+                    : 'Bugünlük reklam izleme hakkın doldu, yarın tekrar dene.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: remaining > 0
+                      ? const Color(0xFF9E9E9E)
+                      : Colors.redAccent,
+                ),
+              );
+            },
           ),
         ],
       ),

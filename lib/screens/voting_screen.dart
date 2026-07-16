@@ -241,6 +241,8 @@ class _VotingInterfaceState extends State<_VotingInterface>
                         voterIndex: widget.voterIndex,
                         totalVoters: widget.totalVoters,
                         onBack: widget.onBack,
+                        onPrevious:
+                            widget.voterIndex > 0 ? widget.onPrevious : null,
                       ),
                       Expanded(
                         child: _VoterInfo(
@@ -296,11 +298,13 @@ class _VotingHeader extends StatelessWidget {
   final int voterIndex;
   final int totalVoters;
   final VoidCallback onBack;
+  final VoidCallback? onPrevious;
 
   const _VotingHeader({
     required this.voterIndex,
     required this.totalVoters,
     required this.onBack,
+    this.onPrevious,
   });
 
   @override
@@ -322,6 +326,22 @@ class _VotingHeader extends StatelessWidget {
                   color: Colors.white, size: 18),
             ),
           ),
+          if (onPrevious != null) ...[
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: onPrevious,
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.skip_previous_rounded,
+                    color: Colors.white, size: 22),
+              ),
+            ),
+          ],
           const Spacer(),
           Container(
             padding:
