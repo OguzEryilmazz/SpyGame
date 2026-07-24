@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../widgets/setting_item.dart';
 import '../widgets/counter_row.dart';
+import 'category_screen.dart' show categoriesProvider;
+import '../theme/app_theme.dart';
 
 // State provider'lar
 final playerCountProvider = StateProvider<int>((ref) => 4);
@@ -44,12 +46,15 @@ class SetupScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
 
                     // Header
-                    const Text(
-                      'Spy - Haini Bul',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    GestureDetector(
+                      onLongPress: () => _showCouponDialog(context, ref),
+                      child: const Text(
+                        'Spy - Haini Bul',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -70,6 +75,8 @@ class SetupScreen extends ConsumerWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(24),
+                        boxShadow: AppShadows.soft(),
+                        border: Border.all(color: Colors.white.withOpacity(0.15)),
                       ),
                       child: Column(
                         children: [
@@ -205,26 +212,36 @@ class SetupScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(24),
                   child: SizedBox(
                     height: 56,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.push('/playerSetup/$playerCount');
-                      },
-                      icon: const Icon(
-                        Icons.play_arrow,
-                        color: Color(0xFFE91E63),
-                        size: 20,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: AppShadows.glow(Colors.white),
                       ),
-                      label: const Text(
-                        'Devam Et',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          context.push('/playerSetup/$playerCount');
+                        },
+                        icon: const Icon(
+                          Icons.play_arrow,
                           color: Color(0xFFE91E63),
+                          size: 20,
+                        ),
+                        label: Text(
+                          'Devam Et',
+                          style: AppTheme.heading(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFE91E63),
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),                    ),
                     ),
                   ),
                 ),
@@ -235,4 +252,96 @@ class SetupScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+void _showCouponDialog(BuildContext context, WidgetRef ref) {
+  final controller = TextEditingController();
+  bool isSubmitting = false;
+
+  showDialog(
+    context: context,
+    builder: (dialogCtx) {
+      return StatefulBuilder(
+        builder: (dialogCtx, setDialogState) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFF1A0A2E),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: const Text(
+              'Kupon Kodu',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+              enabled: !isSubmitting,
+              textCapitalization: TextCapitalization.characters,
+              style: const TextStyle(color: Colors.white, letterSpacing: 1.5),
+              decoration: InputDecoration(
+                hintText: 'Kodu buraya gir',
+                hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFE91E63)),
+                ),
+              ),
+              onSubmitted: (_) => _submitCoupon(
+                dialogCtx, context, ref, controller, setDialogState,
+                onBusy: (v) => isSubmitting = v,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSubmitting ? null : () => Navigator.pop(dialogCtx),
+                child: const Text('İptal', style: TextStyle(color: Colors.white70)),
+              ),
+              TextButton(
+                onPressed: isSubmitting
+                    ? null
+                    : () => _submitCoupon(
+                  dialogCtx, context, ref, controller, setDialogState,
+                  onBusy: (v) => isSubmitting = v,
+                ),
+                child: const Text(
+                  'Onayla',
+                  style: TextStyle(color: Color(0xFFE91E63), fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+Future<void> _submitCoupon(
+    BuildContext dialogCtx,
+    BuildContext screenCtx,
+    WidgetRef ref,
+    TextEditingController controller,
+    void Function(void Function()) setDialogState, {
+      required void Function(bool) onBusy,
+    }) async {
+  final code = controller.text;
+  if (code.trim().isEmpty) return;
+
+  setDialogState(() => onBusy(true));
+  final success = await ref.read(categoriesProvider.notifier).redeemCoupon(code);
+
+  if (!dialogCtx.mounted) return;
+  Navigator.pop(dialogCtx);
+
+  if (!screenCtx.mounted) return;
+  ScaffoldMessenger.of(screenCtx).showSnackBar(
+    SnackBar(
+      content: Text(
+        success ? 'Tüm kategoriler açıldı! 🎉' : 'Geçersiz kod , bize mail atın',
+      ),
+      backgroundColor: success ? const Color(0xFF4CAF50) : const Color(0xFFF44336),
+    ),
+  );
 }

@@ -156,6 +156,14 @@ class Category {
 const _favoritesKey = 'favorite_category_ids';
 const _unlockedCategoriesKey = 'unlocked_category_ids';
 const _unlockedSubcategoriesKey = 'unlocked_subcategory_ids';
+const _couponUnlockedKey = 'coupon_all_unlocked';
+
+// Tanıdıklara verilecek kupon kodları — büyük/küçük harf duyarsız kontrol edilir.
+// Yeni kod eklemek için bu sete bir satır eklemen yeterli.
+const _validCoupons = {
+  'SPYVIP',
+  'HAINIBULPRO',
+};
 
 final categoriesProvider =
 StateNotifierProvider<CategoriesNotifier, AsyncValue<List<Category>>>(
@@ -184,12 +192,15 @@ class CategoriesNotifier extends StateNotifier<AsyncValue<List<Category>>> {
           prefs.getStringList(_unlockedCategoriesKey)?.toSet() ?? <String>{};
       final unlockedSubIds =
           prefs.getStringList(_unlockedSubcategoriesKey)?.toSet() ?? <String>{};
+      final couponUnlocked = prefs.getBool(_couponUnlockedKey) ?? false;
 
       _categories = _categories.map((c) {
-        final catUnlocked = unlockedCatIds.contains(c.id);
+        final catUnlocked = couponUnlocked || unlockedCatIds.contains(c.id);
 
         final updatedSubs = c.subcategories.map((sub) {
-          final subUnlocked = sub.isUnlocked || unlockedSubIds.contains(sub.id);
+          final subUnlocked = couponUnlocked ||
+              sub.isUnlocked ||
+              unlockedSubIds.contains(sub.id);
           return Subcategory(
             id: sub.id,
             name: sub.name,
@@ -286,12 +297,60 @@ class CategoriesNotifier extends StateNotifier<AsyncValue<List<Category>>> {
     }).toList();
     state = AsyncValue.data(List.unmodifiable(_categories));
   }
+
+  /// Kupon kodunu doğrular; geçerliyse TÜM kategori ve alt kategorileri
+  /// kalıcı olarak açar (SharedPreferences'a yazılır, uygulama yeniden
+  /// açılsa da kalır). Başarılıysa true, geçersiz kodda false döner.
+  Future<bool> redeemCoupon(String code) async {
+    final normalized = code.trim().toUpperCase();
+    if (normalized.isEmpty || !_validCoupons.contains(normalized)) {
+      return false;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_couponUnlockedKey, true);
+
+    _categories = _categories.map((cat) {
+      final updatedSubs = cat.subcategories
+          .map((sub) => Subcategory(
+        id: sub.id,
+        name: sub.name,
+        items: sub.items,
+        hints: sub.hints,
+        isUnlocked: true,
+        unlockedByAd: sub.unlockedByAd,
+      ))
+          .toList();
+
+      return Category(
+        id: cat.id,
+        name: cat.name,
+        iconName: cat.iconName,
+        color: cat.color,
+        items: cat.items,
+        hints: cat.hints,
+        hasSubcategories: cat.hasSubcategories,
+        subcategories: updatedSubs,
+        isFavorite: cat.isFavorite,
+        isLocked: false,
+        priceTL: cat.priceTL,
+      );
+    }).toList();
+
+    state = AsyncValue.data(List.unmodifiable(_categories));
+    return true;
+  }
 }
 
 typedef CategorySelection = ({Category category, Subcategory? subcategory});
 
 final selectedCategoriesProvider =
 StateProvider<List<CategorySelection>>((ref) => []);
+
+// Reklam yüklenirken hangi alt kategori için beklendiğini tutar; açık olan
+// _SubcategorySheet bunu watch ederek spinner gösterir (bkz. unlockSubcategory
+// ile aynı reaktif pattern).
+final watchingAdSubIdProvider = StateProvider<String?>((ref) => null);
 
 final categorySearchProvider = StateProvider<String>((ref) => '');
 
@@ -451,6 +510,8 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   }
 
   Future<void> _watchAdForSubcategory(Category category, Subcategory sub) async {
+    if (ref.read(watchingAdSubIdProvider) == sub.id) return; // bu sub için zaten bekleniyor
+
     // İki reklam izleme arasında minimum bekleme (cooldown) kontrolü
     // (AdMob'da geçersiz/spam trafik riskini azaltmak için).
     final remainingCooldown = await AdWatchLimiter.instance.remainingCooldown();
@@ -471,13 +532,22 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
     final RewardedAdManager rewardedAd = ref.read(rewardedAdProvider);
 
     if (!rewardedAd.isAdReady) {
+      ref.read(watchingAdSubIdProvider.notifier).state = sub.id;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Reklam yükleniyor, lütfen bekleyin...')),
       );
       rewardedAd.loadAd(
         onAdLoaded: () {
           if (!mounted) return;
+          ref.read(watchingAdSubIdProvider.notifier).state = null;
           _watchAdForSubcategory(category, sub);
+        },
+        onAdFailedToLoad: (_) {
+          if (!mounted) return;
+          ref.read(watchingAdSubIdProvider.notifier).state = null;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Reklam yüklenemedi, tekrar dene.')),
+          );
         },
       );
       return;
@@ -1493,6 +1563,7 @@ class _SubcategorySheetState extends ConsumerState<_SubcategorySheet> {
       ),
       orElse: () => widget.category,
     );
+    final watchingAdSubId = ref.watch(watchingAdSubIdProvider);
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
 
     return Container(
@@ -1584,6 +1655,7 @@ class _SubcategorySheetState extends ConsumerState<_SubcategorySheet> {
                 final sub = cat.subcategories[i];
                 final isSelected = _selected.contains(sub.id);
                 final isLocked = !sub.isUnlocked;
+                final isLoadingAd = watchingAdSubId == sub.id;
 
                 return _SubcategoryItem(
                   subcategory: sub,
@@ -1591,7 +1663,9 @@ class _SubcategorySheetState extends ConsumerState<_SubcategorySheet> {
                   categoryIcon: cat.icon,
                   isSelected: isSelected,
                   isLocked: isLocked,
+                  isLoadingAd: isLoadingAd,
                   onTap: () {
+                    if (isLoadingAd) return; // reklam yükleniyor, tekrar tıklamayı yok say
                     if (isLocked) {
                       widget.onUnlockSub(sub);
                       return;
@@ -1648,6 +1722,7 @@ class _SubcategoryItem extends StatelessWidget {
   final IconData categoryIcon;
   final bool isSelected;
   final bool isLocked;
+  final bool isLoadingAd;
   final VoidCallback onTap;
 
   const _SubcategoryItem({
@@ -1656,6 +1731,7 @@ class _SubcategoryItem extends StatelessWidget {
     required this.categoryIcon,
     required this.isSelected,
     required this.isLocked,
+    this.isLoadingAd = false,
     required this.onTap,
   });
 
@@ -1740,7 +1816,9 @@ class _SubcategoryItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        isLocked
+                        isLoadingAd
+                            ? 'Reklam yükleniyor...'
+                            : isLocked
                             ? 'Reklamla Aç'
                             : '${subcategory.items.length} kelime · ${subcategory.hints.length} ipucu',
                         style: TextStyle(
@@ -1758,7 +1836,13 @@ class _SubcategoryItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (isLocked)
+                if (isLoadingAd)
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2.4),
+                  )
+                else if (isLocked)
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 6),
@@ -1773,19 +1857,19 @@ class _SubcategoryItem extends StatelessWidget {
                     ),
                   )
                 else if (isSelected)
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.check_rounded,
-                        color: Colors.white, size: 16),
-                  )
-                else
-                  Icon(Icons.add_rounded,
-                      color: categoryColor.withOpacity(0.5), size: 22),
+                    Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.check_rounded,
+                          color: Colors.white, size: 16),
+                    )
+                  else
+                    Icon(Icons.add_rounded,
+                        color: categoryColor.withOpacity(0.5), size: 22),
               ],
             ),
           ),
