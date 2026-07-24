@@ -17,6 +17,6 @@ class GamePlayer {
     this.selectedCharacter,
     required this.isSpy,
     required this.assignedWord,
-    this.hint, required  color, required String role,
+    this.hint,
   });
 }

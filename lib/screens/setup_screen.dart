@@ -339,7 +339,7 @@ Future<void> _submitCoupon(
   ScaffoldMessenger.of(screenCtx).showSnackBar(
     SnackBar(
       content: Text(
-        success ? 'Tüm kategoriler açıldı! 🎉' : 'Geçersiz kod , bize mail atın',
+        success ? 'Tüm kategoriler açıldı! 🎉' : 'Geçersiz kod, bize mail atın',
       ),
       backgroundColor: success ? const Color(0xFF4CAF50) : const Color(0xFFF44336),
     ),

@@ -405,12 +405,11 @@ List<GamePlayer> assignRoles(
       return GamePlayer(
         id: p.id,
         name: p.name,
-        color: p.selectedColor ?? const Color(0xFF9E9E9E),
+        selectedColor: p.selectedColor,
         selectedCharacter: p.selectedCharacter,
         isSpy: true,
         assignedWord: 'SPY',
         hint: null,
-        role: '',
       );
     }
 
@@ -419,12 +418,11 @@ List<GamePlayer> assignRoles(
     return GamePlayer(
       id: p.id,
       name: p.name,
-      color: p.selectedColor ?? const Color(0xFF9E9E9E),
+      selectedColor: p.selectedColor,
       selectedCharacter: p.selectedCharacter,
       isSpy: false,
       assignedWord: chosenItem,
       hint: hint,
-      role: '',
     );
   });
 }
@@ -1923,12 +1921,17 @@ class _StartGameButton extends StatelessWidget {
               children: [
                 const Icon(Icons.play_arrow_rounded, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  'Oyunu Başlat  ·  $selectedCount kategori  ·  $totalItems öğe',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Oyunu Başlat  ·  $selectedCount kategori  ·  $totalItems öğe',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
                   ),
                 ),
               ],

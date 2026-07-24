@@ -16,7 +16,7 @@ class AppTheme {
   /// güncellenir.)
   static ThemeData get themeData {
     return ThemeData(
-      fontFamily: GoogleFonts.spaceGrotesk().fontFamily,
+      fontFamily: GoogleFonts.inter().fontFamily,
     );
   }
 
@@ -27,7 +27,7 @@ class AppTheme {
     Color color = Colors.white,
     double? letterSpacing,
   }) =>
-      GoogleFonts.spaceGrotesk(
+      GoogleFonts.inter(
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: color,

@@ -67,19 +67,32 @@ class _PlayerCardState extends State<PlayerCard> {
           // Header
           Row(
             children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: player.selectedColor ?? Colors.grey,
-                child: player.selectedCharacter != null
-                    ? ClipOval(
-                  child: Image.asset(
-                    player.selectedCharacter!.assetPath,
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
+              Container(
+                width: 56,
+                height: 56,
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: player.selectedColor ?? Colors.grey,
+                ),
+                child: CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Colors.white,
+                  child: player.selectedCharacter != null
+                      ? ClipOval(
+                    child: Image.asset(
+                      player.selectedCharacter!.assetPath,
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                      : Icon(
+                    Icons.person,
+                    color: player.selectedColor ?? Colors.grey,
+                    size: 24,
                   ),
-                )
-                    : const Icon(Icons.person, color: Colors.white, size: 24),
+                ),
               ),
               const SizedBox(width: 16),
               Text(
