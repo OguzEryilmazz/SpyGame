@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import com.oguz.spy.ads.InterstitialAdManager
+import com.oguz.spy.ads.SpyInterstitialAdManager
 import com.oguz.spy.ux.components.VotingInterface
 import com.oguz.spy.ux.components.VotingResultsScreen
 
@@ -12,7 +12,7 @@ import com.oguz.spy.ux.components.VotingResultsScreen
 fun VotingScreen(
     navController: NavController,
     gamePlayers: List<GamePlayer>,
-    interstitialAdManager: InterstitialAdManager
+    interstitialAdManager: SpyInterstitialAdManager
 ) {
     val context = LocalContext.current
     val activity = context as? Activity

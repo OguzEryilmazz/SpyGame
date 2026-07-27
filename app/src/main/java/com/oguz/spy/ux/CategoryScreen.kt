@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.billing.BillingManager
+import com.oguz.spy.billing.PurchaseState
 import com.oguz.spy.billing.PromoCodeManager
 import com.oguz.spy.datamanagment.CategoryDataManager
 import com.oguz.spy.models.CharacterAvatar
@@ -222,7 +223,7 @@ fun CategoryScreen(
     LaunchedEffect(Unit) {
         billingManager.purchaseState.collect { state ->
             when (state) {
-                is BillingManager.PurchaseState.Success -> {
+                is PurchaseState.Success -> {
                     val productId = state.categoryId
                     val isSubcategory = categories.any { cat ->
                         cat.subcategories.any { it.id == productId }
@@ -242,14 +243,14 @@ fun CategoryScreen(
                         }
                     }
                 }
-                is BillingManager.PurchaseState.Error -> {
+                is PurchaseState.Error -> {
                     purchasingCategoryId = null
                     errorMessage = state.message
                     kotlinx.coroutines.delay(3000)
                     errorMessage = null
                 }
-                is BillingManager.PurchaseState.Loading -> {}
-                is BillingManager.PurchaseState.Idle -> { purchasingCategoryId = null }
+                is PurchaseState.Loading -> {}
+                is PurchaseState.Idle -> { purchasingCategoryId = null }
             }
         }
     }

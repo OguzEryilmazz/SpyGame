@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.activity.ComponentActivity
-import com.oguz.spy.ads.InterstitialAdManager
+import com.oguz.spy.ads.SpyInterstitialAdManager
 import kotlinx.coroutines.delay
 
 @SuppressLint("MissingPermission")
@@ -47,7 +47,7 @@ fun TimerScreen(
     navController: NavController,
     gameDuration: Int,
     gamePlayers: List<GamePlayer>,
-    interstitialAdManager: InterstitialAdManager
+    interstitialAdManager: SpyInterstitialAdManager
 ) {
     var timeLeft by remember { mutableStateOf(gameDuration * 60) }
     var isTimerRunning by remember { mutableStateOf(true) }

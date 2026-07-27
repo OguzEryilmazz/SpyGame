@@ -5,7 +5,7 @@
     import androidx.compose.runtime.*
     import androidx.compose.ui.platform.LocalContext
     import androidx.navigation.NavController
-    import com.oguz.spy.ads.InterstitialAdManager
+    import com.oguz.spy.ads.SpyInterstitialAdManager
     import com.oguz.spy.ux.components.PlayerGameScreen
     import kotlinx.coroutines.delay
 
@@ -15,7 +15,7 @@
         navController: NavController,
         gamePlayers: List<GamePlayer>,
         category: Category,
-        interstitialAdManager: InterstitialAdManager,
+        interstitialAdManager: SpyInterstitialAdManager,
         gameDurationMinutes: Int,
         showHints: Boolean,
     ) {

@@ -15,6 +15,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.Json // ✅ EKLE
 
 private const val SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY = "single_use_unlocked_subcategories"
+private const val COUPON_UNLOCKED_ALL_KEY = "coupon_all_unlocked"
+
+// Tanıdıklara verilecek kupon kodları — büyük/küçük harf duyarsız kontrol edilir.
+// Yeni kod eklemek için bu sete bir satır eklemen yeterli.
+// (Spy_IOS branch'teki liste ile senkron tutulmalı.)
+private val VALID_COUPONS = setOf(
+    "SPYVIP",
+    "HAINIBULPRO"
+)
 
 @Serializable
 data class CategoryJson(
@@ -81,9 +90,10 @@ class CategoryDataManager(private val context: Context) {
             val favorites = getFavoriteIds()
             val purchased = getPurchasedIds()
             val unlockedSubs = getUnlockedSubcategoryIds()
+            val couponUnlockedAll = isCouponUnlockedAll()
 
             val result = data.categories.map { json ->
-                val isMainCategoryPurchased = purchased.contains(json.id)
+                val isMainCategoryPurchased = purchased.contains(json.id) || couponUnlockedAll
 
                 val subcategories = json.subcategories?.map { subJson ->
                     Subcategory(
@@ -105,7 +115,7 @@ class CategoryDataManager(private val context: Context) {
                     color = Color(android.graphics.Color.parseColor(json.colorHex)),
                     items = json.items ?: emptyList(),
                     hints = json.hints ?: emptyList(),
-                    isLocked = json.isLocked && !purchased.contains(json.id),
+                    isLocked = json.isLocked && !purchased.contains(json.id) && !couponUnlockedAll,
                     priceTL = json.priceTL,
                     isFavorite = favorites.contains(json.id),
                     hasSubcategories = json.hasSubcategories,
@@ -204,6 +214,24 @@ class CategoryDataManager(private val context: Context) {
         }
     }
 
+    fun isCouponUnlockedAll(): Boolean {
+        return prefs.getBoolean(COUPON_UNLOCKED_ALL_KEY, false)
+    }
+
+    /**
+     * Kupon kodunu doğrular; geçerliyse TÜM kategori ve alt kategorileri kalıcı
+     * olarak açar (SharedPreferences'a yazılır, uygulama yeniden açılsa da kalır).
+     * Başarılıysa true, geçersiz kodda false döner.
+     */
+    fun redeemCoupon(code: String): Boolean {
+        val normalized = code.trim().uppercase()
+        if (normalized.isEmpty() || !VALID_COUPONS.contains(normalized)) {
+            return false
+        }
+        prefs.edit().putBoolean(COUPON_UNLOCKED_ALL_KEY, true).apply()
+        return true
+    }
+
     private fun getIconByName(iconName: String) = when (iconName) {
         "work" -> Icons.Default.Work
         "restaurant" -> Icons.Default.Restaurant
@@ -214,12 +242,11 @@ class CategoryDataManager(private val context: Context) {
         "place" -> Icons.Default.Place
         "pets" -> Icons.Default.Pets
         "directions_car" -> Icons.Default.DirectionsCar
-        "sports_esports" -> Icons.Default.SportsEsports
+        "sports_esports" -> Icons.Default.SportsBasketball
         "computer" -> Icons.Default.Computer
         "checkroom" -> Icons.Default.Checkroom
         "school" -> Icons.Default.School
         "book" -> Icons.Default.Book
-        "sports_basketball" -> Icons.Default.SportsBasketball
         "wb_sunny" -> Icons.Default.WbSunny
         "mood" -> Icons.Default.Mood
         "home" -> Icons.Default.Home
@@ -231,16 +258,6 @@ class CategoryDataManager(private val context: Context) {
         "movie" -> Icons.Default.Movie
         "live_tv" -> Icons.Default.LiveTv
         "play_circle" -> Icons.Default.PlayCircle
-
         else -> Icons.Default.Category
-    }
-
-    fun resetAllPurchases() {
-        prefs.edit()
-            .remove(PURCHASED_KEY)
-            .remove(PURCHASED_SUBCATEGORIES_KEY)
-            .remove(UNLOCKED_SUBCATEGORIES_KEY)
-            .remove(SINGLE_USE_UNLOCKED_SUBCATEGORIES_KEY)
-            .apply()
     }
 }

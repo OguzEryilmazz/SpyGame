@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "1.9.20"
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
 }
 
@@ -14,8 +14,8 @@ android {
         applicationId = "com.oguz.spy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 26
-        versionName = "1.0.26"
+        versionCode = 28
+        versionName = "1.0.28"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -83,7 +83,6 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation(libs.androidx.compose.bom)
     kapt("androidx.room:room-compiler:2.6.1")
 
     // Google Play Services
@@ -95,10 +94,10 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Kotlinx Serialization (Gson yerine)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation(libs.kotlinx.serialization.json)
 
     // Billing & Other
-    implementation("com.android.billingclient:billing-ktx:7.0.0")
+    implementation("com.android.billingclient:billing-ktx:8.3.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 

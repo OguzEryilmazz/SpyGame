@@ -8,141 +8,147 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import com.oguz.spy.ads.BannerAdManager
-import com.oguz.spy.ads.InterstitialAdManager
+import com.oguz.spy.ads.SpyInterstitialAdManager
 import com.oguz.spy.ads.RewardedAdManager
 import com.oguz.spy.billing.BillingManager
+import com.oguz.spy.billing.PurchaseState
 import com.oguz.spy.datamanagment.CategoryDataManager
 import com.oguz.spy.ui.theme.SpyTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var rewardedAdManager: RewardedAdManager
-    private lateinit var billingManager: BillingManager
-    private lateinit var categoryDataManager: CategoryDataManager
-    private lateinit var bannerAdManager: BannerAdManager
-
-    private lateinit var interstitialAdManager: InterstitialAdManager
+    private var rewardedAdManager: RewardedAdManager? = null
+    private var billingManager: BillingManager? = null
+    private var categoryDataManager: CategoryDataManager? = null
+    private var bannerAdManager: BannerAdManager? = null
+    private var interstitialAdManager: SpyInterstitialAdManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // AdMob'u başlat
-        MobileAds.initialize(this) { initializationStatus ->
-            Log.d("AdMob", "AdMob initialized: $initializationStatus")
-        }
-
-        // Rewarded Ad Manager
-        rewardedAdManager = RewardedAdManager(this)
-        rewardedAdManager.loadAd(
-            onAdLoaded = { Log.d("AdMob", "Rewarded ad loaded") },
-            onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load rewarded: $error") }
-        )
-
-        interstitialAdManager = InterstitialAdManager()
-        interstitialAdManager.loadAd(
-            context = this,
-            onAdLoaded = { Log.d("AdMob", "Interstitial ad loaded") },
-            onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load interstitial: $error") }
-        )
-        // Banner Ad Manager
-        bannerAdManager = BannerAdManager()
-        bannerAdManager.createAdView(
-            context = this,
-            onAdLoaded = { Log.d("AdMob", "Banner ad loaded") },
-            onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load banner: $error") }
-        )
-        bannerAdManager.loadAd()
-
-        // CategoryDataManager'ı önce oluştur
-        categoryDataManager = CategoryDataManager(this)
-
-        // Billing Manager'ı başlat
-        billingManager = BillingManager(
-            context = applicationContext,
-            coroutineScope = lifecycleScope
-        )
-
-        // ✅ Satın alma durumunu dinle
-        lifecycleScope.launch {
-            billingManager.purchaseState.collect { state ->
-                when (state) {
-                    is BillingManager.PurchaseState.Success -> {
-                        val categoryId = state.categoryId
-                        Log.d("MainActivity", "Satın alma başarılı: $categoryId")
-
-                        // Subcategory mi ana kategori mi kontrol et
-                        if (isSubcategory(categoryId)) {
-                            categoryDataManager.markSubcategoryAsPurchased(categoryId)
-                            Log.d("MainActivity", "Subcategory satın alındı olarak işaretlendi: $categoryId")
-                        } else {
-                            categoryDataManager.markAsPurchased(categoryId)
-                            Log.d("MainActivity", "Ana kategori satın alındı olarak işaretlendi: $categoryId")
-                        }
-                    }
-                    is BillingManager.PurchaseState.Error -> {
-                        Log.e("MainActivity", "Satın alma hatası: ${state.message}")
-                    }
-                    else -> { /* Loading veya Idle */ }
-                }
-            }
-        }
-
-        // ✅ Uygulama başladığında mevcut satın almaları yükle
-        lifecycleScope.launch {
-            // Billing client hazır olana kadar bekle
-            kotlinx.coroutines.delay(2000)
-
-            // Tüm satın alınmış ürünleri al
-            val purchasedProducts = billingManager.getAllPurchasedProducts()
-
-            Log.d("MainActivity", "Toplam ${purchasedProducts.size} satın alınmış ürün bulundu")
-
-            purchasedProducts.forEach { productId ->
-                if (isSubcategory(productId)) {
-                    categoryDataManager.markSubcategoryAsPurchased(productId)
-                    Log.d("MainActivity", "Subcategory yüklendi: $productId")
-                } else {
-                    categoryDataManager.markAsPurchased(productId)
-                    Log.d("MainActivity", "Ana kategori yüklendi: $productId")
-                }
-            }
-        }
-
+        
         enableEdgeToEdge()
+        
+        initializeManagers()
+        setupPurchaseObserver()
+        loadInitialPurchases()
+
         setContent {
-            SpyTheme {
-                PageTransition(
-                    rewardedAdManager = rewardedAdManager,
-                    bannerAdManager = bannerAdManager,
-                    interstitialAdManager = interstitialAdManager
-                )
+            val rewarded = rewardedAdManager
+            val banner = bannerAdManager
+            val interstitial = interstitialAdManager
+            
+            if (rewarded != null && banner != null && interstitial != null) {
+                SpyTheme {
+                    PageTransition(
+                        rewardedAdManager = rewarded,
+                        bannerAdManager = banner,
+                        interstitialAdManager = interstitial
+                    )
+                }
             }
         }
     }
 
-    // Subcategory mi kontrol et (ID'de underscore varsa subcategory'dir)
-    private fun isSubcategory(productId: String): Boolean {
-        val subcategoryPrefixes = listOf(
-            "athletes_", "singers_", "actors_", "youtubers_"
+    private fun initializeManagers() {
+        MobileAds.initialize(this) { initializationStatus ->
+            Log.d("AdMob", "AdMob initialized: $initializationStatus")
+        }
+
+        rewardedAdManager = RewardedAdManager(this).apply {
+            loadAd(
+                onAdLoaded = { Log.d("AdMob", "Rewarded ad loaded") },
+                onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load rewarded: $error") }
+            )
+        }
+
+        interstitialAdManager = SpyInterstitialAdManager().apply {
+            loadAd(
+                context = this@MainActivity,
+                onAdLoaded = { Log.d("AdMob", "Interstitial ad loaded") },
+                onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load interstitial: $error") }
+            )
+        }
+
+        bannerAdManager = BannerAdManager().apply {
+            createAdView(
+                context = this@MainActivity,
+                onAdLoaded = { Log.d("AdMob", "Banner ad loaded") },
+                onAdFailedToLoad = { error -> Log.e("AdMob", "Failed to load banner: $error") }
+            )
+            loadAd()
+        }
+
+        categoryDataManager = CategoryDataManager(this)
+
+        billingManager = BillingManager(
+            context = applicationContext,
+            coroutineScope = lifecycleScope
         )
+    }
+
+    private fun setupPurchaseObserver() {
+        val billing = billingManager ?: return
+        lifecycleScope.launch {
+            billing.purchaseState.collect { state ->
+                when (state) {
+                    is PurchaseState.Success -> {
+                        val categoryId = state.categoryId
+                        Log.d("MainActivity", "Satın alma başarılı: $categoryId")
+
+                        if (isSubcategory(categoryId)) {
+                            categoryDataManager?.markSubcategoryAsPurchased(categoryId)
+                        } else {
+                            categoryDataManager?.markAsPurchased(categoryId)
+                        }
+                    }
+                    is PurchaseState.Error -> {
+                        Log.e("MainActivity", "Satın alma hatası: ${state.message}")
+                    }
+                    PurchaseState.Idle -> {}
+                    PurchaseState.Loading -> {}
+                }
+            }
+        }
+    }
+
+    private fun loadInitialPurchases() {
+        val billing = billingManager ?: return
+        lifecycleScope.launch {
+            delay(2000)
+            val purchasedProducts = billing.getAllPurchasedProducts()
+            Log.d("MainActivity", "Toplam ${purchasedProducts.size} satın alınmış ürün bulundu")
+
+            purchasedProducts.forEach { productId ->
+                if (isSubcategory(productId)) {
+                    categoryDataManager?.markSubcategoryAsPurchased(productId)
+                } else {
+                    categoryDataManager?.markAsPurchased(productId)
+                }
+            }
+        }
+    }
+
+    private fun isSubcategory(productId: String): Boolean {
+        val subcategoryPrefixes = listOf("athletes_", "singers_", "actors_", "youtubers_")
         return subcategoryPrefixes.any { productId.startsWith(it) }
     }
 
     override fun onPause() {
         super.onPause()
-        bannerAdManager.pause()
+        bannerAdManager?.pause()
     }
 
     override fun onResume() {
         super.onResume()
-        bannerAdManager.resume()
+        bannerAdManager?.resume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        interstitialAdManager.destroy()
-        bannerAdManager.destroy()
-        billingManager.destroy()
+        interstitialAdManager?.destroy()
+        bannerAdManager?.destroy()
+        billingManager?.destroy()
     }
 }

@@ -14,6 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+sealed class PurchaseState {
+    data object Idle : PurchaseState()
+    data object Loading : PurchaseState()
+    data class Success(val categoryId: String) : PurchaseState()
+    data class Error(val message: String) : PurchaseState()
+}
+
 class BillingManager(
     private val context: Context,
     private val coroutineScope: CoroutineScope
@@ -34,13 +41,6 @@ class BillingManager(
     private val _productDetails = MutableStateFlow<Map<String, ProductDetails>>(emptyMap())
     val productDetails: StateFlow<Map<String, ProductDetails>> = _productDetails
 
-    sealed class PurchaseState {
-        object Idle : PurchaseState()
-        object Loading : PurchaseState()
-        data class Success(val categoryId: String) : PurchaseState()
-        data class Error(val message: String) : PurchaseState()
-    }
-
     init {
         setupBillingClient()
     }
@@ -48,7 +48,12 @@ class BillingManager(
     private fun setupBillingClient() {
         billingClient = BillingClient.newBuilder(context)
             .setListener(this)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder()
+                    .enableOneTimeProducts()
+                    .build()
+            )
+            .enableAutoServiceReconnection()
             .build()
 
         startConnection()
@@ -135,11 +140,17 @@ class BillingManager(
                 .build()
 
             withContext(Dispatchers.IO) {
-                billingClient?.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
+                billingClient?.queryProductDetailsAsync(params) { billingResult, queryProductDetailsResult ->
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                        val productDetailsList = queryProductDetailsResult.productDetailsList
                         val detailsMap = productDetailsList.associateBy { it.productId }
                         _productDetails.value = detailsMap
                         Log.d(TAG, "Ürün detayları alındı: ${productDetailsList.size} ürün")
+
+                        val unfetched = queryProductDetailsResult.unfetchedProductList
+                        if (unfetched.isNotEmpty()) {
+                            Log.w(TAG, "Bulunamayan ürünler: ${unfetched.map { it.productId }}")
+                        }
                     } else {
                         Log.e(TAG, "Ürün sorgu hatası: ${billingResult.debugMessage}")
                     }

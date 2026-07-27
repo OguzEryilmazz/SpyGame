@@ -9,9 +9,12 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
-class InterstitialAdManager(
-    private val adUnitId: String = AdIds.INTERSTITIAL_PROD
+class SpyInterstitialAdManager(
+    private val adUnitId: String
 ) {
+    // İkincil constructor ile varsayılan değeri koru
+    constructor() : this(AdIds.INTERSTITIAL_PROD)
+
     private var interstitialAd: InterstitialAd? = null
     private var isLoading = false
     private var adShowCount = 0 // Reklam gösterim sayacı
