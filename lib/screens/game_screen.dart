@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/game_player.dart';
 import '../ads/ad_providers.dart';
+import '../widgets/first_player_intro.dart';
 import 'category_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -132,9 +134,13 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
     with SingleTickerProviderStateMixin {
   double _dragOffset = 0.0;
   bool _isDragging = false;
+  bool _revealHapticFired = false;
 
   late AnimationController _arrowCtrl;
   late Animation<double> _arrowAnim;
+
+  // İlk oyuncu için oyunun mantığını anlatan ~10 saniyelik tanıtım.
+  late bool _showIntro;
 
   double _maxPullUp = 300.0;
   static const double _revealThreshold = 0.2;
@@ -155,6 +161,9 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
     _arrowAnim = Tween<double>(begin: 0, end: -10).animate(
       CurvedAnimation(parent: _arrowCtrl, curve: Curves.easeInOut),
     );
+
+    // Sadece oyuna giren ilk oyuncuya gösterilir.
+    _showIntro = widget.playerIndex == 0;
   }
 
   @override
@@ -164,6 +173,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
       setState(() {
         _dragOffset = 0.0;
         _isDragging = false;
+        _revealHapticFired = false;
       });
     }
   }
@@ -196,15 +206,28 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
       backgroundColor: Colors.transparent,
       body: GestureDetector(
         onDoubleTap: () {
-          if (!widget.isLastPlayer) widget.onNext();
+          if (!widget.isLastPlayer) {
+            HapticFeedback.selectionClick();
+            widget.onNext();
+          }
         },
-        onLongPress: widget.onPrevious,
+        onLongPress: () {
+          HapticFeedback.selectionClick();
+          widget.onPrevious();
+        },
         onVerticalDragStart: (_) => setState(() => _isDragging = true),
         onVerticalDragUpdate: (d) {
           setState(() {
             _dragOffset =
                 (_dragOffset - d.delta.dy).clamp(0.0, _maxPullUp);
           });
+          final crossed = _dragOffset > _maxPullUp * _revealThreshold;
+          if (crossed && !_revealHapticFired) {
+            _revealHapticFired = true;
+            HapticFeedback.mediumImpact();
+          } else if (!crossed) {
+            _revealHapticFired = false;
+          }
         },
         onVerticalDragEnd: (_) => _onDragEnd(),
         // ── STACK: renkli alan sabit, reveal paneli üstte kayar ──
@@ -222,7 +245,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
                         timeString: widget.timeString,
                         onBack: widget.onBack,
                         onPrevious:
-                            widget.playerIndex > 0 ? widget.onPrevious : null,
+                        widget.playerIndex > 0 ? widget.onPrevious : null,
                       ),
                       Expanded(
                         child: Stack(
@@ -248,7 +271,10 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
                                 child: Center(
                                   child: _StartTimerButton(
                                     playerColor: playerColor,
-                                    onPressed: widget.onStartTimer,
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      widget.onStartTimer();
+                                    },
                                   ),
                                 ),
                               ),
@@ -293,6 +319,17 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
                     : const SizedBox.shrink(),
               ),
             ),
+
+            // ── Katman 3: ilk oyuncu için oyun mantığını anlatan ~10sn'lik intro ──
+            if (_showIntro)
+              Positioned.fill(
+                child: FirstPlayerIntro(
+                  accentColor: playerColor,
+                  onFinished: () {
+                    if (mounted) setState(() => _showIntro = false);
+                  },
+                ),
+              ),
           ],
         ),
       ),
@@ -583,20 +620,8 @@ class _RoleReveal extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            if (showHints &&
-                player.hint != null &&
-                player.hint!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                player.hint!,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+            // Normal oyuncular zaten kelimeyi biliyor, ipucuna ihtiyaçları
+            // yok — ipucu sadece Imposter'a gösterilir (yukarıdaki blok).
           ],
         ],
       ),

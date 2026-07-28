@@ -402,6 +402,7 @@ List<GamePlayer> assignRoles(
     final p = shuffled[i];
 
     if (i == spyIndex) {
+      final hint = hints.isNotEmpty ? hints[rng.nextInt(hints.length)] : null;
       return GamePlayer(
         id: p.id,
         name: p.name,
@@ -409,11 +410,9 @@ List<GamePlayer> assignRoles(
         selectedCharacter: p.selectedCharacter,
         isSpy: true,
         assignedWord: 'SPY',
-        hint: null,
+        hint: hint,
       );
     }
-
-    final hint = hints.isNotEmpty ? hints[rng.nextInt(hints.length)] : null;
 
     return GamePlayer(
       id: p.id,
@@ -422,7 +421,7 @@ List<GamePlayer> assignRoles(
       selectedCharacter: p.selectedCharacter,
       isSpy: false,
       assignedWord: chosenItem,
-      hint: hint,
+      hint: null, // Normal oyuncular ipucuna ihtiyaç duymaz, zaten kelimeyi biliyor.
     );
   });
 }

@@ -702,188 +702,286 @@ class _VotingResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final caught = _isImpostorCaught;
     final bgColor =
-    caught ? const Color(0xFF0D1B2A) : const Color(0xFF1A0A0A);
-    final titleColor =
-    caught ? const Color(0xFF4ECDC4) : const Color(0xFFFF3939);
+    caught ? const Color(0xFF0B1420) : const Color(0xFF1A0E0E);
+    final accent =
+    caught ? const Color(0xFF4ECDC4) : const Color(0xFFFF5A5A);
 
     // Sonuç ekranında gösterilecek oyuncu:
     // - Yakalandıysa: en çok oy alan (= spy)
     // - Yakalanmadıysa: gerçek spy
-    final displayPlayer =
-    caught ? mostVotedPlayer! : impostor;
+    final displayPlayer = caught ? mostVotedPlayer! : impostor;
     final displayColor =
         displayPlayer.selectedColor ?? const Color(0xFF9E9E9E);
+    final voteCount = caught ? (voteCounts[mostVotedPlayer!.name] ?? 0) : null;
 
     return Scaffold(
       backgroundColor: bgColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding:
-          const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            children: [
-              // ── Başlık ──
-              Text(
-                'OYUN BİTTİ',
-                style: TextStyle(
-                  fontSize: 44,
-                  fontWeight: FontWeight.w900,
-                  color: titleColor,
-                  letterSpacing: 4,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                caught ? 'Oyuncular Kazandı!' : 'Spy Kazandı!',
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color.lerp(bgColor, accent, 0.09)!, bgColor],
+          ),
+        ),
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: IntrinsicHeight(
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: 1.0),
+                      duration: const Duration(milliseconds: 550),
+                      curve: Curves.easeOutCubic,
+                      builder: (context, t, child) => Opacity(
+                        opacity: t,
+                        child: Transform.translate(
+                          offset: Offset(0, (1 - t) * 18),
+                          child: child,
+                        ),
+                      ),
+                      child: Padding(
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 8),
 
-              const SizedBox(height: 8),
+                            // ── Üst etiket ──
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.06),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.flag_rounded,
+                                      size: 14,
+                                      color: Colors.white.withOpacity(0.5)),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'OYUN BİTTİ',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 2,
+                                      color: Colors.white.withOpacity(0.5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
-              // ── Kazanan görseli ──
-              Image.asset(
-                caught ? 'assets/my_crew.png' : 'assets/my_imposter.png',
-                width: caught ? 150 : 100,
-                height: caught ? 150 : 100,
-                errorBuilder: (_, __, ___) => Icon(
-                  caught ? Icons.groups_rounded : Icons.person_off_rounded,
-                  size: 80,
-                  color: titleColor,
-                ),
-              ),
+                            const Spacer(flex: 2),
 
-              const SizedBox(height: 4),
+                            // ── Avatar + glow ──
+                            SizedBox(
+                              width: 172,
+                              height: 172,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: 172,
+                                    height: 172,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: accent.withOpacity(0.35),
+                                          blurRadius: 50,
+                                          spreadRadius: 4,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 148,
+                                    height: 148,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: displayColor,
+                                      border: Border.all(
+                                        color: Colors.white.withOpacity(0.12),
+                                        width: 3,
+                                      ),
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    alignment: Alignment.center,
+                                    child: displayPlayer.selectedCharacter != null
+                                        ? Image.asset(
+                                      displayPlayer
+                                          .selectedCharacter!.assetPath,
+                                      width: 148,
+                                      height: 148,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Text(
+                                      displayPlayer.name.characters.first
+                                          .toUpperCase(),
+                                      style: const TextStyle(
+                                        fontSize: 52,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  // Sonuç rozeti
+                                  Positioned(
+                                    right: 4,
+                                    bottom: 4,
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: accent,
+                                        border:
+                                        Border.all(color: bgColor, width: 3),
+                                      ),
+                                      child: Icon(
+                                        caught
+                                            ? Icons.check_rounded
+                                            : Icons.priority_high_rounded,
+                                        color: Colors.white,
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
-              // ── Avatar ──
-              Container(
-                width: 160,
-                height: 160,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: displayColor,
-                ),
-                clipBehavior: Clip.antiAlias,
-                alignment: Alignment.center,
-                child: displayPlayer.selectedCharacter != null
-                    ? Image.asset(
-                  displayPlayer.selectedCharacter!.assetPath,
-                  width: 160,
-                  height: 160,
-                  fit: BoxFit.cover,
-                )
-                    : Text(
-                  displayPlayer.name.characters.first
-                      .toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 56,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+                            const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
+                            Text(
+                              displayPlayer.name,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
 
-              Text(
-                displayPlayer.name.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
+                            const SizedBox(height: 6),
 
-              const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: accent.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                'GERÇEK IMPOSTER',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1,
+                                  color: accent,
+                                ),
+                              ),
+                            ),
 
-              Text(
-                'Gerçek Spy',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: titleColor,
-                ),
-              ),
+                            const SizedBox(height: 22),
 
-              // Oy sayısı (yakalandıysa)
-              if (caught && mostVotedPlayer != null) ...[
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '${voteCounts[mostVotedPlayer!.name] ?? 0} oy',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                            Text(
+                              caught ? 'Imposter Yakalandı' : 'Imposter Kaçtı',
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              caught ? 'Oyuncular kazandı' : 'Imposter kazandı',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.5),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            if (voteCount != null) ...[
+                              const SizedBox(height: 14),
+                              Text(
+                                '$voteCount oy aldı',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white.withOpacity(0.35),
+                                ),
+                              ),
+                            ],
+
+                            const Spacer(flex: 3),
+
+                            // ── Butonlar ──
+                            SizedBox(
+                              width: double.infinity,
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: onPlayAgain,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: accent,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.refresh_rounded, size: 20),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Tekrar Oyna',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            TextButton(
+                              onPressed: onMainMenu,
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.white.withOpacity(0.55),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                              ),
+                              child: const Text(
+                                'Ana Menü',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 4),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ],
-
-              const SizedBox(height: 40),
-
-              // ── Butonlar ──
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: onPlayAgain,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: titleColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 8,
-                  ),
-                  child: const Text(
-                    'TEKRAR OYNA',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: OutlinedButton.icon(
-                  onPressed: onMainMenu,
-                  icon: const Icon(Icons.home),
-                  label: const Text(
-                    'Ana Menü',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: BorderSide(color: titleColor, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
