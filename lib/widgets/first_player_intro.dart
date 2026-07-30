@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ---------------------------------------------------------------------------
 // İLK OYUNCU İÇİN KISA TANITIM ANİMASYONU
-// Oyunun mantığını adım adım, öz metinlerle anlatan overlay kart.
 // ---------------------------------------------------------------------------
 
-enum _StepVisual { icon, phoneDemo, voteDemo }
+enum _StepVisual { icon, swipeDemo, doubleTapDemo, voteDemo, winDemo }
 
 class _IntroStep {
   final IconData icon;
@@ -24,48 +24,50 @@ class _IntroStep {
   });
 }
 
+// ── YENİ: Genişletilmiş ve daha öğretici adımlar ──
 const List<_IntroStep> _kIntroSteps = [
   _IntroStep(
     icon: Icons.groups_rounded,
     title: 'Sıra Sende',
     description: 'Telefon herkese sırayla gelecek.',
+    duration: Duration(milliseconds: 2500),
   ),
   _IntroStep(
-    icon: Icons.visibility_off_rounded,
-    title: 'Gizli Tut',
-    description: 'Kartını kimseye gösterme.',
+    icon: Icons.swipe_up_alt_rounded,
+    title: 'Kartını Gör',
+    description: 'Paneli yukarı kaydır ve sırrını öğren.',
+    visual: _StepVisual.swipeDemo, // Eski phoneDemo
+    duration: Duration(milliseconds: 3600),
+  ),
+  _IntroStep(
+    icon: Icons.touch_app_rounded,
+    title: 'Çift Tıkla',
+    description: 'Öğrendikten sonra çift tıklayarak telefonu devret.',
+    visual: _StepVisual.doubleTapDemo, // YENİ EKLENDİ
+    duration: Duration(milliseconds: 3600),
   ),
   _IntroStep(
     icon: Icons.theater_comedy_rounded,
     title: 'Biri Imposter',
-    description: 'Kelimeyi bilmeyen tek kişi o.',
-  ),
-  _IntroStep(
-    icon: Icons.swipe_up_alt_rounded,
-    title: 'Yukarı Kaydır',
-    description: 'Kartını böyle aç.',
-    visual: _StepVisual.phoneDemo,
-    duration: Duration(milliseconds: 3600),
-  ),
-  _IntroStep(
-    icon: Icons.forum_rounded,
-    title: 'Sorular Sor',
-    description: 'Imposter\'ı bulmaya çalış.',
+    description: 'Kelimeyi bilmeyen tek kişiyi sorularla arayın.',
+    duration: Duration(milliseconds: 3000),
   ),
   _IntroStep(
     icon: Icons.how_to_vote_rounded,
     title: 'Oylama Zamanı',
-    description: 'En çok oyu alan açıklanır.',
+    description: 'Süre bitince en şüphelendiğiniz kişiyi oylayın.',
     visual: _StepVisual.voteDemo,
+    duration: Duration(milliseconds: 3200),
+  ),
+  _IntroStep(
+    icon: Icons.emoji_events_rounded,
+    title: 'Bul ve Kazan!',
+    description: 'Imposter\'ı bulursanız takım, bulamazsanız o kazanır.',
+    visual: _StepVisual.winDemo, // YENİ EKLENDİ
     duration: Duration(milliseconds: 3200),
   ),
 ];
 
-/// İlk oyuncuya, oyuna başlamadan önce oyunun mantığını kısa bir
-/// animasyonla anlatan overlay bileşeni. Ekranın büyük bir kısmını
-/// (yaklaşık %82 x %64) kaplayan kart şeklinde gösterilir, adımlar
-/// arasında otomatik geçiş yapar ve dokununca veya "Atla" ile hemen
-/// kapatılabilir.
 class FirstPlayerIntro extends StatefulWidget {
   final VoidCallback onFinished;
   final Color accentColor;
@@ -86,39 +88,87 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
   Timer? _stepTimer;
   bool _closing = false;
 
-  // ── Telefon demosu: parmak yukarı kaydırıyor, alttan panel açılıyor ──
-  late final AnimationController _phoneCtrl;
+  // ── 1. Yukarı Kaydırma Demosu (Swipe) ──
+  late final AnimationController _swipeCtrl;
   late final Animation<double> _panelHeight;
-  late final Animation<double> _fingerFade;
+  late final Animation<double> _swipeFingerFade;
   late final Animation<double> _textFade;
 
-  // ── Oylama demosu: bir satır seçilip işaretleniyor ──
+  // ── 2. Çift Tıklama Demosu (Double Tap) ──
+  late final AnimationController _doubleTapCtrl;
+  late final Animation<double> _dtFingerFade;
+  late final Animation<double> _dtFingerScale;
+  late final Animation<Offset> _dtCardSlide;
+
+  // ── 3. Oylama Demosu (Vote) ──
   late final AnimationController _voteCtrl;
   late final Animation<double> _voteHighlight;
   late final Animation<double> _voteCheckScale;
+
+  // ── 4. Kazanma Demosu (Win) ──
+  late final AnimationController _winCtrl;
+  late final Animation<double> _winScale;
 
   @override
   void initState() {
     super.initState();
 
-    _phoneCtrl = AnimationController(
+    // -- Kaydırma Animasyonu Kurulumu --
+    _swipeCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
     )..repeat();
     _panelHeight = CurvedAnimation(
-      parent: _phoneCtrl,
+      parent: _swipeCtrl,
       curve: const Interval(0.10, 0.55, curve: Curves.easeOutCubic),
     );
     _textFade = CurvedAnimation(
-      parent: _phoneCtrl,
+      parent: _swipeCtrl,
       curve: const Interval(0.45, 0.62, curve: Curves.easeIn),
     );
-    _fingerFade = TweenSequence<double>([
+    _swipeFingerFade = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 8),
       TweenSequenceItem(tween: ConstantTween(1.0), weight: 72),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 20),
-    ]).animate(_phoneCtrl);
+    ]).animate(_swipeCtrl);
 
+    // -- YENİ: Çift Tıklama Animasyonu Kurulumu --
+    _doubleTapCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+
+    _dtFingerFade = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 10),
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 70),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 20),
+    ]).animate(_doubleTapCtrl);
+
+    // Parmağın iki kez hızlıca küçülüp büyümesi (Tıklama efekti)
+    _dtFingerScale = TweenSequence<double>([
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.75), weight: 5), // 1. Tık in
+      TweenSequenceItem(tween: Tween(begin: 0.75, end: 1.0), weight: 5), // 1. Tık out
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.75), weight: 5), // 2. Tık in
+      TweenSequenceItem(tween: Tween(begin: 0.75, end: 1.0), weight: 5), // 2. Tık out
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 55),
+    ]).animate(_doubleTapCtrl);
+
+    // Kartın sola kayıp sağdan yenisinin gelmesi
+    _dtCardSlide = TweenSequence<Offset>([
+      TweenSequenceItem(tween: ConstantTween(Offset.zero), weight: 45),
+      TweenSequenceItem(
+          tween: Tween(begin: Offset.zero, end: const Offset(-1.5, 0.0))
+              .chain(CurveTween(curve: Curves.easeIn)),
+          weight: 15),
+      TweenSequenceItem(
+          tween: Tween(begin: const Offset(1.5, 0.0), end: Offset.zero)
+              .chain(CurveTween(curve: Curves.easeOutCubic)),
+          weight: 15),
+      TweenSequenceItem(tween: ConstantTween(Offset.zero), weight: 25),
+    ]).animate(_doubleTapCtrl);
+
+    // -- Oylama Animasyonu Kurulumu --
     _voteCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1900),
@@ -126,18 +176,25 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
     _voteHighlight = TweenSequence<double>([
       TweenSequenceItem(tween: ConstantTween(0.0), weight: 30),
       TweenSequenceItem(
-          tween: Tween(begin: 0.0, end: 1.0)
-              .chain(CurveTween(curve: Curves.easeOut)),
+          tween: Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeOut)),
           weight: 15),
       TweenSequenceItem(tween: ConstantTween(1.0), weight: 40),
       TweenSequenceItem(
-          tween: Tween(begin: 1.0, end: 0.0)
-              .chain(CurveTween(curve: Curves.easeIn)),
+          tween: Tween(begin: 1.0, end: 0.0).chain(CurveTween(curve: Curves.easeIn)),
           weight: 15),
     ]).animate(_voteCtrl);
     _voteCheckScale = CurvedAnimation(
       parent: _voteCtrl,
       curve: const Interval(0.45, 0.62, curve: Curves.easeOutBack),
+    );
+
+    // -- YENİ: Kazanma (Kupa) Animasyonu Kurulumu --
+    _winCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+    _winScale = Tween<double>(begin: 0.9, end: 1.1).animate(
+      CurvedAnimation(parent: _winCtrl, curve: Curves.easeInOut),
     );
 
     _scheduleNextStep();
@@ -155,22 +212,27 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
     });
   }
 
-  void _finish() {
+  void _finish() async {
     if (_closing) return;
     _closing = true;
     _stepTimer?.cancel();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('intro_seen', true);
+
     widget.onFinished();
   }
 
   @override
   void dispose() {
     _stepTimer?.cancel();
-    _phoneCtrl.dispose();
+    _swipeCtrl.dispose();
+    _doubleTapCtrl.dispose();
     _voteCtrl.dispose();
+    _winCtrl.dispose();
     super.dispose();
   }
 
-  // ── Ortak telefon çerçevesi: her demo bu çerçevenin içine çizilir ──
   Widget _phoneFrame({required Widget child}) {
     return Container(
       width: 108,
@@ -192,7 +254,6 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
         child: Stack(
           children: [
             Positioned.fill(child: child),
-            // Üstte ufak bir "kamera çentiği" detayı.
             Positioned(
               top: 6,
               left: 0,
@@ -214,12 +275,11 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
     );
   }
 
-  // Yukarı kaydırınca alttan IMPOSTER yazısının çıktığı mini demo.
-  Widget _buildPhoneDemo() {
+  Widget _buildSwipeDemo() {
     const maxPanelH = 96.0;
     return _phoneFrame(
       child: AnimatedBuilder(
-        animation: _phoneCtrl,
+        animation: _swipeCtrl,
         builder: (_, __) {
           final panelH = maxPanelH * _panelHeight.value;
           final fingerBottom = 14 + (maxPanelH - 6) * _panelHeight.value;
@@ -251,7 +311,7 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
               Positioned(
                 bottom: fingerBottom,
                 child: Opacity(
-                  opacity: _fingerFade.value,
+                  opacity: _swipeFingerFade.value,
                   child: Container(
                     width: 22,
                     height: 22,
@@ -259,10 +319,7 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
                       color: Colors.white,
                       shape: BoxShape.circle,
                       boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 6,
-                        ),
+                        BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 6),
                       ],
                     ),
                   ),
@@ -275,7 +332,59 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
     );
   }
 
-  // Oy verilecek kişinin işaretlendiği mini oylama listesi demosu.
+  // YENİ: Çift Tıklama Animasyonu
+  Widget _buildDoubleTapDemo() {
+    return _phoneFrame(
+      child: AnimatedBuilder(
+        animation: _doubleTapCtrl,
+        builder: (_, __) {
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Kaybolan/Gelen Oyuncu Kartı
+              SlideTransition(
+                position: _dtCardSlide,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: widget.accentColor,
+                  child: Center(
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.black.withOpacity(0.2),
+                    ),
+                  ),
+                ),
+              ),
+              // Dokunan Parmak
+              Positioned(
+                bottom: 40,
+                child: Opacity(
+                  opacity: _dtFingerFade.value,
+                  child: Transform.scale(
+                    scale: _dtFingerScale.value,
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 8),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildVoteDemo() {
     return _phoneFrame(
       child: AnimatedBuilder(
@@ -291,11 +400,9 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
                     decoration: BoxDecoration(
-                      color: Color.lerp(
-                          Colors.white, widget.accentColor.withOpacity(0.18), glow),
+                      color: Color.lerp(Colors.white, widget.accentColor.withOpacity(0.18), glow),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: widget.accentColor.withOpacity(glow),
@@ -313,27 +420,29 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Container(
-                          width: 30,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(3),
+                        Expanded(
+                          child: Container(
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
                           ),
                         ),
-                        const Spacer(),
-                        if (isSelected)
-                          Opacity(
+                        const SizedBox(width: 6),
+                        SizedBox(
+                          width: 15,
+                          height: 15,
+                          child: isSelected
+                              ? Opacity(
                             opacity: glow,
                             child: Transform.scale(
                               scale: _voteCheckScale.value,
-                              child: Icon(
-                                Icons.check_circle_rounded,
-                                size: 15,
-                                color: widget.accentColor,
-                              ),
+                              child: Icon(Icons.check_circle_rounded, size: 15, color: widget.accentColor),
                             ),
-                          ),
+                          )
+                              : null,
+                        ),
                       ],
                     ),
                   ),
@@ -346,12 +455,47 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
     );
   }
 
+  // YENİ: Kazanma Animasyonu
+  Widget _buildWinDemo() {
+    return AnimatedBuilder(
+      animation: _winCtrl,
+      builder: (_, __) {
+        return Transform.scale(
+          scale: _winScale.value,
+          child: Container(
+            width: 108,
+            height: 108,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFFFFD54F).withOpacity(0.4),
+                  Colors.transparent
+                ],
+                stops: const [0.3, 1.0],
+              ),
+            ),
+            child: const Icon(
+              Icons.emoji_events_rounded,
+              size: 64,
+              color: Color(0xFFFFC107), // Altın rengi
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildVisual(_IntroStep step) {
     switch (step.visual) {
-      case _StepVisual.phoneDemo:
-        return _buildPhoneDemo();
+      case _StepVisual.swipeDemo:
+        return _buildSwipeDemo();
+      case _StepVisual.doubleTapDemo:
+        return _buildDoubleTapDemo();
       case _StepVisual.voteDemo:
         return _buildVoteDemo();
+      case _StepVisual.winDemo:
+        return _buildWinDemo();
       case _StepVisual.icon:
         return Container(
           width: 84,
@@ -371,13 +515,13 @@ class _FirstPlayerIntroState extends State<FirstPlayerIntro>
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: _finish, // Ekrana dokununca hemen geç.
+      onTap: _finish,
       child: Container(
         color: Colors.black.withOpacity(0.55),
         child: Center(
           child: FractionallySizedBox(
             widthFactor: 0.82,
-            heightFactor: 0.64,
+            heightFactor: 0.66, // Biraz daha alan açmak için hafifçe artırıldı
             child: Material(
               color: Colors.white,
               borderRadius: BorderRadius.circular(28),

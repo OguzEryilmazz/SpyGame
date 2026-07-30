@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../utils/settings_bottom_sheet.dart';
 import '../widgets/setting_item.dart';
 import '../widgets/counter_row.dart';
 import 'category_screen.dart' show categoriesProvider;
@@ -44,17 +45,35 @@ class SetupScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 16),
-
                     // Header
-                    GestureDetector(
-                      onLongPress: () => _showCouponDialog(context, ref),
-                      child: const Text(
-                        'Spy - Haini Bul',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Ortalanmış Başlık
+                          GestureDetector(
+                            onLongPress: () => _showCouponDialog(context, ref),
+                            child: const Text(
+                              'Spy - Haini Bul',
+                              style: TextStyle(
+                                fontSize: 30, // İkonla sığması için hafif ufaltıldı
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          // Sağ Üst Ayarlar Butonu
+                          Positioned(
+                            right: 0,
+                            child: IconButton(
+                              icon: const Icon(Icons.settings_rounded, color: Colors.white, size: 28),
+                              onPressed: () {
+                                SettingsBottomSheet.show(context);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 8),

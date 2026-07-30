@@ -7,6 +7,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../ads/ad_providers.dart';
 import 'category_screen.dart'; // gameStateProvider
+import '../utils/sound_manager.dart'; // YENİ: Ses yöneticisini import ettik (yolunu kendi projene göre ayarla)
 
 class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
@@ -19,6 +20,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     with TickerProviderStateMixin {
   late int _timeLeft;
   late int _totalSeconds;
+
+  // YENİ: Başlangıçta hazır değiliz, önce overlay gösterilecek
+  bool _isReady = false;
+
   bool _isRunning = true;
   bool _isFinished = false;
   Timer? _timer;
@@ -38,10 +43,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     _totalSeconds = (gs?.durationMinutes ?? 5) * 60;
     _timeLeft = _totalSeconds;
 
-    // Ekranı açık tut
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
-    WakelockPlus.enable(); // pubspec'e wakelock_plus ekle — yoksa sil
+    WakelockPlus.enable();
 
     _pulseCtrl = AnimationController(
       vsync: this,
@@ -57,7 +61,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     _glowAnim = Tween<double>(begin: 0.3, end: 0.6)
         .animate(CurvedAnimation(parent: _glowCtrl, curve: Curves.easeInOut));
 
-    _startTimer();
+    // DİKKAT: _startTimer() fonksiyonunu buradan kaldırdık.
+    // Kullanıcı basılı tutup hazır olduğunda tetiklenecek.
   }
 
   @override
@@ -75,18 +80,34 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     } catch (_) {}
   }
 
+  // YENİ: Animasyon dolduğunda çalışacak fonksiyon
+  void _onReady() {
+    setState(() {
+      _isReady = true;
+    });
+    SoundManager().playBoom(); // Tok bir başlangıç sesi
+    _startTimer();
+  }
+
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) return;
+
       if (_timeLeft > 0) {
         setState(() => _timeLeft--);
+
+        // YENİ: Son 10 saniyede tik-tak sesi
+        if (_timeLeft <= 7 && _timeLeft > 0) {
+          SoundManager().playTick();
+        }
       } else {
         t.cancel();
         setState(() {
           _isRunning = false;
           _isFinished = true;
         });
+        SoundManager().playBoom(); // Süre bitince patlama/alarm sesi
         _vibrate();
       }
     });
@@ -120,15 +141,15 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
       _isFinished = true;
       _timeLeft = 0;
     });
+    SoundManager().playBoom();
     _vibrate();
   }
 
   Future<void> _confirmExit() async {
-    // Süre zaten bittiyse direkt çık, onay isteme.
     if (_isFinished) {
       ref.read(interstitialAdProvider).showAdWithFrequencyControl(
-        onAdDismissed: () => context.go('/'),
-      );
+            onAdDismissed: () => context.go('/'),
+          );
       return;
     }
 
@@ -156,7 +177,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç', style: TextStyle(color: Colors.white70)),
+            child:
+                const Text('Vazgeç', style: TextStyle(color: Colors.white70)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -171,10 +193,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     if (confirmed == true) {
       _timer?.cancel();
       ref.read(interstitialAdProvider).showAdWithFrequencyControl(
-        onAdDismissed: () => context.go('/'),
-      );
+            onAdDismissed: () => context.go('/'),
+          );
     } else if (wasRunning) {
-      // Kullanıcı vazgeçtiyse ve sayaç çalışıyorduysa kaldığı yerden devam et.
       _startTimer();
       setState(() => _isRunning = true);
     }
@@ -196,7 +217,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     return '$m:$s';
   }
 
-  // Renkler
   Color get _primaryColor {
     if (_isFinished) return const Color(0xFF6B7280);
     if (_timeLeft <= 10) return const Color(0xFFEF4444);
@@ -219,102 +239,249 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (!_isReady) {
+      return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          context.go('/category');
+        },
+        child: _HoldToStartOverlay(onComplete: _onReady),
+      );
+    }
+
     final gs = ref.watch(gameStateProvider);
     final playerCount = gs?.players.length ?? 0;
     final progress = _totalSeconds > 0 ? _timeLeft / _totalSeconds : 0.0;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: const Alignment(0, -0.4),
-            radius: 1.2,
-            colors: [
-              _bgColor.withOpacity(0.8),
-              _bgColor,
-              Colors.black,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        _confirmExit();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: AnimatedContainer(
+          duration: const Duration(milliseconds: 500),
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: const Alignment(0, -0.4),
+              radius: 1.2,
+              colors: [
+                _bgColor.withOpacity(0.8),
+                _bgColor,
+                Colors.black,
+              ],
+            ),
+          ),
+          child: Stack(
+            children: [
+              AnimatedBuilder(
+                animation: _glowAnim,
+                builder: (_, __) => CustomPaint(
+                  size: Size.infinite,
+                  painter: _GlowPainter(
+                    color: _primaryColor,
+                    alpha: _glowAnim.value,
+                  ),
+                ),
+              ),
+              SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(left: 24, right: 24, top: 12, bottom: 16),
+                  child: Column(
+                    children: [
+                      _TimerHeader(
+                        totalMinutes: (_totalSeconds / 60).ceil(),
+                        playerCount: playerCount,
+                        primaryColor: _primaryColor,
+                        onExit: _confirmExit,
+                      ),
+                      const SizedBox(height: 20),
+                      _StatusCard(
+                        isFinished: _isFinished,
+                        isRunning: _isRunning,
+                        primaryColor: _primaryColor,
+                      ),
+                      const SizedBox(height: 32),
+                      _TimerDial(
+                        timeString: _timeString,
+                        progress: progress,
+                        primaryColor: _primaryColor,
+                        secondaryColor: _secondaryColor,
+                        isFinished: _isFinished,
+                        timeLeft: _timeLeft,
+                        pulseAnim: _pulseAnim,
+                        isRunning: _isRunning,
+                      ),
+                      const SizedBox(height: 32),
+                      if (_isFinished)
+                        _FinishedControls(
+                          onVoting: () => context.push('/voting'),
+                          onHome: () {
+                            ref.read(interstitialAdProvider).showAdWithFrequencyControl(
+                              onAdDismissed: () => context.go('/'),
+                            );
+                          },
+                        )
+                      else
+                        _RunningControls(
+                          isRunning: _isRunning,
+                          onToggle: _togglePause,
+                          onRestart: _restart,
+                          onStop: _stop,
+                        ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-        child: Stack(
-          children: [
-            // ── Glow arka plan ──
-            AnimatedBuilder(
-              animation: _glowAnim,
-              builder: (_, __) => CustomPaint(
-                size: Size.infinite,
-                painter: _GlowPainter(
-                  color: _primaryColor,
-                  alpha: _glowAnim.value,
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// YENİ: HOLD TO START OVERLAY (Basılı Tut Ekranı)
+// ---------------------------------------------------------------------------
+
+class _HoldToStartOverlay extends StatefulWidget {
+  final VoidCallback onComplete;
+
+  const _HoldToStartOverlay({required this.onComplete});
+
+  @override
+  State<_HoldToStartOverlay> createState() => _HoldToStartOverlayState();
+}
+
+class _HoldToStartOverlayState extends State<_HoldToStartOverlay>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  bool _isDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 1.5 saniye basılı tutmak gerekecek
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1500));
+    _ctrl.addListener(() {
+      setState(() {});
+      if (_ctrl.isCompleted && !_isDone) {
+        _isDone = true;
+        HapticFeedback.heavyImpact();
+        widget.onComplete();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0C0C0E), // Premium derin siyah
+      body: GestureDetector(
+        onTapDown: (_) {
+          if (!_isDone) {
+            _ctrl.forward();
+            HapticFeedback.mediumImpact(); // Basmaya başladığında titret
+          }
+        },
+        onTapUp: (_) {
+          if (!_isDone) {
+            _ctrl.reverse();
+          }
+        },
+        onTapCancel: () {
+          if (!_isDone) {
+            _ctrl.reverse();
+          }
+        },
+        child: Container(
+          color: Colors.transparent, // Tüm ekranın tıklanabilir olması için
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Herkes Hazır Mı?",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: 1.2,
                 ),
               ),
-            ),
+              const SizedBox(height: 12),
+              Text(
+                "Telefonu masanın ortasına koyun.",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 60),
 
-            // ── Ana içerik ──
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(left: 24, right: 24, top: 12, bottom: 16),
-                child: Column(
-                  children: [
-                    // Üst bar: çıkış butonu + süre rozeti + oyuncu sayısı
-                    _TimerHeader(
-                      totalMinutes: (_totalSeconds / 60).ceil(),
-                      playerCount: playerCount,
-                      primaryColor: _primaryColor,
-                      onExit: _confirmExit,
+              // Animasyonlu Halka ve Parmak İzi
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 140,
+                    height: 140,
+                    child: CircularProgressIndicator(
+                      value: _ctrl.value,
+                      color: const Color(0xFF3B82F6), // Buton rengi (Mavi)
+                      backgroundColor: Colors.white.withOpacity(0.05),
+                      strokeWidth: 8,
                     ),
-
-                    const SizedBox(height: 20),
-
-                    // Durum kartı
-                    _StatusCard(
-                      isFinished: _isFinished,
-                      isRunning: _isRunning,
-                      primaryColor: _primaryColor,
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // Zamanlayıcı
-                    _TimerDial(
-                      timeString: _timeString,
-                      progress: progress,
-                      primaryColor: _primaryColor,
-                      secondaryColor: _secondaryColor,
-                      isFinished: _isFinished,
-                      timeLeft: _timeLeft,
-                      pulseAnim: _pulseAnim,
-                      isRunning: _isRunning,
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // Kontroller
-                    if (_isFinished)
-                      _FinishedControls(
-                        onVoting: () => context.push('/voting'),
-                        onHome: () {
-                          ref.read(interstitialAdProvider).showAdWithFrequencyControl(
-                            onAdDismissed: () => context.go('/'),
-                          );
-                        },
-                      )
-                    else
-                      _RunningControls(
-                        isRunning: _isRunning,
-                        onToggle: _togglePause,
-                        onRestart: _restart,
-                        onStop: _stop,
+                  ),
+                  // İçerideki ikon efekti
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.lerp(
+                        Colors.transparent,
+                        const Color(0xFF3B82F6).withOpacity(0.2),
+                        _ctrl.value,
                       ),
+                    ),
+                    child: Icon(
+                      Icons.fingerprint_rounded,
+                      size: 54,
+                      color: Color.lerp(
+                        Colors.white.withOpacity(0.5),
+                        const Color(0xFF3B82F6),
+                        _ctrl.value,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
-                    const SizedBox(height: 24),
-                  ],
+              const SizedBox(height: 60),
+              Text(
+                "Başlamak için basılı tutun",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white.withOpacity(0.4 + (_ctrl.value * 0.6)),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -343,8 +510,7 @@ class _GlowPainter extends CustomPainter {
         center: Offset(size.width / 2, size.height / 3),
         radius: 400,
       ));
-    canvas.drawCircle(
-        Offset(size.width / 2, size.height / 3), 400, paint);
+    canvas.drawCircle(Offset(size.width / 2, size.height / 3), 400, paint);
   }
 
   @override
@@ -372,14 +538,14 @@ class _StatusCard extends StatelessWidget {
     final statusText = isFinished
         ? 'SÜRE BİTTİ!'
         : isRunning
-        ? 'OYUN DEVAM EDİYOR'
-        : 'DURAKLATILDI';
+            ? 'OYUN DEVAM EDİYOR'
+            : 'DURAKLATILDI';
 
     final statusColor = isFinished
         ? const Color(0xFFEF4444)
         : isRunning
-        ? const Color(0xFF10B981)
-        : const Color(0xFFFBBF24);
+            ? const Color(0xFF10B981)
+            : const Color(0xFFFBBF24);
 
     return Container(
       width: double.infinity,
@@ -446,7 +612,7 @@ class _TimerDial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shouldPulse = timeLeft <= 10 && timeLeft > 0 && isRunning;
+    final shouldPulse = timeLeft <= 7 && timeLeft > 0 && isRunning;
 
     return AnimatedBuilder(
       animation: pulseAnim,
@@ -505,8 +671,8 @@ class _TimerDial extends StatelessWidget {
                         isFinished
                             ? 'BİTTİ'
                             : timeLeft <= 10
-                            ? 'ACELE ET!'
-                            : 'KALAN SÜRE',
+                                ? 'ACELE ET!'
+                                : 'KALAN SÜRE',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -558,9 +724,8 @@ class _RunningControls extends StatelessWidget {
           // Duraklat / Başlat
           _FabButton(
             onTap: onToggle,
-            color: isRunning
-                ? const Color(0xFFFBBF24)
-                : const Color(0xFF10B981),
+            color:
+                isRunning ? const Color(0xFFFBBF24) : const Color(0xFF10B981),
             iconColor: Colors.black,
             icon: isRunning ? Icons.pause : Icons.play_arrow,
           ),
@@ -757,8 +922,8 @@ class _TimerHeader extends StatelessWidget {
               color: Colors.black.withOpacity(0.4),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.close_rounded,
-                color: Colors.white, size: 20),
+            child:
+                const Icon(Icons.close_rounded, color: Colors.white, size: 20),
           ),
         ),
         const Spacer(),

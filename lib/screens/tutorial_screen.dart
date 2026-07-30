@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,285 +10,291 @@ class TutorialScreen extends StatefulWidget {
   State<TutorialScreen> createState() => _TutorialScreenState();
 }
 
+class _Slide {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String desc;
+
+  const _Slide(this.icon, this.color, this.title, this.desc);
+}
+
+// Renkleri daha soft ve "premium" pastel/neon tonlarına çektik
+const _slides = [
+  _Slide(Icons.theater_comedy_rounded, Color(0xFFF9D371), 'Biri Imposter',
+      'Herkes kelimeyi görür, sadece Imposter göremez.'),
+  _Slide(Icons.smartphone_rounded, Color(0xFF5DD9C1), 'Sırayla Bak',
+      'Kartını gör, kimseye gösterme, sıradakine ver.'),
+  _Slide(Icons.forum_rounded, Color(0xFF8CEE93), 'Sor, Oyla',
+      'Sorular sorup Imposter\'ı bulmaya çalışın, süre bitince oylayın.'),
+  _Slide(Icons.emoji_events_rounded, Color(0xFFFF8A65), 'Kazanma',
+      'Imposter bulunursa diğerleri, bulunmazsa Imposter kazanır.'),
+];
+
 class _TutorialScreenState extends State<TutorialScreen> {
+  final _pageCtrl = PageController();
+  int _page = 0;
   bool _dontShowAgain = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _incrementCounter();
-  }
-
-  Future<void> _incrementCounter() async {
+  Future<void> _finish() async {
     final prefs = await SharedPreferences.getInstance();
-    final count = prefs.getInt('tutorial_count') ?? 0;
-    await prefs.setInt('tutorial_count', count + 1);
-  }
+    await prefs.setBool('tutorial_seen', _dontShowAgain);
+    await prefs.setBool('show_every_10', !_dontShowAgain);
 
-  Future<void> _onStart() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (_dontShowAgain) {
-      await prefs.setBool('show_every_10', true);
-      await prefs.setInt('tutorial_counter_for_interval', 0);
-    } else {
-      await prefs.setBool('show_every_10', false);
-    }
     if (mounted) context.go('/');
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFE91E63),
-              Color(0xFF9C27B0),
-              Color(0xFFF44336),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              // Header
-              Column(
-                children: [
-                  Image.asset(
-                    'assets/my_imposter.png',
-                    width: 80,
-                    height: 80,
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'SPY OYUNU',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    'Nasıl Oynanır?',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white.withOpacity(0.8),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Content
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  children: const [
-                    _TutorialSection(
-                      icon: Icons.play_arrow_rounded,
-                      iconColor: Color(0xFFFF9800),
-                      title: 'Oyunun Amacı',
-                      description:
-                      'Oyunculardan biri Imposter\'dır! Diğer oyuncular seçilen kategoriden rastgele bir kelimeyi bilirken, Imposter bu kelimeyi bilmez. Imposter kelimeyi tahmin etmeye çalışırken, diğer oyuncular Imposter\'ı bulmaya çalışır.',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.category_rounded,
-                      iconColor: Color(0xFF2196F3),
-                      title: 'Kategoriler Nasıl Çalışır?',
-                      description:
-                      'Önce bir kategori seçilir (Meslekler, Yiyecekler, Sporcular vb.). Seçilen kategoriden rastgele bir kelime belirlenir. Normal oyuncular bu kelimeyi görür, Imposter göremez ancak kategoriyi bilir (İpucu açıksa).',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.group_rounded,
-                      iconColor: Color(0xFF4CAF50),
-                      title: 'Oyuncu Rolleri',
-                      description:
-                      '• Normal Oyuncular: Kelimeyi görebilir ve Imposter\'ı bulmaya çalışır.\n• Imposter: Kelimeyi göremez, kategori ipucuyla ve diğer oyuncuları gözlemleyerek kelimeyi tahmin etmeye çalışır.',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.smartphone_rounded,
-                      iconColor: Color(0xFF9C27B0),
-                      title: 'Kartlar Nasıl Gösterilir?',
-                      description:
-                      'Oyun başladığında her oyuncu sırayla kartını görür. Kartınızı gördükten sonra "Sonraki Oyuncu" butonuna basarak telefonu bir sonrakine verin. Kartınızı kimseye göstermeyin!',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.lightbulb_rounded,
-                      iconColor: Color(0xFFFFEB3B),
-                      title: 'İpucu Ayarı',
-                      description:
-                      'İpucu AÇIK: Imposter kategoriye ait ipucu görür.\n\nİpucu KAPALI: Imposter hiçbir ipucu görmez, sadece "SPY" yazısını görür — daha zor mod!',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.chat_rounded,
-                      iconColor: Color(0xFF00BCD4),
-                      title: 'Oyun Süreci',
-                      description:
-                      '1. Herkes kartını kontrol eder\n2. Oyuncular birbirine kelimeyle ilgili sorular sorar\n3. Cevaplar vererek birbirinizi test edin\n4. Süre bitince oylama başlar',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.timer_rounded,
-                      iconColor: Color(0xFFE91E63),
-                      title: 'Zamanlayıcı',
-                      description:
-                      'Oyun başladığında süre akmaya başlar. Duraklatma, yeniden başlatma ve erken bitirme seçenekleri vardır. Süre bitince otomatik olarak oylama ekranına geçilir!',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.how_to_vote_rounded,
-                      iconColor: Color(0xFF673AB7),
-                      title: 'Oylama Sistemi',
-                      description:
-                      'Süre bitince her oyuncu sırayla şüphelendiği kişiye oy verir. Oylar gizlidir. En çok oy alan kişi açıklanır ve Imposter ise Normal Oyuncular kazanır!',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.emoji_events_rounded,
-                      iconColor: Color(0xFFFF5722),
-                      title: 'Kazanma Koşulları',
-                      description:
-                      '• Normal Oyuncular: Imposter\'ı doğru tahmin ederse kazanır.\n\n• Imposter: Yakalanmadan kalır ve kelimeyi tahmin ederse kazanır.',
-                    ),
-                    _TutorialSection(
-                      icon: Icons.description_rounded,
-                      iconColor: Color(0xFF795548),
-                      title: 'Örnek: Meslekler Kategorisi',
-                      description:
-                      'Kategori: Meslekler → Rastgele kelime: "Doktor" seçilir\n\n• Normal oyuncular "Doktor" kelimesini görür\n• Imposter sadece "Meslekler" kategorisini bilir (ipucu açıksa)\n• Oyuncular sorular sorarak Imposter\'ı bulmaya çalışır',
-                    ),
-                    SizedBox(height: 8),
-                  ],
-                ),
-              ),
-              // Footer
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.3),
-                    ],
-                  ),
-                ),
-                padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _dontShowAgain,
-                          onChanged: (v) =>
-                              setState(() => _dontShowAgain = v ?? false),
-                          checkColor: const Color(0xFFE91E63),
-                          fillColor: WidgetStateProperty.resolveWith(
-                                (states) => states.contains(WidgetState.selected)
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.6),
-                          ),
-                        ),
-                        const Text(
-                          'Bir daha gösterme',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton.icon(
-                        onPressed: _onStart,
-                        icon: const Icon(Icons.play_arrow_rounded,
-                            color: Color(0xFFE91E63)),
-                        label: const Text(
-                          'OYUNA BAŞLA',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFE91E63),
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  void dispose() {
+    _pageCtrl.dispose();
+    super.dispose();
   }
-}
-
-class _TutorialSection extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String description;
-
-  const _TutorialSection({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.description,
-  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: iconColor, size: 28),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.85),
-                      height: 1.5,
-                    ),
-                  ),
-                ],
+    final isLast = _page == _slides.length - 1;
+    final activeColor = _slides[_page].color;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF0C0C0E), // Derin, premium siyah
+      body: Stack(
+        children: [
+          // 1. Arka Plan: Yumuşak Ortam Işığı (Ambient Glow)
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeOutCubic,
+            top: MediaQuery.of(context).size.height * 0.15,
+            left: _page % 2 == 0 ? -100 : 100, // Sayfaya göre sağa/sola kayar
+            right: _page % 2 == 0 ? 100 : -100,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 700),
+              height: MediaQuery.of(context).size.width * 1.2,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    activeColor.withOpacity(0.15), // Çok hafif bir renk yansıması
+                    Colors.transparent,
+                  ],
+                  stops: const [0.2, 1.0],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+
+          // 2. Ana İçerik
+          SafeArea(
+            child: Column(
+              children: [
+                // Üst Bar: Atla Butonu
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: TextButton(
+                      onPressed: _finish,
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white54,
+                        textStyle: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      child: const Text('Atla'),
+                    ),
+                  ),
+                ),
+
+                // Orta Alan: Sayfalar
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageCtrl,
+                    itemCount: _slides.length,
+                    physics: const BouncingScrollPhysics(),
+                    onPageChanged: (i) => setState(() => _page = i),
+                    itemBuilder: (_, i) {
+                      final s = _slides[i];
+                      return TweenAnimationBuilder<double>(
+                        key: ValueKey(i),
+                        tween: Tween(begin: 0, end: 1),
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.easeOutCubic,
+                        builder: (_, v, child) => Transform.scale(
+                          scale: 0.9 + 0.1 * v, // Daha yumuşak büyüme
+                          child: Opacity(opacity: v.clamp(0, 1), child: child),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // İkon: Buzlu Cam (Glassmorphism) Efektli Kutu
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(32),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: Container(
+                                    width: 130,
+                                    height: 130,
+                                    decoration: BoxDecoration(
+                                      color: s.color.withOpacity(0.08),
+                                      borderRadius: BorderRadius.circular(32),
+                                      border: Border.all(
+                                        color: s.color.withOpacity(0.2),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Icon(s.icon, size: 54, color: s.color),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 48),
+
+                              // Başlık
+                              Text(
+                                s.title,
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5, // Harf arası boşluk (Premium hissi artırır)
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Açıklama
+                              Text(
+                                s.desc,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white.withOpacity(0.7),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                // Alt Kısım: Noktalar, Özel Checkbox ve Buton
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(32, 0, 32, 24),
+                  child: Column(
+                    children: [
+                      // Sayfa Noktaları (Pagination)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(_slides.length, (i) {
+                          final active = i == _page;
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutCubic,
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            width: active ? 24 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: active
+                                  ? activeColor
+                                  : Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          );
+                        }),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Özel Tasarım Checkbox (Klasik Android görünümü yerine)
+                      GestureDetector(
+                        onTap: () => setState(() => _dontShowAgain = !_dontShowAgain),
+                        behavior: HitTestBehavior.opaque,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 200),
+                                transitionBuilder: (child, animation) =>
+                                    ScaleTransition(scale: animation, child: child),
+                                child: Icon(
+                                  _dontShowAgain
+                                      ? Icons.check_circle_rounded
+                                      : Icons.circle_outlined,
+                                  key: ValueKey(_dontShowAgain),
+                                  color: _dontShowAgain
+                                      ? activeColor
+                                      : Colors.white.withOpacity(0.4),
+                                  size: 22,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Bir daha gösterme',
+                                style: TextStyle(
+                                  color: _dontShowAgain
+                                      ? Colors.white
+                                      : Colors.white.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Modern, Kenarları Tam Yuvarlak (Pill) Buton
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: double.infinity,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: activeColor.withOpacity(0.25),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            )
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: isLast
+                              ? _finish
+                              : () => _pageCtrl.nextPage(
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.easeOutCubic),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white, // Zıtlık için beyaz buton
+                            foregroundColor: Colors.black, // Üzerindeki yazı siyah
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                          ),
+                          child: Text(
+                            isLast ? 'Oyuna Başla' : 'İleri',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

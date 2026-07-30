@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/game_player.dart';
 import '../ads/ad_providers.dart';
@@ -136,11 +137,14 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
   bool _isDragging = false;
   bool _revealHapticFired = false;
 
+  // YENİ: Zamanlayıcının birden fazla kez tetiklenmesini önlemek için
+  bool _hasTriggeredTimer = false;
+
   late AnimationController _arrowCtrl;
   late Animation<double> _arrowAnim;
 
-  // İlk oyuncu için oyunun mantığını anlatan ~10 saniyelik tanıtım.
-  late bool _showIntro;
+  bool _showIntro = false;
+  bool _introIsFlying = false;
 
   double _maxPullUp = 300.0;
   static const double _revealThreshold = 0.2;
@@ -162,8 +166,48 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
       CurvedAnimation(parent: _arrowCtrl, curve: Curves.easeInOut),
     );
 
-    // Sadece oyuna giren ilk oyuncuya gösterilir.
-    _showIntro = widget.playerIndex == 0;
+    if (widget.playerIndex == 0) {
+      _showIntro = true;
+      _checkIntroSeenStatus();
+    }
+  }
+
+  Future<void> _checkIntroSeenStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool('intro_seen') ?? false;
+    if (seen && mounted) {
+      setState(() {
+        _showIntro = false;
+      });
+    }
+  }
+
+  void _openIntro() {
+    setState(() {
+      _showIntro = true;
+      _introIsFlying = true;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _introIsFlying = false;
+        });
+      }
+    });
+  }
+
+  void _closeIntro() {
+    setState(() {
+      _introIsFlying = true;
+    });
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          _showIntro = false;
+          _introIsFlying = false;
+        });
+      }
+    });
   }
 
   @override
@@ -174,6 +218,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
         _dragOffset = 0.0;
         _isDragging = false;
         _revealHapticFired = false;
+        _hasTriggeredTimer = false; // YENİ: Yeni oyuncuda tetikleyiciyi sıfırla
       });
     }
   }
@@ -198,7 +243,10 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
   @override
   Widget build(BuildContext context) {
     final p = widget.player;
-    final revealHeight = _dragOffset.clamp(0.0, _maxPullUp);
+
+    // YENİ: Son oyuncuysa panelin daha fazla yukarı çekilebilmesi için ekstra 140px pay veriyoruz.
+    final pullLimit = widget.isLastPlayer ? _maxPullUp + 140.0 : _maxPullUp;
+    final revealHeight = _dragOffset.clamp(0.0, pullLimit);
     final showReveal = revealHeight > _maxPullUp * _revealThreshold;
     final playerColor = p.selectedColor ?? const Color(0xFF9E9E9E);
 
@@ -206,21 +254,27 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
       backgroundColor: Colors.transparent,
       body: GestureDetector(
         onDoubleTap: () {
-          if (!widget.isLastPlayer) {
-            HapticFeedback.selectionClick();
-            widget.onNext();
-          }
+          // YENİ: Son oyuncu için çift tıklamayı tamamen iptal ettik, sadece kaydırma çalışacak
+          if (_showIntro || widget.isLastPlayer) return;
+          HapticFeedback.selectionClick();
+          widget.onNext();
         },
         onLongPress: () {
+          if (_showIntro) return;
           HapticFeedback.selectionClick();
           widget.onPrevious();
         },
-        onVerticalDragStart: (_) => setState(() => _isDragging = true),
+        onVerticalDragStart: (_) {
+          if (_showIntro) return;
+          setState(() => _isDragging = true);
+        },
         onVerticalDragUpdate: (d) {
+          if (_showIntro) return;
+
           setState(() {
-            _dragOffset =
-                (_dragOffset - d.delta.dy).clamp(0.0, _maxPullUp);
+            _dragOffset = (_dragOffset - d.delta.dy).clamp(0.0, pullLimit);
           });
+
           final crossed = _dragOffset > _maxPullUp * _revealThreshold;
           if (crossed && !_revealHapticFired) {
             _revealHapticFired = true;
@@ -228,106 +282,157 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
           } else if (!crossed) {
             _revealHapticFired = false;
           }
+
+          // YENİ: Son oyuncu paneli en yukarı kadar çekerse zamanlayıcıyı otomatik başlat
+          if (widget.isLastPlayer &&
+              _dragOffset > _maxPullUp + 80.0 &&
+              !_hasTriggeredTimer) {
+            _hasTriggeredTimer = true;
+            HapticFeedback.heavyImpact(); // Tok bir titreşim
+            widget.onStartTimer(); // Parmak izli ekrana geçiş
+          }
         },
-        onVerticalDragEnd: (_) => _onDragEnd(),
-        // ── STACK: renkli alan sabit, reveal paneli üstte kayar ──
+        onVerticalDragEnd: (_) {
+          if (_showIntro) return;
+          _onDragEnd();
+        },
         child: Stack(
           children: [
-            // ── Katman 1: renkli arka plan (tam ekran, asla küçülmez) ──
+            // ── Katman 1: Renkli arka plan ──
             Positioned.fill(
-              child: Container(
-                color: playerColor,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    children: [
-                      _Header(
-                        timeString: widget.timeString,
-                        onBack: widget.onBack,
-                        onPrevious:
-                        widget.playerIndex > 0 ? widget.onPrevious : null,
-                      ),
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: _PlayerInfo(
-                                player: p,
-                                playerIndex: widget.playerIndex,
-                                totalPlayers: widget.totalPlayers,
-                                isLastPlayer: widget.isLastPlayer,
-                                arrowAnim: _arrowAnim,
-                                // reveal açıldıkça ok'u gizle (opsiyonel)
-                                revealProgress: revealHeight / _maxPullUp,
-                              ),
-                            ),
-                            // Son oyuncu butonu — üste biner, alttaki
-                            // oyuncu bilgisi alanını asla küçültmez.
-                            if (widget.isLastPlayer && revealHeight < 40)
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 32,
-                                child: Center(
-                                  child: _StartTimerButton(
-                                    playerColor: playerColor,
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      widget.onStartTimer();
-                                    },
-                                  ),
+              child: IgnorePointer(
+                ignoring: _showIntro,
+                child: Container(
+                  color: playerColor,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      children: [
+                        _Header(
+                          timeString: widget.timeString,
+                          onBack: widget.onBack,
+                          onPrevious:
+                              widget.playerIndex > 0 ? widget.onPrevious : null,
+                          onInfo: _openIntro,
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: _PlayerInfo(
+                                  player: p,
+                                  playerIndex: widget.playerIndex,
+                                  totalPlayers: widget.totalPlayers,
+                                  isLastPlayer: widget.isLastPlayer,
+                                  arrowAnim: _arrowAnim,
+                                  revealProgress: revealHeight / _maxPullUp,
                                 ),
                               ),
-                          ],
+                              // DİKKAT: _StartTimerButton'ı sildik! Artık buton yok.
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
 
-            // ── Katman 2: siyah reveal paneli, ekranın altından yukarı açılır ──
+            // ── Katman 2: Siyah reveal paneli ──
             Positioned(
               left: 0,
               right: 0,
               bottom: 0,
-              child: AnimatedContainer(
-                duration: _isDragging
-                    ? Duration.zero
-                    : const Duration(milliseconds: 300),
-                curve: Curves.easeOutCubic,
-                height: revealHeight,
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  // Üst köşeleri yuvarlat (opsiyonel, güzel görünür)
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(24),
-                  ),
-                ),
-                // İçerik tam ortada
-                child: showReveal
-                    ? Center(
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: _RoleReveal(
-                      player: p,
-                      showHints: widget.showHints,
+              child: IgnorePointer(
+                ignoring: _showIntro,
+                child: AnimatedContainer(
+                  duration: _isDragging
+                      ? Duration.zero
+                      : const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  height: revealHeight,
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
                     ),
                   ),
-                )
-                    : const SizedBox.shrink(),
+                  child: showReveal
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SingleChildScrollView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              child: _RoleReveal(
+                                player: p,
+                                showHints: widget.showHints,
+                              ),
+                            ),
+                            // YENİ: Son oyuncu için panelin altına "Kaydırmaya Devam Et" uyarısı ekledik
+                            if (widget.isLastPlayer)
+                              Positioned(
+                                bottom: 40,
+                                child: AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 200),
+                                  // Panel normal açılma seviyesini biraz geçince yazıyı göster
+                                  opacity:
+                                      _dragOffset > _maxPullUp + 10 ? 1.0 : 0.0,
+                                  child: Column(
+                                    children: [
+                                      AnimatedBuilder(
+                                        animation: _arrowCtrl,
+                                        builder: (_, __) => Transform.translate(
+                                          offset: Offset(0, _arrowAnim.value),
+                                          child: const Icon(
+                                            Icons
+                                                .keyboard_double_arrow_up_rounded,
+                                            color: Colors.white,
+                                            size: 36,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      const Text(
+                                        'Oyuna geçmek için\nkaydırmaya devam et',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 14,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
             ),
 
-            // ── Katman 3: ilk oyuncu için oyun mantığını anlatan ~10sn'lik intro ──
+            // ── Katman 3: Animasyonlu İlk Oyuncu İntrosu ──
             if (_showIntro)
               Positioned.fill(
-                child: FirstPlayerIntro(
-                  accentColor: playerColor,
-                  onFinished: () {
-                    if (mounted) setState(() => _showIntro = false);
-                  },
+                child: IgnorePointer(
+                  ignoring: _introIsFlying,
+                  child: AnimatedScale(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOutCubic,
+                    alignment: const Alignment(0.85, -0.9),
+                    scale: _introIsFlying ? 0.05 : 1.0,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 400),
+                      opacity: _introIsFlying ? 0.0 : 1.0,
+                      child: FirstPlayerIntro(
+                        accentColor: playerColor,
+                        onFinished: _closeIntro,
+                      ),
+                    ),
+                  ),
                 ),
               ),
           ],
@@ -345,10 +450,12 @@ class _Header extends StatelessWidget {
   final String timeString;
   final VoidCallback onBack;
   final VoidCallback? onPrevious;
+  final VoidCallback onInfo;
 
   const _Header({
     required this.timeString,
     required this.onBack,
+    required this.onInfo,
     this.onPrevious,
   });
 
@@ -388,9 +495,9 @@ class _Header extends StatelessWidget {
             ),
           ],
           const Spacer(),
+          // Timer container
           Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.2),
               borderRadius: BorderRadius.circular(16),
@@ -407,6 +514,23 @@ class _Header extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          GestureDetector(
+            onTap: onInfo,
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.info_outline_rounded,
+                  // İkon shopping cart konseptine uyarlandı
+                  color: Colors.white,
+                  size: 22),
             ),
           ),
         ],
@@ -519,7 +643,7 @@ class _PlayerInfo extends StatelessWidget {
                     const SizedBox(height: 10),
                     Text(
                       isLastPlayer
-                          ? 'Basılı tut ve geri dön'
+                          ? 'Çift tıkla ve zamanlayıcıya geç • Basılı tut ve geri dön'
                           : 'Çift tıkla ve ileri geç • Basılı tut ve geri dön',
                       style: TextStyle(
                         fontSize: 12,
@@ -620,61 +744,8 @@ class _RoleReveal extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            // Normal oyuncular zaten kelimeyi biliyor, ipucuna ihtiyaçları
-            // yok — ipucu sadece Imposter'a gösterilir (yukarıdaki blok).
           ],
         ],
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// START TIMER BUTTON
-// ---------------------------------------------------------------------------
-
-class _StartTimerButton extends StatelessWidget {
-  final Color playerColor;
-  final VoidCallback onPressed;
-
-  const _StartTimerButton({
-    required this.playerColor,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 60,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: playerColor,
-          elevation: 8,
-          shadowColor: Colors.black38,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.play_arrow_rounded, size: 24),
-            SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Zamanlayıcıyı Başlat',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
