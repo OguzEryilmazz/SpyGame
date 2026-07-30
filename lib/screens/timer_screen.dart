@@ -8,6 +8,8 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import '../ads/ad_providers.dart';
 import 'category_screen.dart'; // gameStateProvider
 import '../utils/sound_manager.dart'; // YENİ: Ses yöneticisini import ettik (yolunu kendi projene göre ayarla)
+import '../utils/settings_provider.dart';
+import '../utils/app_haptics.dart';
 
 class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
@@ -80,12 +82,30 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     } catch (_) {}
   }
 
+  // YENİ: '/categoryScreen'e context.go ile gitmek yerine, üstüne
+  // eklenmiş olan game+timer ekranlarını pop'luyoruz. Böylece
+  // categoryScreen kendi geçmişini (playerSetup, setup) korur ve
+  // oradaki geri tuşu ana ekrana değil, doğal akışa döner.
+  void _exitToCategoryScreen() {
+    var pops = 0;
+    while (context.canPop() && pops < 2) {
+      context.pop();
+      pops++;
+    }
+    if (pops == 0) {
+      // Beklenmedik şekilde stack boşsa güvenli düşüş
+      context.go('/categoryScreen');
+    }
+  }
+
+  bool get _soundEnabled => ref.read(settingsProvider).soundEnabled;
+
   // YENİ: Animasyon dolduğunda çalışacak fonksiyon
   void _onReady() {
     setState(() {
       _isReady = true;
     });
-    SoundManager().playBoom(); // Tok bir başlangıç sesi
+    SoundManager().playBoom(enabled: _soundEnabled); // Tok bir başlangıç sesi
     _startTimer();
   }
 
@@ -99,7 +119,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 
         // YENİ: Son 10 saniyede tik-tak sesi
         if (_timeLeft <= 7 && _timeLeft > 0) {
-          SoundManager().playTick();
+          SoundManager().playTick(enabled: _soundEnabled);
         }
       } else {
         t.cancel();
@@ -107,7 +127,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
           _isRunning = false;
           _isFinished = true;
         });
-        SoundManager().playBoom(); // Süre bitince patlama/alarm sesi
+        SoundManager()
+            .playBoom(enabled: _soundEnabled); // Süre bitince patlama/alarm sesi
         _vibrate();
       }
     });
@@ -141,15 +162,15 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
       _isFinished = true;
       _timeLeft = 0;
     });
-    SoundManager().playBoom();
+    SoundManager().playBoom(enabled: _soundEnabled);
     _vibrate();
   }
 
   Future<void> _confirmExit() async {
     if (_isFinished) {
       ref.read(interstitialAdProvider).showAdWithFrequencyControl(
-            onAdDismissed: () => context.go('/'),
-          );
+        onAdDismissed: _exitToCategoryScreen,
+      );
       return;
     }
 
@@ -178,7 +199,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child:
-                const Text('Vazgeç', style: TextStyle(color: Colors.white70)),
+            const Text('Vazgeç', style: TextStyle(color: Colors.white70)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -193,8 +214,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     if (confirmed == true) {
       _timer?.cancel();
       ref.read(interstitialAdProvider).showAdWithFrequencyControl(
-            onAdDismissed: () => context.go('/'),
-          );
+        onAdDismissed: _exitToCategoryScreen,
+      );
     } else if (wasRunning) {
       _startTimer();
       setState(() => _isRunning = true);
@@ -203,11 +224,11 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 
   Future<void> _vibrate() async {
     try {
-      HapticFeedback.heavyImpact();
+      AppHaptics.heavy(ref);
       await Future.delayed(const Duration(milliseconds: 200));
-      HapticFeedback.heavyImpact();
+      AppHaptics.heavy(ref);
       await Future.delayed(const Duration(milliseconds: 200));
-      HapticFeedback.heavyImpact();
+      AppHaptics.heavy(ref);
     } catch (_) {}
   }
 
@@ -244,9 +265,24 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
         canPop: false,
         onPopInvoked: (didPop) {
           if (didPop) return;
-          context.go('/category');
+          // Henüz süre başlamadı: tam çıkış yerine bir önceki
+          // role gösterme ekranına (game_screen) dön.
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            _exitToCategoryScreen();
+          }
         },
-        child: _HoldToStartOverlay(onComplete: _onReady),
+        child: _HoldToStartOverlay(
+          onComplete: _onReady,
+          onNotReady: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              _exitToCategoryScreen();
+            }
+          },
+        ),
       );
     }
 
@@ -321,7 +357,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                           onVoting: () => context.push('/voting'),
                           onHome: () {
                             ref.read(interstitialAdProvider).showAdWithFrequencyControl(
-                              onAdDismissed: () => context.go('/'),
+                              onAdDismissed: _exitToCategoryScreen,
                             );
                           },
                         )
@@ -349,16 +385,21 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 // YENİ: HOLD TO START OVERLAY (Basılı Tut Ekranı)
 // ---------------------------------------------------------------------------
 
-class _HoldToStartOverlay extends StatefulWidget {
+class _HoldToStartOverlay extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
+  final VoidCallback onNotReady;
 
-  const _HoldToStartOverlay({required this.onComplete});
+  const _HoldToStartOverlay({
+    required this.onComplete,
+    required this.onNotReady,
+  });
 
   @override
-  State<_HoldToStartOverlay> createState() => _HoldToStartOverlayState();
+  ConsumerState<_HoldToStartOverlay> createState() =>
+      _HoldToStartOverlayState();
 }
 
-class _HoldToStartOverlayState extends State<_HoldToStartOverlay>
+class _HoldToStartOverlayState extends ConsumerState<_HoldToStartOverlay>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   bool _isDone = false;
@@ -373,7 +414,7 @@ class _HoldToStartOverlayState extends State<_HoldToStartOverlay>
       setState(() {});
       if (_ctrl.isCompleted && !_isDone) {
         _isDone = true;
-        HapticFeedback.heavyImpact();
+        AppHaptics.heavy(ref);
         widget.onComplete();
       }
     });
@@ -389,100 +430,133 @@ class _HoldToStartOverlayState extends State<_HoldToStartOverlay>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0C0C0E), // Premium derin siyah
-      body: GestureDetector(
-        onTapDown: (_) {
-          if (!_isDone) {
-            _ctrl.forward();
-            HapticFeedback.mediumImpact(); // Basmaya başladığında titret
-          }
-        },
-        onTapUp: (_) {
-          if (!_isDone) {
-            _ctrl.reverse();
-          }
-        },
-        onTapCancel: () {
-          if (!_isDone) {
-            _ctrl.reverse();
-          }
-        },
-        child: Container(
-          color: Colors.transparent, // Tüm ekranın tıklanabilir olması için
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Herkes Hazır Mı?",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                "Telefonu masanın ortasına koyun.",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white.withOpacity(0.6),
-                ),
-              ),
-              const SizedBox(height: 60),
-
-              // Animasyonlu Halka ve Parmak İzi
-              Stack(
-                alignment: Alignment.center,
+      body: Stack(
+        children: [
+          GestureDetector(
+            onTapDown: (_) {
+              if (!_isDone) {
+                _ctrl.forward();
+                AppHaptics.medium(ref); // Basmaya başladığında titret
+              }
+            },
+            onTapUp: (_) {
+              if (!_isDone) {
+                _ctrl.reverse();
+              }
+            },
+            onTapCancel: () {
+              if (!_isDone) {
+                _ctrl.reverse();
+              }
+            },
+            child: Container(
+              color: Colors.transparent, // Tüm ekranın tıklanabilir olması için
+              width: double.infinity,
+              height: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 140,
-                    height: 140,
-                    child: CircularProgressIndicator(
-                      value: _ctrl.value,
-                      color: const Color(0xFF3B82F6), // Buton rengi (Mavi)
-                      backgroundColor: Colors.white.withOpacity(0.05),
-                      strokeWidth: 8,
+                  const Text(
+                    "Herkes Hazır Mı?",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  // İçerideki ikon efekti
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.lerp(
-                        Colors.transparent,
-                        const Color(0xFF3B82F6).withOpacity(0.2),
-                        _ctrl.value,
-                      ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Telefonu masanın ortasına koyun.",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white.withOpacity(0.6),
                     ),
-                    child: Icon(
-                      Icons.fingerprint_rounded,
-                      size: 54,
-                      color: Color.lerp(
-                        Colors.white.withOpacity(0.5),
-                        const Color(0xFF3B82F6),
-                        _ctrl.value,
+                  ),
+                  const SizedBox(height: 60),
+
+                  // Animasyonlu Halka ve Parmak İzi
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        width: 140,
+                        height: 140,
+                        child: CircularProgressIndicator(
+                          value: _ctrl.value,
+                          color: const Color(0xFF3B82F6), // Buton rengi (Mavi)
+                          backgroundColor: Colors.white.withOpacity(0.05),
+                          strokeWidth: 8,
+                        ),
                       ),
+                      // İçerideki ikon efekti
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.lerp(
+                            Colors.transparent,
+                            const Color(0xFF3B82F6).withOpacity(0.2),
+                            _ctrl.value,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.fingerprint_rounded,
+                          size: 54,
+                          color: Color.lerp(
+                            Colors.white.withOpacity(0.5),
+                            const Color(0xFF3B82F6),
+                            _ctrl.value,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 60),
+                  Text(
+                    "Başlamak için basılı tutun",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color:
+                      Colors.white.withOpacity(0.4 + (_ctrl.value * 0.6)),
                     ),
                   ),
                 ],
               ),
+            ),
+          ),
 
-              const SizedBox(height: 60),
-              Text(
-                "Başlamak için basılı tutun",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white.withOpacity(0.4 + (_ctrl.value * 0.6)),
+          // YENİ: Biri rolünü bilmiyorsa / hazır değilse
+          // basılı tutmadan role ekranına geri dönebilsin.
+          // Ayrı bir Stack katmanında olduğu için gesture alanıyla çakışmaz.
+          if (!_isDone)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 40,
+              child: Center(
+                child: TextButton.icon(
+                  onPressed: widget.onNotReady,
+                  icon: Icon(
+                    Icons.replay_rounded,
+                    color: Colors.white.withOpacity(0.5),
+                    size: 18,
+                  ),
+                  label: Text(
+                    'Hazır değiliz, rollere bak',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white.withOpacity(0.5),
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -538,14 +612,14 @@ class _StatusCard extends StatelessWidget {
     final statusText = isFinished
         ? 'SÜRE BİTTİ!'
         : isRunning
-            ? 'OYUN DEVAM EDİYOR'
-            : 'DURAKLATILDI';
+        ? 'OYUN DEVAM EDİYOR'
+        : 'DURAKLATILDI';
 
     final statusColor = isFinished
         ? const Color(0xFFEF4444)
         : isRunning
-            ? const Color(0xFF10B981)
-            : const Color(0xFFFBBF24);
+        ? const Color(0xFF10B981)
+        : const Color(0xFFFBBF24);
 
     return Container(
       width: double.infinity,
@@ -671,8 +745,8 @@ class _TimerDial extends StatelessWidget {
                         isFinished
                             ? 'BİTTİ'
                             : timeLeft <= 10
-                                ? 'ACELE ET!'
-                                : 'KALAN SÜRE',
+                            ? 'ACELE ET!'
+                            : 'KALAN SÜRE',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -725,7 +799,7 @@ class _RunningControls extends StatelessWidget {
           _FabButton(
             onTap: onToggle,
             color:
-                isRunning ? const Color(0xFFFBBF24) : const Color(0xFF10B981),
+            isRunning ? const Color(0xFFFBBF24) : const Color(0xFF10B981),
             iconColor: Colors.black,
             icon: isRunning ? Icons.pause : Icons.play_arrow,
           ),
@@ -923,7 +997,7 @@ class _TimerHeader extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child:
-                const Icon(Icons.close_rounded, color: Colors.white, size: 20),
+            const Icon(Icons.close_rounded, color: Colors.white, size: 20),
           ),
         ),
         const Spacer(),

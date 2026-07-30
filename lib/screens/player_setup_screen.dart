@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../models/player.dart';
 import '../models/character_avatar.dart';
 import '../widgets/player_card.dart';
+import '../utils/settings_bottom_sheet.dart';
 
 final playersProvider = StateProvider<List<Player>>((ref) => []);
 
@@ -115,6 +116,14 @@ class _PlayerSetupScreenState extends ConsumerState<PlayerSetupScreen> {
                             ),
                           ),
                         ],
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.settings_rounded,
+                            color: Colors.white, size: 28),
+                        onPressed: () {
+                          SettingsBottomSheet.show(context);
+                        },
                       ),
                     ],
                   ),

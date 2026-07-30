@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/game_player.dart';
 import '../ads/ad_providers.dart';
 import '../widgets/first_player_intro.dart';
+import '../utils/app_haptics.dart';
+import '../utils/route_observer.dart';
 import 'category_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -17,7 +18,7 @@ class GameScreen extends ConsumerStatefulWidget {
   ConsumerState<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends ConsumerState<GameScreen> {
+class _GameScreenState extends ConsumerState<GameScreen> with RouteAware {
   int _currentIndex = 0;
   late int _timeLeft;
   bool _isTimerRunning = false;
@@ -31,9 +32,26 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _timer?.cancel();
     super.dispose();
+  }
+
+  // YENİ: Timer ekranından ("hazır değiliz, rollere bak") geri
+  // dönüldüğünde bu ekran tekrar görünür olur. Kaldığı yerden
+  // (son oyuncu) değil, en baştan (ilk oyuncu) başlasın.
+  @override
+  void didPopNext() {
+    if (mounted && _currentIndex != 0) {
+      setState(() => _currentIndex = 0);
+    }
   }
 
   void _startTimer() {
@@ -100,7 +118,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 // PLAYER GAME SCREEN
 // ---------------------------------------------------------------------------
 
-class _PlayerGameScreen extends StatefulWidget {
+class _PlayerGameScreen extends ConsumerStatefulWidget {
   final GamePlayer player;
   final int playerIndex;
   final int totalPlayers;
@@ -128,10 +146,10 @@ class _PlayerGameScreen extends StatefulWidget {
   });
 
   @override
-  State<_PlayerGameScreen> createState() => _PlayerGameScreenState();
+  ConsumerState<_PlayerGameScreen> createState() => _PlayerGameScreenState();
 }
 
-class _PlayerGameScreenState extends State<_PlayerGameScreen>
+class _PlayerGameScreenState extends ConsumerState<_PlayerGameScreen>
     with SingleTickerProviderStateMixin {
   double _dragOffset = 0.0;
   bool _isDragging = false;
@@ -256,12 +274,12 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
         onDoubleTap: () {
           // YENİ: Son oyuncu için çift tıklamayı tamamen iptal ettik, sadece kaydırma çalışacak
           if (_showIntro || widget.isLastPlayer) return;
-          HapticFeedback.selectionClick();
+          AppHaptics.click(ref);
           widget.onNext();
         },
         onLongPress: () {
           if (_showIntro) return;
-          HapticFeedback.selectionClick();
+          AppHaptics.click(ref);
           widget.onPrevious();
         },
         onVerticalDragStart: (_) {
@@ -278,7 +296,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
           final crossed = _dragOffset > _maxPullUp * _revealThreshold;
           if (crossed && !_revealHapticFired) {
             _revealHapticFired = true;
-            HapticFeedback.mediumImpact();
+            AppHaptics.medium(ref);
           } else if (!crossed) {
             _revealHapticFired = false;
           }
@@ -288,7 +306,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
               _dragOffset > _maxPullUp + 80.0 &&
               !_hasTriggeredTimer) {
             _hasTriggeredTimer = true;
-            HapticFeedback.heavyImpact(); // Tok bir titreşim
+            AppHaptics.heavy(ref); // Tok bir titreşim
             widget.onStartTimer(); // Parmak izli ekrana geçiş
           }
         },
@@ -312,7 +330,7 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
                           timeString: widget.timeString,
                           onBack: widget.onBack,
                           onPrevious:
-                              widget.playerIndex > 0 ? widget.onPrevious : null,
+                          widget.playerIndex > 0 ? widget.onPrevious : null,
                           onInfo: _openIntro,
                         ),
                         Expanded(
@@ -360,55 +378,55 @@ class _PlayerGameScreenState extends State<_PlayerGameScreen>
                   ),
                   child: showReveal
                       ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SingleChildScrollView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              child: _RoleReveal(
-                                player: p,
-                                showHints: widget.showHints,
-                              ),
-                            ),
-                            // YENİ: Son oyuncu için panelin altına "Kaydırmaya Devam Et" uyarısı ekledik
-                            if (widget.isLastPlayer)
-                              Positioned(
-                                bottom: 40,
-                                child: AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 200),
-                                  // Panel normal açılma seviyesini biraz geçince yazıyı göster
-                                  opacity:
-                                      _dragOffset > _maxPullUp + 10 ? 1.0 : 0.0,
-                                  child: Column(
-                                    children: [
-                                      AnimatedBuilder(
-                                        animation: _arrowCtrl,
-                                        builder: (_, __) => Transform.translate(
-                                          offset: Offset(0, _arrowAnim.value),
-                                          child: const Icon(
-                                            Icons
-                                                .keyboard_double_arrow_up_rounded,
-                                            color: Colors.white,
-                                            size: 36,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        'Oyuna geçmek için\nkaydırmaya devam et',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 14,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    ],
+                    alignment: Alignment.center,
+                    children: [
+                      SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: _RoleReveal(
+                          player: p,
+                          showHints: widget.showHints,
+                        ),
+                      ),
+                      // YENİ: Son oyuncu için panelin altına "Kaydırmaya Devam Et" uyarısı ekledik
+                      if (widget.isLastPlayer)
+                        Positioned(
+                          bottom: 40,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 200),
+                            // Panel normal açılma seviyesini biraz geçince yazıyı göster
+                            opacity:
+                            _dragOffset > _maxPullUp + 10 ? 1.0 : 0.0,
+                            child: Column(
+                              children: [
+                                AnimatedBuilder(
+                                  animation: _arrowCtrl,
+                                  builder: (_, __) => Transform.translate(
+                                    offset: Offset(0, _arrowAnim.value),
+                                    child: const Icon(
+                                      Icons
+                                          .keyboard_double_arrow_up_rounded,
+                                      color: Colors.white,
+                                      size: 36,
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
-                        )
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Oyuna geçmek için\nkaydırmaya devam et',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  )
                       : const SizedBox.shrink(),
                 ),
               ),

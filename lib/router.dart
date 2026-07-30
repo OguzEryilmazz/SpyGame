@@ -10,9 +10,11 @@ import 'screens/category_screen.dart';
 import 'screens/game_screen.dart';
 import 'screens/tutorial_screen.dart';
 import 'screens/timer_screen.dart';
+import 'utils/route_observer.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/splash',
+  observers: [routeObserver],
   redirect: (context, state) async {
     if (state.matchedLocation != '/tutorial') return null;
 

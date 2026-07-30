@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../utils/settings_bottom_sheet.dart';
 import '../widgets/setting_item.dart';
 import '../widgets/counter_row.dart';
 import 'category_screen.dart' show categoriesProvider;
@@ -57,20 +56,10 @@ class SetupScreen extends ConsumerWidget {
                             child: const Text(
                               'Spy - Haini Bul',
                               style: TextStyle(
-                                fontSize: 30, // İkonla sığması için hafif ufaltıldı
+                                fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
-                            ),
-                          ),
-                          // Sağ Üst Ayarlar Butonu
-                          Positioned(
-                            right: 0,
-                            child: IconButton(
-                              icon: const Icon(Icons.settings_rounded, color: Colors.white, size: 28),
-                              onPressed: () {
-                                SettingsBottomSheet.show(context);
-                              },
                             ),
                           ),
                         ],
